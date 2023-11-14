@@ -12,8 +12,9 @@ public class MainController {
     }
 
     @GetMapping("/map")
-    public String map(Model model, String inputAddress) {
+    public String map(Model model, String inputAddress, String myLocation) {
         model.addAttribute("inputAddress", inputAddress);
+        model.addAttribute("myLocation", myLocation);
         return "map";
     }
 
