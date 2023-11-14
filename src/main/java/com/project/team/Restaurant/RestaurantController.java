@@ -23,12 +23,12 @@ public class RestaurantController {
 
     private final SiteUserService siteUserService;
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/register")
     public String register() {
         return "registerForm";
     }
 
+    /*
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/register")
     public String register(Principal principal, @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
@@ -39,5 +39,6 @@ public class RestaurantController {
         this.restaurantService.registerRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
                 restaurantRegisterForm.getNumber(),user);
         return "redirect:/map";
-    }
+        }
+     */
 }
