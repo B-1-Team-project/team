@@ -9,14 +9,15 @@
 <body>
 <div class="d-flex">
     <div id="container">
-        <img style="width:100%; height:100vh; opacity:0.5;" src="/startImage.jpg" class="image d-flex align-items-center justify-content-center">
+        <img style="width:100%; height:100vh; opacity:0.5;" src="/startImage.jpg"
+             class="image d-flex align-items-center justify-content-center">
         <div class="text-center">
             <div class="text">
                 <h1 class="mb-3" style="font-size:5rem; font-weight:bold;">logo</h1>
-                <a href="javascript:void(0)" onclick="sample5_execDaumPostcode();">
+                <a href="javascript:void(0)" onclick="searchForAddress();">
                     주소로 맛집 찾기 →</a>
                 <br>
-                <a href="/map">내 주변 맛집 찾기 →</a>
+                <a href="javascript:void(0)" onclick="aroundMe();">내 주변 맛집 찾기 →</a>
             </div>
         </div>
     </div>
@@ -58,7 +59,8 @@
                         카카오 로그인</a>
                 </div>
             </form>
-            <form id="signupForm" action="/user/signup" style="display: none;" th:object="${userCreateForm}" method="post">
+            <form id="signupForm" action="/user/signup" style="display: none;" th:object="${userCreateForm}"
+                  method="post">
                 <div th:replace="~{form_errors :: formErrorsFragment}"></div>
                 <div class="mb-3">
                     <label for="loginId" class="form-label">로그인ID</label>
@@ -85,18 +87,17 @@
             <div class="d-flex justify-content-around">
                 <a href="#" onclick="showForm('loginForm')" id="loginLink">로그인</a>
                 <a href="#" onclick="showForm('signupForm')" id="signupLink">회원가입</a>
-                <a href="#">비밀번호 찾기</a>
             </div>
         </div>
     </div>
 </div>
-<form th:action="@{/map}" method="get" id="searchAddress">
+<form th:action="@{/map/view}" method="get" id="searchAddress">
     <input type="hidden" id="inputAddress" name="inputAddress">
 </form>
 <script th:src="@{/bootstrap.bundle.min.js}"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-    function sample5_execDaumPostcode() {
+    function searchForAddress() {
         new daum.Postcode({
             oncomplete: function(data) {
                 document.querySelector('#inputAddress').value = data.address;
@@ -122,6 +123,10 @@
             document.getElementById('loginLink').style.display = 'none';
             document.getElementById('signupLink').style.display = 'inline';
         }
+
+    function aroundMe() {
+        document.querySelector('#inputAddress').value = 'aroundMe';
+        document.querySelector('#searchAddress').submit();
     }
 </script>
 </body>
