@@ -23,6 +23,7 @@ public class RestaurantController {
 
     private final SiteUserService siteUserService;
 
+
     @GetMapping("/register")
     public String register() {
         return "registerForm";
