@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/bootstrap.min.css" type="text/css">
 </head>
 <body>
-<h1 sec:authorize="isAuthenticated()">로그인 됌</h1>
+<a th:href="@{/test}" class="btn btn-success position-absolute" style="z-index:99; left:2%; bottom:2%;">테스트 페이지</a>
 <div class="d-flex">
     <div id="container">
         <img style="width:100%; height:100vh; opacity:0.5;" src="/startImage.jpg"
