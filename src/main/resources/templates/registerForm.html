@@ -1,10 +1,10 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
     <h3>가게 등록</h3>
-    <form th:action="@{/restaurant/register}" method="post">
+    <form th:action="@{/restaurant/register}" method="post" id="regForm">
         <div>
             <label for="name" class="form-label">가게 이름</label>
-            <input type="text" placeholder="이름" name="name">
+            <input type="text" placeholder="이름" name="name" id="name">
         </div>
         <div>
             <label for="address" class="form-label">가게 주소</label>
@@ -13,12 +13,12 @@
         </div>
         <div>
             <label for="number" class="form-label">가게 전화번호</label>
-            <input type="text" placeholder="전화번호" name="number">
+            <input type="text" placeholder="전화번호" name="number" id="number">
         </div>
-        <input type="submit" value="등록">
+        <input type="submit" value="등록" id="regBtn">
     </form>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script>
+    <script layout:fragment="script" type='text/javascript'>
         function findAddress() {
             new daum.Postcode({
                 oncomplete: function(data) {
@@ -41,6 +41,13 @@
                 }
             }).open();
         }
+
+        document.querySelector("#regForm").addEventListener('click', function() {
+            if(document.querySelector("#").value == "")
+                alert("댓글을 입력해주세요.");
+            else
+                document.querySelector("#content_form").submit();
+        });
     </script>
 </div>
 </html>
