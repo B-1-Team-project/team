@@ -40,6 +40,7 @@ public class RestaurantController {
         return "redirect:/main";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String modify(@PathVariable("id") Integer id, Principal principal, Model model) {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
@@ -49,6 +50,7 @@ public class RestaurantController {
         return "registerForm";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String modify(@PathVariable("id") Integer id, Principal principal, @RequestParam(value = "name") String name,
                          @RequestParam(value = "address") String address, @RequestParam(value = "number") String number) {
@@ -60,6 +62,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable("id") Integer id, Principal principal) {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
         if (!restaurant.getOwner().getLoginId().equals(principal.getName())) {
