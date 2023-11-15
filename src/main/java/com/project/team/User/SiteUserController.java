@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SiteUserController {
     private final SiteUserService siteUserService;
 
+    @GetMapping("/signup")
+    public String signup(UserCreateForm userCreateForm) {
+        return "signup_form";
+    }
+
     @PostMapping("/signup")
     public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -33,18 +38,18 @@ public class SiteUserController {
         }catch(DataIntegrityViolationException e){
             e.printStackTrace();
             bindingResult.reject("signupFailed", "이미 등록된 사용자 입니다.");
-            return "start";
+            return "signup_form";
         }catch(Exception e){
             e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
-            return "start";
+            return "signup_form";
         }
-        return "main";
+        return "redirect:/";
     }
 
     @GetMapping("/login")
     public String login(){
-        return "map";
+        return "redirect:/";
     }
 
 }
