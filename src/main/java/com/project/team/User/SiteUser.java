@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,7 @@ public class SiteUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String loginId;
 
     private String password;
@@ -25,7 +27,7 @@ public class SiteUser {
     @Column(unique = true)
     private String email;
 
-    private String createDate;
+    private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<Restaurant> restaurants;

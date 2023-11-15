@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -15,11 +16,12 @@ public class SiteUserService {
     private final SiteUserRepository siteUserRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public SiteUser create(String loginId, String password, String username, String email){
+    public SiteUser create(String loginId, String password, String name, String email){
         SiteUser siteUser = new SiteUser();
         siteUser.setLoginId(loginId);
-        siteUser.setName(username);
+        siteUser.setName(name);
         siteUser.setEmail(email);
+        siteUser.setCreateDate(LocalDateTime.now());
         siteUser.setPassword(passwordEncoder.encode(password));
         siteUserRepository.save(siteUser);
         return siteUser;
