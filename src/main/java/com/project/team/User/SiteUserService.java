@@ -23,6 +23,7 @@ public class SiteUserService {
         siteUser.setEmail(email);
         siteUser.setCreateDate(LocalDateTime.now());
         siteUser.setPassword(passwordEncoder.encode(password));
+        siteUser.setCreateDate(LocalDateTime.now());
         siteUserRepository.save(siteUser);
         return siteUser;
     }

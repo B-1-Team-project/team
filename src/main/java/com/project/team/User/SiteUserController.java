@@ -32,11 +32,11 @@ public class SiteUserController {
 
         }catch(DataIntegrityViolationException e){
             e.printStackTrace();
-            bindingResult.reject("signupFaild", "이미 등록된 사용자 입니다.");
+            bindingResult.reject("signupFailed", "이미 등록된 사용자 입니다.");
             return "start";
         }catch(Exception e){
             e.printStackTrace();
-            bindingResult.reject("signupFaild", e.getMessage());
+            bindingResult.reject("signupFailed", e.getMessage());
             return "start";
         }
         return "main";
