@@ -1,5 +1,7 @@
 package com.project.team;
 
+import com.project.team.User.SiteUser;
+import com.project.team.User.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
