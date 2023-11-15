@@ -32,24 +32,24 @@ public class SiteUserController {
             return "signup_form";
         }
 
-        try{
+        try {
             siteUserService.create(userCreateForm.getLoginId(), userCreateForm.getPassword1(), userCreateForm.getName(), userCreateForm.getEmail());
 
-        }catch(DataIntegrityViolationException e){
+        }catch(DataIntegrityViolationException e) {
             e.printStackTrace();
-            bindingResult.reject("signupFailed", "이미 등록된 사용자 입니다.");
+            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
             return "signup_form";
-        }catch(Exception e){
+        }catch(Exception e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
             return "signup_form";
         }
         return "redirect:/";
+
     }
 
     @GetMapping("/login")
-    public String login(){
-        return "redirect:/";
+    public String login() {
+        return "redirect:/main";
     }
-
 }
