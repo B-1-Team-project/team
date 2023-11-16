@@ -4,6 +4,9 @@ import com.project.team.User.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
@@ -17,4 +20,12 @@ public class RestaurantService {
         restaurant.setOwner(owner);
         this.restaurantRepository.save(restaurant);
     }
+
+    public Restaurant getRestaurant(Integer id) {
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
+        return restaurantOptional.orElse(null);
+    }
+
+
 }
+
