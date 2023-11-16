@@ -33,6 +33,4 @@ public class SiteUser {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<Restaurant> restaurants;
-
-
 }
