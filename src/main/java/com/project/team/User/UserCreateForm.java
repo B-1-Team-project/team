@@ -1,6 +1,7 @@
 package com.project.team.User;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class UserCreateForm {
 
     @Size(min = 3, max = 20)
     @NotEmpty(message = "이름을 입력하세요.")
-    private String username;
+    private String name;
 
     @NotEmpty(message = "로그인 비밀번호를 입력하세요.")
     private String password1;
@@ -26,4 +27,7 @@ public class UserCreateForm {
     @NotEmpty(message = "이메일을 입력하세요.")
     @Email
     private String email;
+
+    @NotBlank(message = "권한을 설정해주세요.")
+    private String authority;
 }

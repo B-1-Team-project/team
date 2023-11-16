@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -29,6 +36,7 @@ public class RestaurantController {
 
     private final SiteUserService siteUserService;
 
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/register")
     public String register() {
@@ -37,14 +45,45 @@ public class RestaurantController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/register")
-    public String register(Principal principal, @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
+    public String register(Principal principal, @RequestParam(value = "name") String name,
+                           @RequestParam(value = "address") String address, @RequestParam(value = "number") String number) {
         SiteUser user = this.siteUserService.getUser(principal.getName());
-        if (bindingResult.hasErrors()) {
-            return "registerForm";
+        this.restaurantService.registerRestaurant(name, address, number, user);
+        return "redirect:/main";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String modify(@PathVariable("id") Integer id, Principal principal, Model model) {
+        Restaurant restaurant = this.restaurantService.getRestaurant(id);
+        model.addAttribute("restaurant", restaurant);
+        if (!restaurant.getOwner().getLoginId().equals(principal.getName()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        return "registerForm";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String modify(@PathVariable("id") Integer id, Principal principal, @RequestParam(value = "name") String name,
+                         @RequestParam(value = "address") String address, @RequestParam(value = "number") String number) {
+        Restaurant restaurant = this.restaurantService.getRestaurant(id);
+        if (!restaurant.getOwner().getLoginId().equals(principal.getName()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        this.restaurantService.modifyRestaurant(name, address, number, restaurant);
+        return "redirect:/main";
+    }
+
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String delete(@PathVariable("id") Integer id, Principal principal) {
+        Restaurant restaurant = this.restaurantService.getRestaurant(id);
+        if (!restaurant.getOwner().getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
         }
-        this.restaurantService.registerRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
-                restaurantRegisterForm.getNumber(), user);
-        return "redirect:/map";
+
+        this.restaurantService.deleteRestaurant(restaurant);
+        return "redirect:/main";
+
     }
 
     @GetMapping("/restaurant/{id}")
