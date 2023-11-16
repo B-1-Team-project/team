@@ -1,4 +1,5 @@
     var inputAddress = document.querySelector('#searchAddress').value;
+
     var mapContainer = document.getElementById('map'),
     mapOption = {
         center: new kakao.maps.LatLng(33.450701, 126.570667),
@@ -94,6 +95,7 @@
             }
         });
     }
+
     function displayMarker_restaurant(place) {
         var marker = new kakao.maps.Marker({
             map: map,
