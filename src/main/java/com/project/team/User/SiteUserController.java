@@ -38,11 +38,11 @@ public class SiteUserController {
             bindingResult.reject("signupFailed", e.getMessage());
             return "start";
         }
-        return "redirect:/main";
+        return "redirect:/";
     }
 
     @GetMapping("/login")
     public String login() {
-        return "redirect:/main";
+        return "redirect:/";
     }
 }

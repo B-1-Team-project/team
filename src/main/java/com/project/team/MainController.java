@@ -19,7 +19,7 @@ public class MainController {
     }
 
     @GetMapping("/test")
-    public String testPage() {
+    public String test() {
         return "test";
     }
 }
