@@ -7,9 +7,9 @@
     };
 
     var map = new kakao.maps.Map(mapContainer, mapOption);
+    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
     if (inputAddress == 'aroundMe') {
-    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
 
@@ -56,7 +56,6 @@
             map.setCenter(locPosition);
         }
     } else {
-        var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
         var geocoder = new kakao.maps.services.Geocoder();
         geocoder.addressSearch(inputAddress, function(result, status) {
