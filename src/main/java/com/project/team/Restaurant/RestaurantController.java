@@ -87,7 +87,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/restaurant/{id}")
-    public String reserve(Model model,@PathVariable("id") Integer id, BindingResult bindingResult, Principal principal) {
+    public String reserve(Model model, @PathVariable("id") Integer id, BindingResult bindingResult, Principal principal) {
 
         if (id == null) {
             throw new DataNotFoundException("음식점 ID가 필요합니다.");
@@ -110,3 +110,5 @@ public class RestaurantController {
 
     }
 }
+
+
