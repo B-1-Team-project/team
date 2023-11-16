@@ -27,13 +27,20 @@
                             <input class="btn btn-secondary" type="button" onclick="findAddress();" value="주소 찾기">
                         </div>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Default checkbox
-                        </label>
+                    <label class="form-label">편의 시설</label>
+                    <div class="d-flex mb-2">
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="checkbox" value="주차장" id="parking" name="facilities">
+                            <label class="form-check-label">주차장</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="놀이방" id="playroom" name="facilities">
+                            <label class="form-check-label">놀이방</label>
+                        </div>
                     </div>
-                    <input class="btn btn-secondary" type="submit" value="등록" id="regBtn">
+                    <div class="d-flex justify-content-end">
+                        <input class="btn btn-secondary" type="submit" value="등록" id="regBtn">
+                    </div>
                 </form>
             </div>
         </div>
