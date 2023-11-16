@@ -26,8 +26,7 @@
                         </svg>
                         <a th:href="@{|/restaurant/page/${user.loginId}|}">가게 관리</a>
                     </div>
-                    <a th:href="@{/restaurant/register}" class="btn btn-dark" th:if="${user.authority == '사장님'}" sec:authorize="isAuthenticated()">가게
-                        등록</a>
+                    <a th:href="@{/restaurant/register}" class="btn btn-dark" th:if="${user.authority == '사장님'}" sec:authorize="isAuthenticated()">가게 등록</a>
                 </div>
             </div>
         </div>
