@@ -124,6 +124,7 @@ public class RestaurantController {
     public String detail(@PathVariable("id") Integer id) {
         return "restaurantDetail";
     }
+
 }
 
 
