@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" th:href="@{/main.css}" type="text/css">
+    <link rel="stylesheet" href="/main.css" type="text/css">
     <link rel="stylesheet" href="/bootstrap.min.css" type="text/css">
     <style>
         a {
             color:inherit;
             text-decoration:none;
         }
+
         a:hover {
             color:darksalmon;
         }
@@ -19,9 +20,10 @@
 <a th:href="@{/test}" class="btn btn-success position-absolute" style="z-index:99; left:2%; bottom:2%;">테스트 페이지</a>
 <div class="d-flex">
     <div id="container">
-        <img src="/startImage.jpg" class="image d-flex align-items-center justify-content-center">
+        <img style="width:100%; height:100vh; opacity:0.5;" src="/startImage.jpg"
+             class="image d-flex align-items-center justify-content-center">
         <div class="text-center">
-            <div id="text" class="d-flex align-items-center justify-content-center">
+            <div class="text d-flex align-items-center justify-content-center">
                 <div>
                     <h1 class="mb-5" style="font-size:6rem; font-weight:bold; text-shadow: 3px 3px 6px gray;">logo</h1>
                     <a href="javascript:void(0)" onclick="searchForAddress();" class="btn me-3"

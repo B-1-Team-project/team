@@ -24,17 +24,25 @@ a {
     position:relative;
 }
 
+#image {
+    width:100%;
+    height:90vh;
+    opacity:0.5;
+}
 #content {
     position:absolute;
-    top:5%;
-    left:5%;
+    top:0%;
+    left:0%;
     background:white;
-    width:90%;
-    height:90vh;
-    padding:30px;
-    border-radius:15px;
+    padding:50px;
+}
 
-#text {
+#map {
+    width:700px;
+    height:700px;
+}
+
+.text {
     position: absolute;
     top: 50%;
     left: 50%;
