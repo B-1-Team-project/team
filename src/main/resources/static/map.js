@@ -46,7 +46,7 @@
         '</div>'
         ;
 
-        kakao.maps.event.addListener(marker, 'click', function() {
+    kakao.maps.event.addListener(marker, 'click', function() {
             infowindow.close();
             overlay.setContent(content);
             overlay.setPosition(marker.getPosition());
