@@ -6,12 +6,9 @@
     <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <title>parser</title>
+    <title>getData</title>
 </head>
 <body>
-<form th:action="@{/test/receive}" method="get" id="testForm">
-    <input type="hidden" name="data" id="data">
-</form>
 <script>
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
@@ -31,7 +28,7 @@
             $.ajax({
                 type: 'post',
                 contentType: "application/json",
-                url: '/test/receive',
+                url: '/getData',
                 data: JSON.stringify(dataList),
                 success: function(response) {
                     console.log(response);
@@ -43,6 +40,7 @@
                     console.log(error);
                 }
             });
+            location.href='/main';
         }
     };
 

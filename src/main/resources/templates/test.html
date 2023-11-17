@@ -23,32 +23,5 @@
 </script>
 <script type="text/javascript"
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ea7706d3cd280b86aceebdabe80d16f0&libraries=services"></script>
-<script>
-    var places = new kakao.maps.services.Places();
-
-    var callback = function(dataList, status) {
-        if (status === kakao.maps.services.Status.OK) {
-            $.ajax({
-                type: 'post',
-                contentType: "application/json",
-                url: '/test/receive',
-                data: JSON.stringify(dataList),
-                success: function(response) {
-                    console.log(response);
-                },
-                success: function(success) {
-                    console.log(success);
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
-        }
-    };
-
-    places.categorySearch('FD6', callback, {
-        location: new kakao.maps.LatLng(37.564968, 126.939909)
-    });
-</script>
 </body>
 </html>
