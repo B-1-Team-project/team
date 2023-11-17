@@ -2,15 +2,18 @@ package com.project.team.User;
 
 import com.project.team.Restaurant.Restaurant;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+
 public class SiteUser {
 
     @Id
@@ -31,6 +34,8 @@ public class SiteUser {
 
     private String authority;
 
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<Restaurant> restaurants;
+
 }
