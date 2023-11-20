@@ -1,5 +1,6 @@
 package com.project.team.Restaurant;
 
+import com.project.team.Reservation.Reservation;
 import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -36,5 +38,18 @@ public class Restaurant {
     private List<String> facilities;
 
     private String locationX;
+
     private String locationY;
+
+    private String image;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
+    private List<Reservation> reservations;
+
+    @Column(columnDefinition = "TEXT")
+    private String introduce;
+
+    private LocalTime startTime;
+
+    private LocalTime endTime;
 }

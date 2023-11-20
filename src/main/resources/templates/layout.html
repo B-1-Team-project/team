@@ -6,12 +6,18 @@
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" href="/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {font-family: 'IBM Plex Sans KR', sans-serif;}
+    </style>
     <title>Title</title>
 </head>
 <body>
 <nav th:replace="~{navbar :: navbarFragment}"></nav>
     <div id="main">
-        <div id="background" style="background:lightsalmon; width:100%; height:100vh;">
+        <div id="background" style="background:tan; width:100%; height:100vh;">
             <div id="content">
                 <th:block layout:fragment="content" class="content"></th:block>
             </div>
