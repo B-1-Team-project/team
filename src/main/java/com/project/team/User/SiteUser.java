@@ -42,4 +42,26 @@ public class SiteUser {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE)
     private List<Reservation> reservations;
 
+
+    private String picture;
+    private String role = "ROLE_USER";
+
+    public SiteUser(){
+
+    }
+
+    public SiteUser(String loginId, String name, String email, String picture,LocalDateTime createDate) {
+        this.loginId = loginId;
+        this.name = name;
+        this.email = email;
+        this.picture = picture;
+        this.createDate = createDate;
+    }
+
+    public SiteUser update(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+
+        return this;
+    }
 }
