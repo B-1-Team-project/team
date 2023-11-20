@@ -90,8 +90,4 @@ public class OAuthAttributes {
         } else id = attributes.get(nameAttributeKey).toString();
         return new SiteUser(id, name, email, picture, LocalDateTime.now());
     }
-//    public SiteUser toEntity(){
-//        return new SiteUser(id, name, email, picture, LocalDateTime.now());
-//    }
-
 }
