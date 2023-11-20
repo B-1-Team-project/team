@@ -34,4 +34,7 @@ public class Restaurant {
 
 
     private List<String> facilities;
+
+    private String locationX;
+    private String locationY;
 }

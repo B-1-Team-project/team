@@ -27,17 +27,18 @@ class TeamApplicationTests {
 	@Test
 
 	void contextLoads() {
-		SiteUser owner = new SiteUser();
-		this.siteUserRepository.save(owner);
+
 
 
 		Restaurant r1 = new Restaurant();
-		r1.setName("설해돈");
-		r1.setAddress("라온채빌딩");
-		r1.setNumber("0507-1385-1119");
-		r1.setOwner(owner);
+		r1.setName("떡반집");
+		r1.setAddress("대전 서구 둔산로 8");
+		r1.setNumber("042-472-2921");
+		r1.setOwner(null);
 		r1.setRegDate(LocalDateTime.now());
-		r1.setMain("모듬가스");
+		r1.setMain("떡반");
+
+
 
 
 

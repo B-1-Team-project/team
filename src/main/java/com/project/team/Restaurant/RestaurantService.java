@@ -12,9 +12,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
+
     private final RestaurantRepository restaurantRepository;
 
-    public void registerRestaurant(String name, String address, String number, List<String> facilities, String main, SiteUser owner) {
+    public Restaurant registerRestaurant(String name, String address, String number, List<String> facilities, String main, SiteUser owner) {
         Restaurant restaurant = new Restaurant();
         restaurant.setName(name);
         restaurant.setAddress(address);
@@ -23,7 +24,9 @@ public class RestaurantService {
         restaurant.setFacilities(facilities);
         restaurant.setMain(main);
         restaurant.setRegDate(LocalDateTime.now());
+
         this.restaurantRepository.save(restaurant);
+        return restaurant;
     }
 
     public Restaurant getRestaurant(Integer id) {
@@ -42,6 +45,12 @@ public class RestaurantService {
 
     public void deleteRestaurant(Restaurant restaurant) {
         this.restaurantRepository.delete(restaurant);
+    }
+
+    public void setLocation(Restaurant restaurant, String x, String y) {
+        restaurant.setLocationX(x);
+        restaurant.setLocationY(y);
+        restaurantRepository.save(restaurant);
     }
 }
 
