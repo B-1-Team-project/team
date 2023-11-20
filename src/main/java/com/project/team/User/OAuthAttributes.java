@@ -56,6 +56,12 @@ public class OAuthAttributes {
     private static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");    // 네이버에서 받은 데이터에서 프로필 정보다 담긴 response 값을 꺼낸다.
 
+        System.out.println("naver " + attributes);
+        System.out.println("id " + response.get("id"));
+        System.out.println("userNameAttributeName " + userNameAttributeName);
+        System.out.println("attributes.get(userNameAttributeName) " + attributes.get(userNameAttributeName));
+
+
         return new OAuthAttributes((String) response.get("id"),
                 (Map<String, Object>) attributes.get(userNameAttributeName),
                 "id",
