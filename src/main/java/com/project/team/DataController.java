@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class DataController {
                     data.get("phone"),
                     null,
                     null,
-                    user
+                    user, LocalTime.MIN, LocalTime.MAX, null
             );
             restaurantService.setLocation(restaurant, data.get("y"), data.get("x"));
         }

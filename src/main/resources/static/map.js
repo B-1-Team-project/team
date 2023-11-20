@@ -18,7 +18,6 @@
             position: new kakao.maps.LatLng(element.x, element.y),
             clickable: true
         });
-        console.log(typeof(element.y));
 
         var tmpOverlay = new kakao.maps.CustomOverlay({
             content: '<div class="card">'+element.name+'</div>',
@@ -67,9 +66,8 @@
 
                 displayMarker_myLocation(locPosition);
 
-              });
+            });
         }
-
     } else {
         var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
@@ -117,6 +115,3 @@
     function closeOverlay() {
         overlay.setMap(null);
     }
-
-
-
