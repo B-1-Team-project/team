@@ -4,6 +4,8 @@ import com.project.team.DataNotFoundException;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.maven.model.Site;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +38,15 @@ public class SiteUserService {
             return user.get();
         } else
             throw new DataNotFoundException("user not found");
+    }
+
+    public void modifyUser(SiteUser siteUser,  String name, String email, String password){
+
+        siteUser.setPassword(passwordEncoder.encode(password));
+        siteUser.setName(name);
+        siteUser.setEmail(email);
+
+        this.siteUserRepository.save(siteUser);
     }
 
 
