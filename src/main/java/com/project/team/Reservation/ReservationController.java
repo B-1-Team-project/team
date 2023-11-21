@@ -58,6 +58,7 @@ public class ReservationController {
         return "reserveManagement";
     }
 
+    // 예약 승인 거부
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/approve/{id}")
     public String approve(@PathVariable("id") Integer id) {
