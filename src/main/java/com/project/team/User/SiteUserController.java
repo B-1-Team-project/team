@@ -58,6 +58,10 @@ public class SiteUserController {
         return "userDetail";
     }
 
+    public String modifyUserDetail(){
+
+    }
+
 
 
 
