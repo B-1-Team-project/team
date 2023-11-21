@@ -9,7 +9,7 @@
     <title>InterProcessing</title>
 </head>
 <body>
-<form th:action="@{/}" id="viewMap" method="get">
+<form th:action="@{/map/view}" id="viewMap" method="get">
     <input type="hidden" id="inputAddress" name="inputAddress">
     <input type="hidden" id="lat" name="lat">
     <input type="hidden" id="lon" name="lon">
@@ -28,8 +28,6 @@
 <script th:inline="javascript">
     var inputAddress = [[${inputAddress}]];
 
-    console.log(inputAddress);
-
     if (inputAddress == 'aroundMe') {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -39,9 +37,7 @@
 
                 var locPosition = new kakao.maps.LatLng(lat, lon);
 
-                createRes(locPosition);
-                // submit(lat, lon, inputAddress);
-
+                createRes(locPosition, lat, lon, inputAddress);
             });
         }
     } else {
@@ -52,13 +48,12 @@
 
                 var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                createRes(coords);
-                // submit(result[0].y, result[0].x, inputAddress);
+                createRes(coords, result[0].y, result[0].x, inputAddress);
             }
         });
     }
 
-    function createRes(dataLocation) {
+    function createRes(dataLocation, lat, lon, inputVal) {
         var places = new kakao.maps.services.Places();
 
         var callback = function(result, status, pagination) {
@@ -73,6 +68,7 @@
                         console.log(response);
                     },
                     success: function(success) {
+                        submit(lat, lon, inputVal);
                     },
                     error: function(error) {
                         console.log(error);
@@ -87,9 +83,9 @@
     }
 
     function submit(lat, lon, inputVal) {
-        $('#lat').value = lat;
-        $('#lon').value = lon;
-        $('#inputAddress').value = inputVal;
+        $('#lat').val(lat);
+        $('#lon').val(lon);
+        $('#inputAddress').val(inputVal);
         $('#viewMap').submit();
     }
 </script>

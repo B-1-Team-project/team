@@ -50,7 +50,7 @@ public class DataController {
         }
     }
 
-    @PostMapping("/interprocess")
+    @GetMapping("/interprocess")
     public String interprocess(@RequestParam(value = "inputAddress", defaultValue = "aroundMe") String inputAddress,
                                 Model model) {
         model.addAttribute("inputAddress", inputAddress);
