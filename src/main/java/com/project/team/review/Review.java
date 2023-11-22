@@ -15,11 +15,16 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @ManyToOne
     private Restaurant restaurant;
+
     @ManyToOne
     private SiteUser user;
+
     private String comment;
+
     private Integer star;
+
     private LocalDateTime regDate;
 }
