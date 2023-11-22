@@ -22,6 +22,7 @@ public class Review {
     @ManyToOne
     private SiteUser user;
 
+    @Column(columnDefinition = "TEXT")
     private String comment;
 
     private Integer star;
