@@ -3,6 +3,8 @@ package com.project.team.Restaurant;
 import com.project.team.DataNotFoundException;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
+import com.project.team.review.Review;
+import com.project.team.review.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ RestaurantController {
 
     private final SiteUserService siteUserService;
 
+    private final ReviewService reviewService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/register")
@@ -103,6 +106,10 @@ RestaurantController {
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
+        List<Review> reviews = this.reviewService.getReviews(restaurant);
+        double averageStar = this.reviewService.averageStar(reviews);
+        model.addAttribute("averageStar", averageStar);
+        model.addAttribute("reviews", reviews);
         model.addAttribute("restaurant", restaurant);
         return "restaurantDetail";
     }
