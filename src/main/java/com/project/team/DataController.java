@@ -3,11 +3,14 @@ package com.project.team;
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
 import com.project.team.User.SiteUserService;
+import com.project.team.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.Map;
 public class DataController {
     private final RestaurantService restaurantService;
     private final SiteUserService siteUserService;
+    private final ReviewService reviewService;
 
     @GetMapping("/getData")
     public String getData() {
@@ -28,6 +32,7 @@ public class DataController {
     public void receive(@RequestBody List<Map<String, String>> result) {
         boolean skip;
         for (Map<String, String> data : result) {
+            System.out.println(data);
             skip = false;
             String address = data.get("road_address_name");
             String name = data.get("place_name");
@@ -44,7 +49,15 @@ public class DataController {
                     null,
                     null, LocalTime.MIN, LocalTime.MAX, null
             );
-            restaurantService.setLocation(restaurant, data.get("y"), data.get("x"));
+            restaurantService.setLocation(restaurant, data.get("x"), data.get("y"));
+            // reviewService.createTmp(restaurant, data.get("place_url"));
         }
+    }
+
+    @GetMapping("/interprocess")
+    public String interprocess(@RequestParam(value = "inputAddress", defaultValue = "aroundMe") String inputAddress,
+                                Model model) {
+        model.addAttribute("inputAddress", inputAddress);
+        return "interprocess";
     }
 }
