@@ -49,6 +49,4 @@ public class SiteUserService {
 
         this.siteUserRepository.save(siteUser);
     }
-
-
 }
