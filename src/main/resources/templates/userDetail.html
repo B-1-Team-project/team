@@ -111,12 +111,14 @@
     <div class="logo">
         <a th:href="@{/main}">logo</a>
     </div>
+
     <div class="my-3">
         <a th:href="@{|/user/userModify/${siteUser.loginId}|}"
            sec:authorize="isAuthenticated()"
         th:if="${siteUser.loginId != null}"
         th:text="수정"></a>
     </div>
+
 
 
 
@@ -154,7 +156,11 @@
     </div>
     <div class="box-number2">
         <h1>예약목록</h1>
-        <ul class="user-info-box2">
+
+
+
+        <ul class="user-info-box2" >
+
             <li th:each="reservation : ${userReservation}" th:text="${reservation.restaurant.name}">
             </li>
         </ul>

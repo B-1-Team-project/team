@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +30,17 @@ public class ReservationService {
         reservation.setRestaurant(restaurant);
         reservation.setDate(date);
         reservation.setTime(time);
+        reservation.setDateTime(LocalDateTime.of(date, time));
         reservation.setCount(count);
         this.reservationRepository.save(reservation);
     }
 
-    public Page<Reservation> getAllReservation(int page, SiteUser user) {
+    public Page<Reservation> getAllReservation(int page, List<Restaurant> restaurants) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.asc("date"));
         sorts.add(Sort.Order.asc("time"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        return this.reservationRepository.findByUser(pageable, user);
+        return this.reservationRepository.findByRestaurantIn(pageable, restaurants);
     }
 
     public Reservation getReservation(Integer id) {

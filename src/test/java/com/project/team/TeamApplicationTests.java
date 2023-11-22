@@ -7,7 +7,6 @@ import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 <<<<<<< HEAD
@@ -19,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 >>>>>>> 55fe119d997b7e3e4b43f600020c49a24690a81c
 
 @SpringBootTest
-
 class TeamApplicationTests {
 	@Autowired
 	private RestaurantRepository restaurantRepository;
@@ -28,7 +26,6 @@ class TeamApplicationTests {
 
 
 	@Test
-
 	void contextLoads() {
 
 <<<<<<< HEAD
@@ -55,5 +52,4 @@ class TeamApplicationTests {
 =======
 >>>>>>> 55fe119d997b7e3e4b43f600020c49a24690a81c
 	}
-
 }
