@@ -7,15 +7,15 @@ import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-<<<<<<< HEAD
+
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-=======
->>>>>>> 55fe119d997b7e3e4b43f600020c49a24690a81c
+
 
 @SpringBootTest
 class TeamApplicationTests {
@@ -28,7 +28,7 @@ class TeamApplicationTests {
 	@Test
 	void contextLoads() {
 
-<<<<<<< HEAD
+
 
 
 		Restaurant r1 = new Restaurant();
@@ -49,7 +49,6 @@ class TeamApplicationTests {
 
 
 		this.restaurantRepository.save(r1);
-=======
->>>>>>> 55fe119d997b7e3e4b43f600020c49a24690a81c
+
 	}
 }

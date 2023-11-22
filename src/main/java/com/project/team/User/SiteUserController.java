@@ -82,7 +82,7 @@ public class SiteUserController {
         if (!siteUser.getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-
+        userModifyForm.setAuthority(siteUser.getAuthority());
         userModifyForm.setPassword(siteUser.getPassword());
         userModifyForm.setName(siteUser.getName());
         userModifyForm.setEmail(siteUser.getEmail());
@@ -99,7 +99,7 @@ public class SiteUserController {
         if(!siteUser.getLoginId().equals(principal.getName())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.siteUserService.modifyUser(siteUser,userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword());
+        this.siteUserService.modifyUser(siteUser,userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword(), userModifyForm.getAuthority());
         model.addAttribute("siteUser", siteUser);
 
 

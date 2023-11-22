@@ -21,4 +21,6 @@ public class UserModifyForm {
 
     @NotEmpty(message = "수정할 패스워드를 입력하세요.")
     private String password;
+
+    private String authority;
 }
