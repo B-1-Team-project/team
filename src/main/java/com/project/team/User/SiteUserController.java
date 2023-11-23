@@ -106,4 +106,6 @@ public class SiteUserController {
 
         return "userDetail";
     }
+
+
 }
