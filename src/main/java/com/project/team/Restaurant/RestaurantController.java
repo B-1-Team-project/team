@@ -33,6 +33,7 @@ RestaurantController {
 
     private final ImageService imageService;
 
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/register")
     public String register(RestaurantRegisterForm restaurantRegisterForm) {
