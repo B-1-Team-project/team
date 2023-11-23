@@ -43,7 +43,7 @@ public class ReviewService {
             } catch (Exception ignored) {
             }
             if (username != null)
-                user = siteUserService.create(null, "temp", comment.get("username").toString(), null, "손님");
+                user = siteUserService.getTestUser();
             Review review = new Review();
             review.setRestaurant(restaurant);
             review.setUser(user);
@@ -72,6 +72,13 @@ public class ReviewService {
 
     public void deleteReview(Review review) {
         this.reviewRepository.delete(review);
+    }
+
+    public void modifyReview(Review review, Integer star, String comment) {
+        review.setStar(star);
+        review.setComment(comment);
+        review.setModifyDate(LocalDateTime.now());
+        this.reviewRepository.save(review);
     }
 
 }

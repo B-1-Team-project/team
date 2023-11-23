@@ -10,6 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,4 +54,12 @@ public class SiteUserService {
 
         this.siteUserRepository.save(siteUser);
     }
+
+    public SiteUser getTestUser() {
+        Optional<SiteUser> user = this.siteUserRepository.findByLoginId("testUser");
+        if (user.isPresent()) {
+            return user.get();
+        } else return create("testUser", "temp", "익명", null, "손님");
+    }
+
 }
