@@ -48,7 +48,6 @@ public class DataController {
                 if (res.getName().equals(name)) skip = true;
             }
             if (skip) continue;
-
             try {
                 String doc = Jsoup.connect(this.HEAD + url.substring(url.lastIndexOf("/"))).ignoreContentType(true).execute().body();
                 JSONParser jsonParser = new JSONParser();
@@ -95,7 +94,8 @@ public class DataController {
     }
 
     @GetMapping("/interprocess")
-    public String interprocess(@RequestParam(value = "inputAddress", defaultValue = "aroundMe") String inputAddress, Model model) {
+    public String interprocess(@RequestParam(value = "inputAddress", defaultValue = "aroundMe") String inputAddress,
+                               Model model) {
         model.addAttribute("inputAddress", inputAddress);
         return "interprocess";
     }

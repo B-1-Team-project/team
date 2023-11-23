@@ -1,8 +1,10 @@
 package com.project.team.Restaurant;
 
-import com.project.team.DataNotFoundException;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
+import com.project.team.review.Review;
+import com.project.team.review.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Controller
@@ -27,46 +27,56 @@ RestaurantController {
 
     private final SiteUserService siteUserService;
 
+    private final ReviewService reviewService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/register")
-    public String register() {
+    public String register(RestaurantRegisterForm restaurantRegisterForm) {
         return "registerForm";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/register")
-    public String register(Principal principal, @RequestParam(value = "name") String name, Model model,
-                           @RequestParam(value = "address") String address, @RequestParam(value = "number") String number,
-                           @RequestParam(value = "facilities", required = false) List<String> facilities, String main,
-                           LocalTime startTime, LocalTime endTime, String introduce) {
+    public String register(Principal principal, @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
         SiteUser user = this.siteUserService.getUser(principal.getName());
-        Restaurant restaurant = this.restaurantService.registerRestaurant(name, address, number, facilities, main, user, startTime, endTime, introduce);
-        model.addAttribute("restaurant", restaurant);
+        if (bindingResult.hasErrors())
+            return "registerForm";
+        this.restaurantService.registerRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
+                restaurantRegisterForm.getNumber(), restaurantRegisterForm.getFacilities(), restaurantRegisterForm.getMain(), user,
+                restaurantRegisterForm.getStartTime(), restaurantRegisterForm.getEndTime(), restaurantRegisterForm.getIntroduce());
         return "addressParser";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String modify(@PathVariable("id") Integer id, Principal principal, Model model) {
+    public String modify(@PathVariable("id") Integer id, Principal principal, RestaurantRegisterForm restaurantRegisterForm) {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
-        model.addAttribute("restaurant", restaurant);
         if (!restaurant.getOwner().getLoginId().equals(principal.getName()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        restaurantRegisterForm.setName(restaurant.getName());
+        restaurantRegisterForm.setAddress(restaurant.getAddress());
+        restaurantRegisterForm.setNumber(restaurant.getNumber());
+        restaurantRegisterForm.setFacilities(restaurant.getFacilities());
+        restaurantRegisterForm.setStartTime(restaurant.getStartTime());
+        restaurantRegisterForm.setEndTime(restaurant.getEndTime());
+        restaurantRegisterForm.setIntroduce(restaurant.getIntroduce());
+        restaurantRegisterForm.setMain(restaurant.getMain());
         return "registerForm";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String modify(@PathVariable("id") Integer id, Principal principal, @RequestParam(value = "name") String name,
-                         @RequestParam(value = "address") String address, @RequestParam(value = "number") String number,
-                         @RequestParam(value = "facilities", required = false) List<String> facilities, String main,
-                         LocalTime startTime, LocalTime endTime, String introduce) {
+    public String modify(@PathVariable("id") Integer id, Principal principal,
+                         @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
         if (!restaurant.getOwner().getLoginId().equals(principal.getName()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
-        this.restaurantService.modifyRestaurant(name, address, number, restaurant, facilities, main, startTime, endTime, introduce);
-        return "redirect:/main";
+        if (bindingResult.hasErrors())
+            return "registerForm";
+        this.restaurantService.modifyRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
+                restaurantRegisterForm.getNumber(), restaurant, restaurantRegisterForm.getFacilities(), restaurantRegisterForm.getMain(),
+                restaurantRegisterForm.getStartTime(), restaurantRegisterForm.getEndTime(), restaurantRegisterForm.getIntroduce());
+        return "addressParser";
     }
 
     @GetMapping("/delete/{id}")
@@ -78,31 +88,6 @@ RestaurantController {
         }
         this.restaurantService.deleteRestaurant(restaurant);
         return "redirect:/main";
-
-    }
-
-
-    @GetMapping("/restaurant/{id}")
-    public String reserve(Model model, @PathVariable("id") Integer id, BindingResult bindingResult, Principal principal) {
-
-        if (id == null) {
-            throw new DataNotFoundException("음식점 ID가 필요합니다.");
-        }
-
-        Restaurant restaurant = restaurantService.getRestaurant(id);
-        if (restaurant == null) {
-            return "redirect:/form_errors";
-        }
-
-        String userId = principal.getName();
-        SiteUser siteUser = siteUserService.getUser(userId);
-
-        if (siteUser != null) {
-            model.addAttribute("siteUser", siteUser);
-        }
-
-        return "reserve";
-
 
     }
 
@@ -118,6 +103,10 @@ RestaurantController {
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
+        List<Review> reviews = this.reviewService.getReviews(restaurant);
+        double averageStar = this.reviewService.averageStar(reviews);
+        model.addAttribute("averageStar", averageStar);
+        model.addAttribute("reviews", reviews);
         model.addAttribute("restaurant", restaurant);
         return "restaurantDetail";
     }
@@ -125,16 +114,10 @@ RestaurantController {
 
     @PostMapping("/setLocation")
     public String setLocation(String x, String y, String restaurantId) {
-
-
-
         Restaurant restaurant = restaurantService.getRestaurant(Integer.valueOf(restaurantId));
         restaurantService.setLocation(restaurant, x, y);
-
-
         return "redirect:/main";
     }
-
 }
 
 
