@@ -2,17 +2,12 @@ package com.project.team.User;
 
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
-import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.maven.model.Site;
-import org.hibernate.engine.jdbc.mutation.spi.BindingGroup;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -32,6 +27,7 @@ public class SiteUserController {
     private final ReservationService reservationService;
 
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
 
 
     @GetMapping("/signup")
@@ -90,22 +86,21 @@ public class SiteUserController {
 
         return "userModify";
     }
+
     @PostMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String userModify(Model model,@Valid UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public String userModify(Model model, @Valid UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "userModify";
         }
         SiteUser siteUser = siteUserService.getUser(loginId);
-        if(!siteUser.getLoginId().equals(principal.getName())){
+        if (!siteUser.getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.siteUserService.modifyUser(siteUser,userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword(), userModifyForm.getAuthority());
+        this.siteUserService.modifyUser(siteUser, userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword(), userModifyForm.getAuthority());
         model.addAttribute("siteUser", siteUser);
 
 
         return "userDetail";
     }
-
-
 }

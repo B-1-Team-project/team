@@ -23,7 +23,7 @@ public class SiteUserService {
     private final SiteUserRepository siteUserRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public SiteUser create(String loginId, String password, String name, String email, String authority){
+    public SiteUser create(String loginId, String password, String name, String email, String authority) {
         SiteUser siteUser = new SiteUser();
         siteUser.setLoginId(loginId);
         siteUser.setName(name);
@@ -43,7 +43,7 @@ public class SiteUserService {
             throw new DataNotFoundException("user not found");
     }
 
-    public void modifyUser(SiteUser siteUser,  String name, String email, String password, String authority){
+    public void modifyUser(SiteUser siteUser, String name, String email, String password, String authority) {
 
         siteUser.setPassword(passwordEncoder.encode(password));
         siteUser.setName(name);
