@@ -75,6 +75,32 @@ public class SiteUserController {
         return "userDetail";
     }
 
+    @GetMapping("/userCheckPassword/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, Principal principal){
+        SiteUser siteUser = this.siteUserService.getUser(loginId);
+        if (!siteUser.getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+        model.addAttribute("loginId", loginId);
+        return "userCheckPassword";
+    }
+
+    @PostMapping("/userCheckPassword/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId,String password){
+        SiteUser siteUser = siteUserService.getUser(password);
+
+        if(password.equals(siteUser.getPassword())){
+            return "userModifiy";
+        } else {
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "userCheckPassword";
+        }
+    }
+
+
+
     @GetMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userModify(Model model, UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal) {
@@ -89,6 +115,8 @@ public class SiteUserController {
 
         return "userModify";
     }
+
+
     @PostMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userModify(Model model,@Valid UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal, BindingResult bindingResult){

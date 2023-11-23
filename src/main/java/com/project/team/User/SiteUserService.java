@@ -40,6 +40,8 @@ public class SiteUserService {
             throw new DataNotFoundException("user not found");
     }
 
+
+
     public void modifyUser(SiteUser siteUser,  String name, String email, String password, String authority){
 
         siteUser.setPassword(passwordEncoder.encode(password));
@@ -49,6 +51,8 @@ public class SiteUserService {
 
         this.siteUserRepository.save(siteUser);
     }
+
+
 
 
 }
