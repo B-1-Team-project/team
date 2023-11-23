@@ -37,4 +37,9 @@ public class MainController {
         model.addAttribute("doc", comments);
         return "test";
     }
+
+    @GetMapping("/process")
+    public String interProcess() {
+        return "interprocess";
+    }
 }

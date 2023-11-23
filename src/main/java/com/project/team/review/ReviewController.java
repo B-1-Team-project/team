@@ -9,6 +9,7 @@ import org.apache.http.HttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,11 +37,20 @@ public class ReviewController {
 
     @PreAuthorize("isAuthenticated")
     @GetMapping("/modify/{id}")
-    public String modify(@PathVariable("id") Integer id, Principal principal) {
+    public String modify(@PathVariable("id") Integer id, Principal principal, Model model) {
         Review review = this.reviewService.getReview(id);
+        model.addAttribute("review", review);
         if (!review.getUser().getLoginId().equals(principal.getName()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
-        return "reviewModifyForm";
+        return "reviewModify";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String modify(@PathVariable("id") Integer id, Integer star, String comment) {
+        Review review = this.reviewService.getReview(id);
+        this.reviewService.modifyReview(review, star, comment);
+        return String.format("redirect:/restaurant/detail/%s", review.getRestaurant().getId());
     }
 
     @PreAuthorize("isAuthenticated()")

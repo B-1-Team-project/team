@@ -78,4 +78,11 @@ public class ReviewService {
         this.reviewRepository.delete(review);
     }
 
+    public void modifyReview(Review review, Integer star, String comment) {
+        review.setStar(star);
+        review.setComment(comment);
+        review.setModifyDate(LocalDateTime.now());
+        this.reviewRepository.save(review);
+    }
+
 }
