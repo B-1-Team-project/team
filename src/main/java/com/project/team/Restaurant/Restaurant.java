@@ -41,6 +41,8 @@ public class Restaurant {
 
     private String locationY;
 
+    private String image;
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
     private List<Reservation> reservations;
 
