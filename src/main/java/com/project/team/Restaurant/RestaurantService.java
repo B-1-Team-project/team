@@ -5,8 +5,8 @@ import com.project.team.User.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -98,10 +98,15 @@ public class RestaurantService {
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
         }
-        String fileName = String.valueOf(restaurant.getId());
-        File dest = new File(uploadPath + "/" + fileName);
-        FileCopyUtils.copy(image.getBytes(), dest);
-        restaurant.setImage("/restaurant/image/" + restaurant.getId());
+        if (image.isEmpty())
+            restaurant.setImage("/image/startImage.jpg");
+        else {
+            String fileExtension = StringUtils.getFilenameExtension(image.getOriginalFilename());
+            String fileName = restaurant.getId() + "." + fileExtension;
+            File dest = new File(uploadPath + File.separator + fileName);
+            FileCopyUtils.copy(image.getBytes(), dest);
+            restaurant.setImage("/restaurant/image/" + restaurant.getId() + "." + fileExtension);
+        }
         this.restaurantRepository.save(restaurant);
     }
 
