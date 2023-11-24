@@ -1,17 +1,15 @@
 package com.project.team.User;
 
+import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
-import jakarta.validation.Path;
+import com.project.team.test.MailDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.maven.model.Site;
-import org.hibernate.engine.jdbc.mutation.spi.BindingGroup;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +30,7 @@ public class SiteUserController {
     private final ReservationService reservationService;
 
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
 
 
     @GetMapping("/signup")
@@ -111,6 +110,7 @@ public class SiteUserController {
         return "userDetail";
     }
 
+
     @GetMapping("/userCheckPassword/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, Principal principal) {
@@ -126,8 +126,6 @@ public class SiteUserController {
     @PostMapping("/userCheckPassword/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, String password, UserModifyForm userModifyForm, BindingResult bindingResult) {
-
-
         SiteUser siteUser = siteUserService.getUser(loginId);
         if (passwordEncoder.matches(password, siteUser.getPassword())) {
             return "redirect:/user/userModify/" + loginId;
@@ -141,5 +139,52 @@ public class SiteUserController {
         }
     }
 
+        @GetMapping("/findPw")
+        public String findPw () {
+            return "findPw";
+        }
 
+
+
+        @PostMapping("/sendEmail")
+        public String findPw (String loginId){
+            String email = siteUserService.getUser(loginId).getEmail();
+            MailDto dto = siteUserService.createMail(email);
+            siteUserService.sendPasswordResetEmail(loginId);
+            return "redirect:/";
+        }
+
+
+
+    @GetMapping("/resetPassword/{token}")
+    public String showResetPasswordForm(@PathVariable("token") String token, Model model) {
+        SiteUser user = siteUserService.getUserByToken(token);
+        model.addAttribute("token", token);
+        return "resetPasswordForm";
+
+    }
+
+    @PostMapping("/resetPassword/{token}")
+    public String resetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String
+            newPassword) {
+        try {
+            // 비밀번호를 재설정
+            siteUserService.resetPassword(token, newPassword);
+            SiteUser user = siteUserService.getUserByToken(token);
+            user.setToken(siteUserService.createToken(user.getLoginId()));
+
+
+            return "redirect:/"; // 비밀번호 재설정이 성공한 경우 로그인 페이지로 리다이렉트
+        } catch (DataNotFoundException e) {
+            // 토큰이 유효하지 않은 경우 처리
+            return "redirect:/error?message=InvalidToken";
+        } catch (Exception e) {
+            // 기타 예외 처리
+            return "redirect:/error?message=ResetPasswordError";
+        }
+    }
 }
+
+
+
+

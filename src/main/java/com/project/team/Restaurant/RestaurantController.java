@@ -135,9 +135,12 @@ RestaurantController {
         return "redirect:/main";
     }
     @GetMapping("/recommand")
-    public String recommand(Integer id){
-        List<Restaurant> restaurantList = restaurantService.getAll();
-        Random random = new Random();
+    public String recommand(Model model){
+        List<Restaurant> restaurants = restaurantService.getAll();
+        Random random = new Random(); //랜덤 함수
+        int randomMenu = random.nextInt(restaurants.size()); // 랜덤한 메뉴인덱스 생성
+        Restaurant restaurant = restaurants.get(randomMenu); // restaurant 객체에 조회한값 집어넣기
+        model.addAttribute("restaurant", restaurant);
         return "recommand";
     }
 }

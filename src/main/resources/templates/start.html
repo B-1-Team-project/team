@@ -27,6 +27,7 @@
     </style>
 </head>
 <body>
+<a th:href="@{/recommand}">추천</a>
 <a th:href="@{/test}" class="btn btn-success position-absolute" style="z-index:99; left:2%; bottom:2%;">테스트 페이지</a>
 <div class="d-flex">
     <div id="container">
@@ -130,7 +131,7 @@
             <div class="d-flex justify-content-around">
                 <a href="#" onclick="showForm('loginForm')" id="loginLink">로그인</a>
                 <a href="#" onclick="showForm('signupForm')" id="signupLink">회원가입</a>
-                <a href="#">비밀번호 찾기</a>
+                <a th:href="@{user/findPw}" >비밀번호 찾기</a>
             </div>
         </div>
     </div>
