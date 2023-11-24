@@ -111,21 +111,12 @@
     <div class="logo">
         <a th:href="@{/interprocess}">logo</a>
     </div>
-
-    <div class="my-3">
-        <a th:href="@{|/user/userModify/${siteUser.loginId}|}"
-           sec:authorize="isAuthenticated()"
-           th:if="${siteUser.loginId != null}"
-           th:text="수정"></a>
-    </div>
-
     <div class="my-3">
         <a th:href="@{|/user/userCheckPassword/${siteUser.loginId}|}"
            sec:authorize="isAuthenticated()"
            th:if="${siteUser.loginId != null}"
-           th:text="수정2"></a>
+           th:text="정보수정"></a>
     </div>
-
     <header class="user-info-header">
         <div><img class="profile-img"
                   src="https://media.istockphoto.com/id/1327592506/ko/%EB%B2%A1%ED%84%B0/%EA%B8%B0%EB%B3%B8-%EC%95%84%EB%B0%94%ED%83%80-%EC%82%AC%EC%A7%84-%EC%9E%90%EB%A6%AC-%ED%91%9C%EC%8B%9C%EC%9E%90-%EC%95%84%EC%9D%B4%EC%BD%98%EC%9E%85%EB%8B%88%EB%8B%A4-%ED%9A%8C%EC%83%89-%ED%94%84%EB%A1%9C%ED%95%84-%EC%82%AC%EC%A7%84%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4-%EB%A7%A8.jpg?s=612x612&w=0&k=20&c=qkN6eSn9wlcukA0YNjDPk4Vsq5W_KRW9pFZddOUgN_U="
@@ -158,11 +149,15 @@
     </div>
     <div class="box-number2">
 
-        <ul class="user-info-box2" >
+
+        <ul class="user-info-box2">
             <h1>예약목록</h1>
-            <li th:each="reservation : ${userReservation}" th:text="${reservation.restaurant.name}">
-            </li>
-        </ul>
+
+
+
+                <li th:each="reservation : ${userReservation}" th:text="${reservation.restaurant.name}">
+                </li>
+            </ul>
     </div>
     <div class="box-number3">
         <ul class="user-info-box3">

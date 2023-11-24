@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,32 +76,6 @@ public class SiteUserController {
         return "userDetail";
     }
 
-    @GetMapping("/userCheckPassword/{loginId}")
-    @PreAuthorize("isAuthenticated()")
-    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, Principal principal){
-        SiteUser siteUser = this.siteUserService.getUser(loginId);
-        if (!siteUser.getLoginId().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
-        }
-        model.addAttribute("loginId", loginId);
-        return "userCheckPassword";
-    }
-
-    @PostMapping("/userCheckPassword/{loginId}")
-    @PreAuthorize("isAuthenticated()")
-    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId,String password){
-        SiteUser siteUser = siteUserService.getUser(password);
-
-        if(password.equals(siteUser.getPassword())){
-            return "userModifiy";
-        } else {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "userCheckPassword";
-        }
-    }
-
-
-
     @GetMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userModify(Model model, UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal) {
@@ -113,43 +88,52 @@ public class SiteUserController {
         userModifyForm.setName(siteUser.getName());
         userModifyForm.setEmail(siteUser.getEmail());
 
+        model.addAttribute("siteUser", siteUser);
+
+
         return "userModify";
     }
 
-
     @PostMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String userModify(Model model,@Valid UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public String userModify(Model model, @Valid UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "userModify";
         }
         SiteUser siteUser = siteUserService.getUser(loginId);
-        if(!siteUser.getLoginId().equals(principal.getName())){
+        if (!siteUser.getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.siteUserService.modifyUser(siteUser,userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword(), userModifyForm.getAuthority());
+        this.siteUserService.modifyUser(siteUser, userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword(), userModifyForm.getAuthority());
         model.addAttribute("siteUser", siteUser);
 
 
         return "userDetail";
     }
 
+    @GetMapping("/userCheckPassword/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, Principal principal) {
+        SiteUser siteUser = this.siteUserService.getUser(loginId);
+        if (!siteUser.getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
 
+        model.addAttribute("loginId", loginId);
+        return "userCheckPassword";
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @PostMapping("/userCheckPassword/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, String password, UserModifyForm userModifyForm) {
+        SiteUser siteUser = siteUserService.getUser(loginId);
+        if (passwordEncoder.matches(password, siteUser.getPassword())) {
+            return "redirect:/user/userModify/" + loginId;
+        } else {
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "userCheckPassword";
+        }
+    }
 
 
 }

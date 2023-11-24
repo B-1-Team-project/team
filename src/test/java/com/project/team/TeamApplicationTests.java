@@ -1,5 +1,6 @@
 package com.project.team;
 
+<<<<<<< HEAD
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantRepository;
 import com.project.team.Restaurant.RestaurantService;
@@ -17,6 +18,13 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
+=======
+import com.project.team.Restaurant.RestaurantRepository;
+import com.project.team.User.SiteUserRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+>>>>>>> 99585ee0cfca71ee58709ab8cf0401b36ca77276
 @SpringBootTest
 class TeamApplicationTests {
 	@Autowired
@@ -27,6 +35,7 @@ class TeamApplicationTests {
 
 	@Test
 	void contextLoads() {
+<<<<<<< HEAD
 
 
 
@@ -50,5 +59,7 @@ class TeamApplicationTests {
 
 		this.restaurantRepository.save(r1);
 
+=======
+>>>>>>> 99585ee0cfca71ee58709ab8cf0401b36ca77276
 	}
 }
