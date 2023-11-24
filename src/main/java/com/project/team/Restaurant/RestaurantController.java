@@ -1,6 +1,5 @@
 package com.project.team.Restaurant;
 
-import com.project.team.ImageService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
 import com.project.team.review.Review;
@@ -13,9 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.awt.*;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -31,9 +31,6 @@ RestaurantController {
 
     private final ReviewService reviewService;
 
-    private final ImageService imageService;
-
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/register")
     public String register(RestaurantRegisterForm restaurantRegisterForm) {
@@ -42,13 +39,16 @@ RestaurantController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/register")
-    public String register(Principal principal, @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
+    public String register(Principal principal, @Valid RestaurantRegisterForm restaurantRegisterForm,
+                           BindingResult bindingResult, Model model, @RequestPart(value = "image") MultipartFile image) throws IOException {
         SiteUser user = this.siteUserService.getUser(principal.getName());
         if (bindingResult.hasErrors())
             return "registerForm";
-        this.restaurantService.registerRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
+        Restaurant restaurant = this.restaurantService.registerRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
                 restaurantRegisterForm.getNumber(), restaurantRegisterForm.getFacilities(), restaurantRegisterForm.getMain(), user,
                 restaurantRegisterForm.getStartTime(), restaurantRegisterForm.getEndTime(), restaurantRegisterForm.getIntroduce());
+        this.restaurantService.uploadImage(restaurant, image);
+        model.addAttribute("restaurant",restaurant);
         return "addressParser";
     }
 
@@ -72,12 +72,13 @@ RestaurantController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String modify(@PathVariable("id") Integer id, Principal principal,
-                         @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
+                         @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult, Model model) {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
         if (!restaurant.getOwner().getLoginId().equals(principal.getName()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         if (bindingResult.hasErrors())
             return "registerForm";
+        model.addAttribute("restaurant", restaurant);
         this.restaurantService.modifyRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
                 restaurantRegisterForm.getNumber(), restaurant, restaurantRegisterForm.getFacilities(), restaurantRegisterForm.getMain(),
                 restaurantRegisterForm.getStartTime(), restaurantRegisterForm.getEndTime(), restaurantRegisterForm.getIntroduce());

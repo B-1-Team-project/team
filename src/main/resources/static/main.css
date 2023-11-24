@@ -133,8 +133,12 @@ a:hover {
     width:8px;
 }
 
-.acContainer, .reviewContainer::-webkit-scrollbar {
+.acContainer::-webkit-scrollbar {
     width:8px;
+}
+
+.reviewContainer::-webkit-scrollbar {
+    width:0px;
 }
 
 .card-container::-webkit-scrollbar-thumb {
