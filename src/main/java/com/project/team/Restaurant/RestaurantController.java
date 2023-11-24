@@ -136,11 +136,8 @@ RestaurantController {
     }
     @GetMapping("/recommand")
     public String recommand(Integer id){
+        List<Restaurant> restaurantList = restaurantService.getAll();
         Random random = new Random();
-        random = restaurantService.getRestaurant(id);
-
-
-
         return "recommand";
     }
 }
