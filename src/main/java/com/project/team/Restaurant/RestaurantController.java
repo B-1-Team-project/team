@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequiredArgsConstructor
@@ -127,6 +128,15 @@ RestaurantController {
         Restaurant restaurant = restaurantService.getRestaurant(Integer.valueOf(restaurantId));
         restaurantService.setLocation(restaurant, x, y);
         return "redirect:/main";
+    }
+    @GetMapping("/recommand")
+    public String recommand(Integer id){
+        Random random = new Random();
+        random = restaurantService.getRestaurant(id);
+
+
+
+        return "recommand";
     }
 }
 

@@ -125,13 +125,19 @@ public class SiteUserController {
 
     @PostMapping("/userCheckPassword/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, String password, UserModifyForm userModifyForm) {
+    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, String password, UserModifyForm userModifyForm, BindingResult bindingResult) {
+
+
         SiteUser siteUser = siteUserService.getUser(loginId);
         if (passwordEncoder.matches(password, siteUser.getPassword())) {
             return "redirect:/user/userModify/" + loginId;
         } else {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "userCheckPassword";
+            List<Reservation> userReservation = this.reservationService.getAllByUser(siteUser);
+            model.addAttribute("userReservation", userReservation);
+            model.addAttribute("siteUser", siteUser);
+            model.addAttribute("loginId", loginId);
+            model.addAttribute("error", true);
+            return "userDetail";
         }
     }
 
