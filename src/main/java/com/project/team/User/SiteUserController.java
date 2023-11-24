@@ -1,7 +1,9 @@
 package com.project.team.User;
 
+import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
+import com.project.team.test.MailDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -103,4 +105,43 @@ public class SiteUserController {
 
         return "userDetail";
     }
+
+    @GetMapping("/findPw")
+    public String findPw(){
+        return "findPw";
+    }
+
+    @PostMapping("/sendEmail")
+    public String findPw(String loginId){
+        String email = siteUserService.getUser(loginId).getEmail();
+        MailDto dto = siteUserService.createMail(email);
+        siteUserService.sendPasswordResetEmail(loginId);
+        return "redirect:/";
+    }
+
+    @GetMapping("/resetPassword/{token}")
+    public String showResetPasswordForm(@PathVariable("token") String token, Model model) {
+        SiteUser user = siteUserService.getUserByToken(token);
+        model.addAttribute("token", token);
+        return "resetPasswordForm";
+    }
+
+    @PostMapping("/resetPassword/{token}")
+    public String resetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String newPassword) {
+        try {
+            // 비밀번호를 재설정
+            siteUserService.resetPassword(token, newPassword);
+            SiteUser user = siteUserService.getUserByToken(token);
+            user.setToken(siteUserService.createToken(user.getLoginId()));
+
+            return "redirect:/"; // 비밀번호 재설정이 성공한 경우 로그인 페이지로 리다이렉트
+        } catch (DataNotFoundException e) {
+            // 토큰이 유효하지 않은 경우 처리
+            return "redirect:/error?message=InvalidToken";
+        } catch (Exception e) {
+            // 기타 예외 처리
+            return "redirect:/error?message=ResetPasswordError";
+        }
+    }
 }
+
