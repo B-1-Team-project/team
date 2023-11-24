@@ -24,17 +24,22 @@ public class MainController {
 
     @GetMapping("/main")
     public String mainPage() {
-        return "redirect:/map/view";
+        return "redirect:/interprocess";
     }
 
     @GetMapping("/test")
     public String test(Model model) throws IOException, ParseException {
-        // Document doc = Jsoup.connect().get();
         String doc = Jsoup.connect("https://place.map.kakao.com/main/v/1874862905").ignoreContentType(true).execute().body();
         JSONParser jsonParser = new JSONParser();
-        JSONObject json = (JSONObject) jsonParser.parse(doc);
-        JSONArray comments = (JSONArray)((JSONObject)json.get("comment")).get("list");
-        model.addAttribute("doc", comments);
+        JSONObject detail = (JSONObject) jsonParser.parse(doc);
+        JSONObject basicInfo = (JSONObject) detail.get("basicInfo");
+        String target = ((JSONObject)((JSONArray)((JSONObject)((JSONArray)((JSONObject)basicInfo.get("openHour")).get("periodList")).get(0)).get("timeList")).get(0)).get("timeSE").toString();
+        model.addAttribute("data", detail);
         return "test";
+    }
+
+    @GetMapping("/process")
+    public String interProcess() {
+        return "interprocess";
     }
 }

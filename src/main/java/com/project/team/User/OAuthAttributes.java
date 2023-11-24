@@ -81,8 +81,6 @@ public class OAuthAttributes {
                 (String) attributes.get("picture"));
     }
 
-    // .. getter/setter 생략
-
     public SiteUser toEntity() {
         String id = null;
         if (nameAttributeKey.equals("response")) {

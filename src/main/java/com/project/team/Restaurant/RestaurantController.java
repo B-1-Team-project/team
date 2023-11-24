@@ -11,9 +11,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -37,13 +42,16 @@ RestaurantController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/register")
-    public String register(Principal principal, @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
+    public String register(Principal principal, @Valid RestaurantRegisterForm restaurantRegisterForm,
+                           BindingResult bindingResult, Model model, @RequestPart(value = "image") MultipartFile image) throws IOException {
         SiteUser user = this.siteUserService.getUser(principal.getName());
         if (bindingResult.hasErrors())
             return "registerForm";
-        this.restaurantService.registerRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
+        Restaurant restaurant = this.restaurantService.registerRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
                 restaurantRegisterForm.getNumber(), restaurantRegisterForm.getFacilities(), restaurantRegisterForm.getMain(), user,
                 restaurantRegisterForm.getStartTime(), restaurantRegisterForm.getEndTime(), restaurantRegisterForm.getIntroduce());
+        this.restaurantService.uploadImage(restaurant, image);
+        model.addAttribute("restaurant",restaurant);
         return "addressParser";
     }
 
@@ -67,15 +75,18 @@ RestaurantController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String modify(@PathVariable("id") Integer id, Principal principal,
-                         @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult) {
+                         @Valid RestaurantRegisterForm restaurantRegisterForm, BindingResult bindingResult, Model model,
+                         @RequestPart(value = "image") MultipartFile image) throws IOException {
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
         if (!restaurant.getOwner().getLoginId().equals(principal.getName()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         if (bindingResult.hasErrors())
             return "registerForm";
+        model.addAttribute("restaurant", restaurant);
         this.restaurantService.modifyRestaurant(restaurantRegisterForm.getName(), restaurantRegisterForm.getAddress(),
                 restaurantRegisterForm.getNumber(), restaurant, restaurantRegisterForm.getFacilities(), restaurantRegisterForm.getMain(),
                 restaurantRegisterForm.getStartTime(), restaurantRegisterForm.getEndTime(), restaurantRegisterForm.getIntroduce());
+        this.restaurantService.uploadImage(restaurant, image);
         return "addressParser";
     }
 
@@ -87,7 +98,7 @@ RestaurantController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
         }
         this.restaurantService.deleteRestaurant(restaurant);
-        return "redirect:/main";
+        return "redirect:/restaurant/page/" + restaurant.getOwner().getLoginId();
 
     }
 
@@ -101,7 +112,11 @@ RestaurantController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable("id") Integer id, Model model) {
+    public String detail(@PathVariable("id") Integer id, Model model, Principal principal) {
+        if (principal != null) {
+            SiteUser user = this.siteUserService.getUser(principal.getName());
+            model.addAttribute("user", user);
+        }
         Restaurant restaurant = this.restaurantService.getRestaurant(id);
         List<Review> reviews = this.reviewService.getReviews(restaurant);
         double averageStar = this.reviewService.averageStar(reviews);

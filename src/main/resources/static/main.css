@@ -113,7 +113,7 @@ a:hover {
 }
 
 .reviewContainer {
-    max-height:290px;
+    max-height:250px;
     overflow:hidden;
 }
 
@@ -133,8 +133,12 @@ a:hover {
     width:8px;
 }
 
-.acContainer, .reviewContainer::-webkit-scrollbar {
+.acContainer::-webkit-scrollbar {
     width:8px;
+}
+
+.reviewContainer::-webkit-scrollbar {
+    width:0px;
 }
 
 .card-container::-webkit-scrollbar-thumb {
@@ -166,5 +170,6 @@ a:hover {
     color:black;
     font-size:11pt;
 }
+
 
 
