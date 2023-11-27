@@ -2,12 +2,71 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
     <title>parser</title>
 </head>
 <body>
-
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <form id="messageForm">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Type your message...">
+                        <button type="submit" class="btn btn-primary mt-2">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
-<script th:inline="javascript">
-    console.log([[${data}]]);
+<script th:src="@{/bootstrap.bundle.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+    $(function () {
+        var stompClient = null;
+
+        function connect() {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/public', function (chatMessage) {
+                    showMessage(JSON.parse(chatMessage.body));
+                });
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            console.log("Disconnected");
+        }
+
+        function sendMessage() {
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
+                content: $("#messageInput").val(),
+                sender: $("#username").val()
+            }));
+            $("#messageInput").val("");
+        }
+
+        function showMessage(message) {
+            $("#chatMessages").append("<p>" + message.sender + ": " + message.content + "</p>");
+        }
+
+        $("#messageForm").submit(function (e) {
+            e.preventDefault();
+            sendMessage();
+        });
+
+        connect();
+    });
 </script>
 </html>
