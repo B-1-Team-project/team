@@ -1,5 +1,8 @@
 package com.project.team.socket;
 
+import com.project.team.User.SiteUser;
+import com.project.team.User.SiteUserService;
+import com.project.team.alarm.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -11,6 +14,8 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class WebSocketController {
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final AlarmService alarmService;
+    private final SiteUserService userService;
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
@@ -24,8 +29,11 @@ public class WebSocketController {
         return chatDto;
     }
 
-    @MessageMapping("/chat/{resId}/{loginId}")
-    public void sendMessage(@DestinationVariable Integer resId, @DestinationVariable String loginId, ChatDto chatDto) {
-        simpMessagingTemplate.convertAndSend("/topic/" + resId + "/" + loginId, chatDto);
+    @MessageMapping("/chat/{ownerId}/{userId}")
+    public void sendMessage(@DestinationVariable String ownerId, @DestinationVariable String userId, ChatDto chatDto) {
+        SiteUser user = userService.getUser(userId);
+        SiteUser owner = userService.getUser(ownerId);
+        alarmService.create(owner, user, "chat");
+        simpMessagingTemplate.convertAndSend("/topic/" + ownerId + "/" + userId, chatDto);
     }
 }

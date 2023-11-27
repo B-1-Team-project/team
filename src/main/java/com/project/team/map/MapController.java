@@ -2,9 +2,10 @@ package com.project.team.map;
 
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
+import com.project.team.Review.ReviewService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
-import com.project.team.Review.ReviewService;
+import com.project.team.alarm.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ public class MapController {
     private final SiteUserService siteUserService;
     private final RestaurantService restaurantService;
     private final ReviewService reviewService;
+    private final AlarmService alarmService;
 
     @GetMapping("/view")
     public String search(Model model,
@@ -34,6 +36,8 @@ public class MapController {
 
             SiteUser user = this.siteUserService.getUser(principal.getName());
             model.addAttribute("user", user);
+
+            model.addAttribute("alarmList", alarmService.getByUser(user));
         }
         model.addAttribute("inputAddress", inputAddress);
 

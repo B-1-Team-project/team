@@ -83,7 +83,12 @@
                     <div>알림</div>
                 </div>
                 <div class="card-body">
-                    <div class="card-text">알림내용</div>
+                    <div class="card-text" th:each="alarm : ${alarmList}">
+                        <div th:if="${alarm.type == 'chat'}">
+                            <span th:text="|${alarm.target.name}님의 문의 내역이 있습니다.|"></span>
+                            <a th:href="@{|/chat/toCustomer/${alarm.target.loginId}|}">입장</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

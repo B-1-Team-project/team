@@ -32,10 +32,9 @@ public class ChatController {
 
     @GetMapping("/chat/toCustomer/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String chatToCustomer(@PathVariable(value = "id") Integer id, Model model, Principal principal) {
-        Restaurant restaurant = restaurantService.getRestaurant(id);
-        SiteUser user = userService.getUser(principal.getName());
-        SiteUser owner = restaurant.getOwner();
+    public String chatToCustomer(@PathVariable(value = "id") String id, Model model, Principal principal) {
+        SiteUser user = userService.getUser(id);
+        SiteUser owner = userService.getUser(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("owner", owner);
         return "chat";
