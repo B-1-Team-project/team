@@ -144,52 +144,69 @@ public class SiteUserController {
         }
     }
 
-        @GetMapping("/findPw")
-        public String findPw () {
-            return "findPw";
-        }
+    @GetMapping("/findPw")
+    public String findPw(UserFindPwForm userFindPwForm) {
+        return "findPw";
+    }
 
+    @PostMapping("/sendEmail")
+    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return "findPw";
+            }
 
+            String loginId = userFindPwForm.getLoginId();
+            String userLoginId = siteUserService.getUser(loginId).getLoginId();
 
-        @PostMapping("/sendEmail")
-        public String findPw (String loginId){
+            if (!loginId.equals(userLoginId)) {
+                bindingResult.rejectValue("loginId", "loginIdInCorrect", "ID가 정확하지 않습니다.");
+                return "findPw";
+            }
+
             String email = siteUserService.getUser(loginId).getEmail();
             MailDto dto = siteUserService.createMail(email);
             siteUserService.sendPasswordResetEmail(loginId);
-            return "redirect:/";
+
+            return "findPw";
+        } catch (
+                DataNotFoundException e) {
+            // 예외 처리 로직
+            bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
+            return "findPw";
         }
-
-
+    }
 
     @GetMapping("/resetPassword/{token}")
-    public String showResetPasswordForm(@PathVariable("token") String token, Model model) {
-        SiteUser user = siteUserService.getUserByToken(token);
-        model.addAttribute("token", token);
+    public String showResetPasswordForm(UserResetPwForm userResetPwForm, Model model) {
+        SiteUser user = siteUserService.getUserByToken(userResetPwForm.getToken());
+        model.addAttribute("token", userResetPwForm.getToken());
         return "resetPasswordForm";
 
     }
 
     @PostMapping("/resetPassword/{token}")
-    public String resetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String
-            newPassword) {
+    public String resetPassword(@Valid UserResetPwForm userResetPwForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "resetPasswordForm";
+        }
         try {
             // 비밀번호를 재설정
-            siteUserService.resetPassword(token, newPassword);
-            SiteUser user = siteUserService.getUserByToken(token);
+            siteUserService.resetPassword(userResetPwForm.getToken(), userResetPwForm.getPassword1());
+            SiteUser user = siteUserService.getUserByToken(userResetPwForm.getToken());
             user.setToken(siteUserService.createToken(user.getLoginId()));
-
 
             return "redirect:/"; // 비밀번호 재설정이 성공한 경우 로그인 페이지로 리다이렉트
         } catch (DataNotFoundException e) {
             // 토큰이 유효하지 않은 경우 처리
-            return "redirect:/error?message=InvalidToken";
+            bindingResult.reject("token.invalid", "토큰이 유효하지 않습니다.");
+            return "resetPasswordForm";
         } catch (Exception e) {
             // 기타 예외 처리
-            return "redirect:/error?message=ResetPasswordError";
+            bindingResult.reject("password.reset.error", "비밀번호 재설정 중 오류가 발생했습니다.");
+            return "resetPasswordForm";
         }
     }
 }
-
-
 
 
