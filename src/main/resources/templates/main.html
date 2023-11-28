@@ -157,7 +157,7 @@
             </div>
             <div class="card">
                 <div class="card-header d-flex align-items-center" style="background:linen;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    <svg id="alarmIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-bell-fill me-1" viewBox="0 0 16 16">
                         <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                     </svg>
@@ -166,8 +166,9 @@
                 <div class="card-body">
                     <div class="card-text" th:each="alarm : ${alarmList}">
                         <div th:if="${alarm.type == 'chat'}">
-                            <span th:text="|${alarm.target.name}님이 채팅을 보냈습니다.|"></span>
-                            <a th:href="@{|/chat/join/${alarm.chatRoom}|}">입장</a>
+                            <div th:text="|${alarm.target.name}님이 채팅을 보냈습니다.|"></div>
+                            <span class="badge bg-dark" th:text="${#temporals.format(alarm.regDate, 'MM/dd HH:mm')}"></span>
+                            <a class="버튼 btn btn-sm" th:href="@{|/chat/join/${alarm.chatRoom}|}">입장</a>
                         </div>
                     </div>
                 </div>
@@ -250,6 +251,35 @@
             document.querySelector('#inputAddress').value = 'aroundMe';
             document.querySelector('#address').submit();
         }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:inline="javascript">
+    $(function () {
+        var stompClient = null;
+        var userId = [[${user.loginId}]];
+
+        function connect(userId) {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/topic/main/' + userId, function (data) {
+                    if(data.body == "alarm") {
+                        alert("새로운 알림이 도착했습니다.");
+                        location.reload();
+                    }
+                });
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+               stompClient.disconnect();
+            }
+        }
+
+        if(userId != null) connect(userId);
+    });
     </script>
 </div>
 </body>
