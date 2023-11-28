@@ -1,6 +1,7 @@
 package com.project.team.Restaurant;
 
 import com.project.team.DataNotFoundException;
+import com.project.team.Review.ReviewService;
 import com.project.team.User.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ import java.util.Optional;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+
+    private final ReviewService reviewService;
 
     private String uploadPath = "C:/uploads/restaurant";
 
@@ -113,6 +116,16 @@ public class RestaurantService {
     public void setImage(Restaurant restaurant, String image) {
         restaurant.setImage(image);
         restaurantRepository.save(restaurant);
+    }
+
+    public List<Restaurant> top3AverageStar() {
+        return this.restaurantRepository.findTop3ByOrderByAverageStarDesc();
+    }
+
+    public void saveAverageStar(Restaurant restaurant) {
+        double averageStar = this.reviewService.averageStar(restaurant.getReviews());
+        restaurant.setAverageStar(averageStar);
+        this.restaurantRepository.save(restaurant);
     }
 }
 
