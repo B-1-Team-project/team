@@ -96,8 +96,8 @@
                 <div class="card-body">
                     <div class="card-text" th:each="alarm : ${alarmList}">
                         <div th:if="${alarm.type == 'chat'}">
-                            <span th:text="|${alarm.target.name}님의 문의 내역이 있습니다.|"></span>
-                            <a th:href="@{|/chat/toCustomer/${alarm.target.loginId}|}">입장</a>
+                            <span th:text="|${alarm.target.name}님이 채팅을 보냈습니다.|"></span>
+                            <a th:href="@{|/chat/join/${alarm.chatRoom}|}">입장</a>
                         </div>
                     </div>
                 </div>
