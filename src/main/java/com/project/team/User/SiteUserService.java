@@ -149,5 +149,13 @@ public class SiteUserService {
         }
         else throw new DataNotFoundException("user not found");
     }
+
+    public SiteUser getUserByEmail(String email){
+        Optional<SiteUser> user = siteUserRepository.findByEmail(email);
+        if(user.isPresent()){
+            return user.get();
+        }
+        else throw new DataNotFoundException("user not found");
+    }
 }
 

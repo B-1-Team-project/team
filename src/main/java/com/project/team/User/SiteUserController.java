@@ -217,4 +217,33 @@ public class SiteUserController {
             return "resetPasswordForm";
         }
     }
+
+    @GetMapping("/findId")
+    public String findId(UserFindIdForm userFindIdForm) {
+        return "findId";
+    }
+
+    @PostMapping("/findId")
+    public String findId(@Valid UserFindIdForm userFindIdForm, BindingResult bindingResult, Model model) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return "findId";
+            }
+            String email = userFindIdForm.getEmail();
+            String userEmail = siteUserService.getUserByEmail(email).getEmail();
+            SiteUser user = siteUserService.getUserByEmail(email);
+
+            if (!email.equals(userEmail)) {
+                bindingResult.rejectValue("loginId", "loginIdInCorrect", "ID가 정확하지 않습니다.");
+                return "findId";
+            }
+            model.addAttribute("user", user);
+            return "confirmId";
+        } catch (
+                DataNotFoundException e) {
+            // 예외 처리 로직
+            bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
+            return "findId";
+        }
+    }
 }
