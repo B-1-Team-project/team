@@ -19,7 +19,6 @@
             var socket = new SockJS('/ws');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
-                console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/' + $("#room").val(), function (chatMessage) {
                     showMessage(JSON.parse(chatMessage.body));
                 });
@@ -30,7 +29,6 @@
             if (stompClient !== null) {
                 stompClient.disconnect();
             }
-            console.log("Disconnected");
         }
 
         function sendMessage() {
