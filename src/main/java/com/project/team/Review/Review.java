@@ -1,14 +1,13 @@
-package com.project.team.review;
+package com.project.team.Review;
 
+import com.project.team.Comment.Comment;
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -38,5 +37,8 @@ public class Review {
     private String image2;
 
     private String image3;
+
+    @OneToOne(mappedBy = "review", cascade = CascadeType.REMOVE)
+    private Comment commentContent;
 
 }

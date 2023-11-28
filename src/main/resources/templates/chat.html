@@ -1,0 +1,58 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <form id="messageForm">
+        <input type="hidden" id="user" th:value="${user.loginId}">
+        <input type="hidden" id="owner" th:value="${owner.loginId}">
+        <input type="text" id="messageInput" placeholder="메시지 입력">
+        <button type="submit">전송</button>
+    </form>
+    <div id="chatMessages"></div>
+</div>
+<script layout:fragment="script">
+    $(function () {
+        var stompClient = null;
+
+        function connect() {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/' + $("#owner").val() + '/' + $("#user").val(), function (chatMessage) {
+                    showMessage(JSON.parse(chatMessage.body));
+                });
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            console.log("Disconnected");
+        }
+
+        function sendMessage() {
+            var recipient = $("#owner").val();
+            var sender = $("#user").val();
+            var messageInput = $("#messageInput").val();
+
+            stompClient.send("/app/chat/" + $("#owner").val() + '/' + $("#user").val(), {}, JSON.stringify({
+                content: messageInput,
+                sender: sender,
+                recipient: recipient
+            }));
+            $("#messageInput").val("");
+        }
+
+        function showMessage(message) {
+            $("#chatMessages").append("<p>" + message.sender + ": " + message.content + "</p>");
+        }
+
+        $("#messageForm").submit(function (e) {
+            e.preventDefault();
+            sendMessage();
+        });
+
+        connect();
+    });
+</script>
+</html>

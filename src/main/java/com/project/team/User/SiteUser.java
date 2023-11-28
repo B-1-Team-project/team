@@ -2,7 +2,7 @@ package com.project.team.User;
 
 import com.project.team.Reservation.Reservation;
 import com.project.team.Restaurant.Restaurant;
-import com.project.team.review.Review;
+import com.project.team.Review.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-
 public class SiteUser {
 
     @Id
