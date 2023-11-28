@@ -34,6 +34,7 @@ public class ChatController {
         SiteUser user = userService.getUser(principal.getName());
         SiteUser owner = restaurant.getOwner();
         String room = UUID.randomUUID().toString();
+        model.addAttribute("restaurant", restaurant);
         model.addAttribute("user", user);
         model.addAttribute("target", owner);
         model.addAttribute("room", room);
