@@ -207,6 +207,7 @@ public class SiteUserController {
             user.setToken(siteUserService.createToken(user.getLoginId()));
 
             return "redirect:/"; // 비밀번호 재설정이 성공한 경우 로그인 페이지로 리다이렉트
+
         } catch (DataNotFoundException e) {
             // 토큰이 유효하지 않은 경우 처리
             bindingResult.reject("token.invalid", "토큰이 유효하지 않습니다.");
