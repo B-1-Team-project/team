@@ -1,5 +1,7 @@
 package com.project.team.chat;
 
+import com.project.team.User.SiteUser;
+import com.project.team.User.SiteUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +12,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRepository chatRepository;
+    private final SiteUserService userService;
 
     public void create(ChatDto chatDto) {
         Chat chat = new Chat();
-        chat.setWriter(chatDto.getWriter());
-        chat.setTarget(chatDto.getTarget());
+        chat.setWriter(userService.getUser(chatDto.getWriter()));
+        chat.setTarget(userService.getUser(chatDto.getTarget()));
         chat.setContent(chatDto.getContent());
         chat.setRoom(chatDto.getRoom());
         chat.setCreateDate(LocalDateTime.now());
@@ -25,7 +28,7 @@ public class ChatService {
         return this.chatRepository.findByRoom(room);
     }
 
-    public String getByTarget(String room, String target) {
+    public SiteUser getByTarget(String room, SiteUser target) {
         List<Chat> chats = this.chatRepository.findByRoomAndTarget(room, target);
         if (chats.isEmpty()) return null;
         return chats.get(0).getWriter();

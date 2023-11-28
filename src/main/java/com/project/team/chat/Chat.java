@@ -1,5 +1,6 @@
 package com.project.team.chat;
 
+import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +16,10 @@ public class Chat {
     private Long id;
     @Column(columnDefinition = "TEXT")
     private String content;
-    private String writer;
-    private String target;
+    @ManyToOne
+    private SiteUser writer;
+    @ManyToOne
+    private SiteUser target;
     private String room;
     private LocalDateTime createDate;
 }

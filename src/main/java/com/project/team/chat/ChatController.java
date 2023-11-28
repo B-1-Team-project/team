@@ -44,13 +44,13 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     public String chatToCustomer(@PathVariable(value = "room") String room, Model model, Principal principal) {
         SiteUser user = userService.getUser(principal.getName());
-        String target = chatService.getByTarget(room, principal.getName());
+        SiteUser target = chatService.getByTarget(room, user);
         List<Alarm> alarmList = alarmService.getByRoom(user, room);
 
         for (Alarm alarm : alarmList) alarmService.confirm(alarm);
 
         model.addAttribute("user", user);
-        model.addAttribute("target", userService.getUser(target));
+        model.addAttribute("target", target);
         model.addAttribute("room", room);
         model.addAttribute("chatList", chatService.getByRoom(room));
         return "chat";
