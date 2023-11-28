@@ -150,7 +150,7 @@ public class SiteUserController {
     }
 
     @PostMapping("/sendEmail")
-    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult) {
+    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult, Model model) {
         try {
             if (bindingResult.hasErrors()) {
                 return "findPw";
@@ -166,6 +166,8 @@ public class SiteUserController {
             String email = siteUserService.getUser(loginId).getEmail();
             MailDto dto = siteUserService.createMail(email);
             siteUserService.sendPasswordResetEmail(loginId);
+
+            model.addAttribute("emailSent", true);
 
             return "findPw";
         } catch (
@@ -185,10 +187,18 @@ public class SiteUserController {
     }
 
     @PostMapping("/resetPassword/{token}")
-    public String resetPassword(@Valid UserResetPwForm userResetPwForm, BindingResult bindingResult) {
+    public String resetPassword(@Valid UserResetPwForm userResetPwForm, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "resetPasswordForm";
         }
+
+        if(!userResetPwForm.getPassword1().equals(userResetPwForm.getPassword2())){
+            bindingResult.rejectValue("password2", "passwordInCorrect", "2개의 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("token", userResetPwForm.getToken());
+            return "resetPasswordForm";
+        }
+
+
         try {
             // 비밀번호를 재설정
             siteUserService.resetPassword(userResetPwForm.getToken(), userResetPwForm.getPassword1());
@@ -196,6 +206,7 @@ public class SiteUserController {
             user.setToken(siteUserService.createToken(user.getLoginId()));
 
             return "redirect:/"; // 비밀번호 재설정이 성공한 경우 로그인 페이지로 리다이렉트
+
         } catch (DataNotFoundException e) {
             // 토큰이 유효하지 않은 경우 처리
             bindingResult.reject("token.invalid", "토큰이 유효하지 않습니다.");
@@ -206,6 +217,33 @@ public class SiteUserController {
             return "resetPasswordForm";
         }
     }
+
+    @GetMapping("/findId")
+    public String findId(UserFindIdForm userFindIdForm) {
+        return "findId";
+    }
+
+    @PostMapping("/findId")
+    public String findId(@Valid UserFindIdForm userFindIdForm, BindingResult bindingResult, Model model) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return "findId";
+            }
+            String email = userFindIdForm.getEmail();
+            String userEmail = siteUserService.getUserByEmail(email).getEmail();
+            SiteUser user = siteUserService.getUserByEmail(email);
+
+            if (!email.equals(userEmail)) {
+                bindingResult.rejectValue("loginId", "loginIdInCorrect", "ID가 정확하지 않습니다.");
+                return "findId";
+            }
+            model.addAttribute("user", user);
+            return "confirmId";
+        } catch (
+                DataNotFoundException e) {
+            // 예외 처리 로직
+            bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
+            return "findId";
+        }
+    }
 }
-
-

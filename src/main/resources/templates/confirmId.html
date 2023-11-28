@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="~{layout}">
+<head>
+    <!-- 여기에 head 내용 추가 -->
+    <style>
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 24px; /* 원하는 크기로 조절하세요 */
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h5 class="my-3 border-bottom pb-2">아이디 확인</h5>
+    <p class="center-text large-text">다음은 찾은 아이디입니다:</p>
+    <p th:text="${user.loginId}" class="center-text large-text"></p>
+    <!-- 추가적인 내용이 있다면 여기에 작성하세요 -->
+</div>
+</body>
+</html>
