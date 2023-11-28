@@ -30,17 +30,16 @@ public class MapController {
                          String lat, String lon,
                          Principal principal) {
         if (principal != null) {
-            System.out.println("Principal Name: " + principal.getName());
-
             SiteUser user = this.siteUserService.getUser(principal.getName());
             model.addAttribute("user", user);
         }
         model.addAttribute("inputAddress", inputAddress);
+        model.addAttribute("starTop3", this.restaurantService.top3AverageStar());
 
         List<Restaurant> restaurantList = restaurantService.getAround(lon, lat, 0.005);
 
         for (Restaurant restaurant : restaurantList)
-            restaurant.setAverageStar(reviewService.averageStar(restaurant.getReviews()));
+            this.restaurantService.saveAverageStar(restaurant);
         model.addAttribute("resList", restaurantList);
         model.addAttribute("y", lat);
         model.addAttribute("x", lon);

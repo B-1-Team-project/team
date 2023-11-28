@@ -72,47 +72,47 @@ public class SiteUserController {
     }
 
     @GetMapping("/userDetail/{loginId}")
-    public String userDetail(Model model, @PathVariable("loginId") String loginId) {
+    public String userDetail(Model model, @PathVariable("loginId") String loginId, Principal principal) {
         SiteUser siteUser = this.siteUserService.getUser(loginId);
+        SiteUser loginUser = this.siteUserService.getUser(principal.getName());
         List<Reservation> userReservation = this.reservationService.getAllByUser(siteUser);
         model.addAttribute("userReservation", userReservation);
-        model.addAttribute("siteUser", siteUser);
+        model.addAttribute("user", siteUser);
+        model.addAttribute("loginUser", loginUser);
         return "userDetail";
     }
 
     @GetMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userModify(Model model, UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal) {
-        SiteUser siteUser = this.siteUserService.getUser(loginId);
+        SiteUser siteUser = this.siteUserService.getUser(principal.getName());
+        model.addAttribute("user", siteUser);
         if (!siteUser.getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         userModifyForm.setAuthority(siteUser.getAuthority());
-        userModifyForm.setPassword(siteUser.getPassword());
         userModifyForm.setName(siteUser.getName());
         userModifyForm.setEmail(siteUser.getEmail());
-
-        model.addAttribute("siteUser", siteUser);
-
-
         return "userModify";
     }
 
     @PostMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String userModify(Model model, @Valid UserModifyForm userModifyForm, @PathVariable("loginId") String loginId, Principal principal, BindingResult bindingResult) {
+    public String userModify(Model model, @Valid UserModifyForm userModifyForm, BindingResult bindingResult, @PathVariable("loginId") String loginId, Principal principal) {
+        SiteUser siteUser = siteUserService.getUser(loginId);
+        model.addAttribute("user", siteUser);
         if (bindingResult.hasErrors()) {
             return "userModify";
         }
-        SiteUser siteUser = siteUserService.getUser(loginId);
         if (!siteUser.getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.siteUserService.modifyUser(siteUser, userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword(), userModifyForm.getAuthority());
-        model.addAttribute("siteUser", siteUser);
-
-
-        return "userDetail";
+        if (!userModifyForm.getPassword1().equals(userModifyForm.getPassword2())) {
+            bindingResult.rejectValue("password2", "passwordInCorrect", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return "userModify";
+        }
+        this.siteUserService.modifyUser(siteUser, userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword1(), userModifyForm.getAuthority());
+        return String.format("redirect:/user/userDetail/%s", siteUser.getLoginId());
     }
 
 
@@ -125,40 +125,38 @@ public class SiteUserController {
         }
 
         model.addAttribute("loginId", loginId);
-        return "userCheckPassword";
+        return "userDetail";
     }
 
     @PostMapping("/userCheckPassword/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, String password, UserModifyForm userModifyForm, BindingResult bindingResult) {
-        SiteUser siteUser = siteUserService.getUser(loginId);
+    public String userCheckPassword(Model model, @PathVariable("loginId") String loginId, Principal principal, String password) {
+        SiteUser siteUser = siteUserService.getUser(principal.getName());
         if (passwordEncoder.matches(password, siteUser.getPassword())) {
             return "redirect:/user/userModify/" + loginId;
         } else {
             List<Reservation> userReservation = this.reservationService.getAllByUser(siteUser);
             model.addAttribute("userReservation", userReservation);
-            model.addAttribute("siteUser", siteUser);
+            model.addAttribute("user", siteUser);
             model.addAttribute("loginId", loginId);
             model.addAttribute("error", true);
             return "userDetail";
         }
     }
 
-        @GetMapping("/findPw")
-        public String findPw () {
-            return "findPw";
-        }
+    @GetMapping("/findPw")
+    public String findPw() {
+        return "findPw";
+    }
 
 
-
-        @PostMapping("/sendEmail")
-        public String findPw (String loginId){
-            String email = siteUserService.getUser(loginId).getEmail();
-            MailDto dto = siteUserService.createMail(email);
-            siteUserService.sendPasswordResetEmail(loginId);
-            return "redirect:/";
-        }
-
+    @PostMapping("/sendEmail")
+    public String findPw(String loginId) {
+        String email = siteUserService.getUser(loginId).getEmail();
+        MailDto dto = siteUserService.createMail(email);
+        siteUserService.sendPasswordResetEmail(loginId);
+        return "redirect:/";
+    }
 
 
     @GetMapping("/resetPassword/{token}")
