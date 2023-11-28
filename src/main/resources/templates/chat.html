@@ -29,12 +29,17 @@
             </div>
             <div class="chatContainer card-body">
                 <div th:each="chat : ${chatList}">
-                    <div class="d-flex my-2"
+                    <div class="d-flex my-2 align-items-end"
                          th:classappend="${chat.writer.loginId == user.loginId} ? 'justify-content-end'">
                         <img src="/image/customer.jpg" alt="" th:if="${chat.writer.loginId != user.loginId}"
                              style="width:50px; height:50px; border-radius:40%; border:1px solid gray;">
-                        <div th:text="${chat.content}" class="mx-2 p-2 fs-5" style="border-radius:10px; background:gold;"
+                        <div th:text="${#temporals.format(chat.createDate, 'a h시 m분')}"
+                             th:if="${chat.writer.loginId == user.loginId}" style="font-size:11pt; color:gray;"></div>
+                        <div th:text="${chat.content}" class="mx-2 p-2 fs-5"
+                             style="border-radius:10px; background:gold;"
                              th:classappend="${chat.writer.loginId == user.loginId} ? 'text-dark' : 'bg-light border border-dark'"></div>
+                        <div th:text="${#temporals.format(chat.createDate, 'a h시 m분')}"
+                             th:if="${chat.writer.loginId != user.loginId}" style="font-size:11pt; color:gray;"></div>
                         <img src="/image/owner.jpg" alt=""
                              style="width:50px; height:50px; border-radius:40%; border:1px solid gray;"
                              th:if="${chat.writer.loginId == user.loginId}">
@@ -96,7 +101,7 @@
                 $("#chatMessages").append(
                     "<div style='display:flex; justify-content:end; align-items:center;' class='my-2'>" +
                         "<div style='display:flex; align-items:center;'>" +
-                            "<span class='text-light mx-2 p-2 fs-5' style='background:gold; border-radius:10px;'>" + message.content + "</span>" +
+                            "<span class='text-dark mx-2 p-2 fs-5' style='background:gold; border-radius:10px;'>" + message.content + "</span>" +
                             "<img src='/image/owner.jpg' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
                         "</div>" +
                     "</div>"
