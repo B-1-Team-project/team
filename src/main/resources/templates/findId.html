@@ -1,0 +1,20 @@
+<html layout:decorate="~{layout}">
+<head>
+    <!-- Your head content goes here -->
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h5 class="my-3 border-bottom pb-2">아이디 찾기</h5>
+    <form id="userFindIdForm" th:action="@{/user/findId}" th:object="${userFindIdForm}" method="post">
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+        <div class="mb-3">
+            <label for="email" class="form-label">이메일</label>
+            <input type="text" name="email" class="form-control" style="width: 50%;" placeholder="이메일" required>
+        </div>
+        <div class="mb-3">
+            <input type="submit" value="아이디 찾기" class="btn btn-primary">
+        </div>
+    </form>
+</div>
+</body>
+</html>
