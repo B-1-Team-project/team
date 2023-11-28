@@ -150,7 +150,7 @@ public class SiteUserController {
     }
 
     @PostMapping("/sendEmail")
-    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult) {
+    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult, Model model) {
         try {
             if (bindingResult.hasErrors()) {
                 return "findPw";
@@ -167,6 +167,8 @@ public class SiteUserController {
             String email = siteUserService.getUser(loginId).getEmail();
             MailDto dto = siteUserService.createMail(email);
             siteUserService.sendPasswordResetEmail(loginId);
+
+            model.addAttribute("emailSent", true);
 
             return "findPw";
         } catch (
@@ -186,10 +188,18 @@ public class SiteUserController {
     }
 
     @PostMapping("/resetPassword/{token}")
-    public String resetPassword(@Valid UserResetPwForm userResetPwForm, BindingResult bindingResult) {
+    public String resetPassword(@Valid UserResetPwForm userResetPwForm, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "resetPasswordForm";
         }
+
+        if(!userResetPwForm.getPassword1().equals(userResetPwForm.getPassword2())){
+            bindingResult.rejectValue("password2", "passwordInCorrect", "2개의 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("token", userResetPwForm.getToken());
+            return "resetPasswordForm";
+        }
+
+
         try {
             // 비밀번호를 재설정
             siteUserService.resetPassword(userResetPwForm.getToken(), userResetPwForm.getPassword1());

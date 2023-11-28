@@ -1,8 +1,16 @@
 <html layout:decorate="~{layout}">
+<head>
+    <!-- Your head content goes here -->
+    <script th:if="${emailSent}" th:inline="javascript">
+        /*<![CDATA[*/
+        alert('이메일을 확인해주세요.');
+        /*]]>*/
+    </script>
+</head>
+<body>
 <div layout:fragment="content" class="container">
     <h5 class="my-3 border-bottom pb-2">비밀번호 찾기</h5>
-    <form id="userFindPwForm" th:action="@{/user/sendEmail}" th:object="${userFindPwForm}"
-          method="post">
+    <form id="userFindPwForm" th:action="@{/user/sendEmail}" th:object="${userFindPwForm}" method="post">
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>
         <div class="mb-3">
             <label for="loginId" class="form-label">ID</label>
@@ -13,4 +21,5 @@
         </div>
     </form>
 </div>
+</body>
 </html>
