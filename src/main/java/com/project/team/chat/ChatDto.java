@@ -1,4 +1,4 @@
-package com.project.team.socket;
+package com.project.team.chat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class ChatDto {
     private String content;
-    private String sender;
-    private String recipient;
+    private String writer;
+    private String target;
+    private String room;
 }

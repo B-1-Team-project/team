@@ -1,14 +1,62 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <form id="messageForm">
-        <input type="hidden" id="user" th:value="${user.loginId}">
-        <input type="hidden" id="owner" th:value="${owner.loginId}">
-        <input type="text" id="messageInput" placeholder="메시지 입력">
-        <button type="submit">전송</button>
-    </form>
-    <div id="chatMessages"></div>
+    <div style="background:white; width:70%; margin:0 auto; padding:30px; border-radius:15px;" class="my-4">
+        <h3 class="border-bottom pb-2">실시간 채팅 문의</h3>
+        <div style="width:80%; margin:0 auto; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);" class="card my-3">
+            <div class="card-header p-3 d-flex justify-content-between" style="background:#9FB3CD">
+                <h4 th:text="|${target.name} >|"></h4>
+                <div class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                         class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                         class="bi bi-telephone-fill ms-3" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                         class="bi bi-camera-video-fill ms-3" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-list ms-3" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="chatContainer card-body">
+                <div th:each="chat : ${chatList}">
+                    <div class="d-flex my-2"
+                         th:classappend="${chat.writer.loginId == user.loginId} ? 'justify-content-end'">
+                        <img src="/image/customer.jpg" alt="" th:if="${chat.writer.loginId != user.loginId}"
+                             style="width:50px; height:50px; border-radius:40%; border:1px solid gray;">
+                        <div th:text="${chat.content}" class="mx-2 p-2 fs-5" style="border-radius:10px; background:gold;"
+                             th:classappend="${chat.writer.loginId == user.loginId} ? 'text-dark' : 'bg-light border border-dark'"></div>
+                        <img src="/image/owner.jpg" alt=""
+                             style="width:50px; height:50px; border-radius:40%; border:1px solid gray;"
+                             th:if="${chat.writer.loginId == user.loginId}">
+                    </div>
+                </div>
+                <div id="chatMessages" class="my-2"></div>
+            </div>
+            <form id="messageForm">
+                <input type="hidden" id="user" th:value="${user.loginId}">
+                <input type="hidden" id="target" th:value="${target.loginId}">
+                <input type="hidden" id="room" th:value="${room}">
+                <textarea id="messageInput" placeholder="메시지 입력" rows="5" class="form-control"></textarea>
+                <div class="d-flex justify-content-end m-1">
+                    <button type="submit" class="btn" style="background:gold;">전송</button>
+                </div>
+                <input type="hidden">
+            </form>
+        </div>
+    </div>
 </div>
 <script layout:fragment="script">
+
     $(function () {
         var stompClient = null;
 
@@ -16,8 +64,7 @@
             var socket = new SockJS('/ws');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
-                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/' + $("#owner").val() + '/' + $("#user").val(), function (chatMessage) {
+                stompClient.subscribe('/topic/' + $("#room").val(), function (chatMessage) {
                     showMessage(JSON.parse(chatMessage.body));
                 });
             });
@@ -27,24 +74,43 @@
             if (stompClient !== null) {
                 stompClient.disconnect();
             }
-            console.log("Disconnected");
         }
 
         function sendMessage() {
-            var recipient = $("#owner").val();
-            var sender = $("#user").val();
+            var target = $("#target").val();
+            var writer = $("#user").val();
             var messageInput = $("#messageInput").val();
+            var room = $("#room").val();
 
-            stompClient.send("/app/chat/" + $("#owner").val() + '/' + $("#user").val(), {}, JSON.stringify({
+            stompClient.send("/app/chat", {}, JSON.stringify({
                 content: messageInput,
-                sender: sender,
-                recipient: recipient
+                writer: writer,
+                target: target,
+                room: room
             }));
             $("#messageInput").val("");
         }
 
         function showMessage(message) {
-            $("#chatMessages").append("<p>" + message.sender + ": " + message.content + "</p>");
+            if (message.writer == $("#user").val()) {
+                $("#chatMessages").append(
+                    "<div style='display:flex; justify-content:end; align-items:center;' class='my-2'>" +
+                        "<div style='display:flex; align-items:center;'>" +
+                            "<span class='text-light mx-2 p-2 fs-5' style='background:gold; border-radius:10px;'>" + message.content + "</span>" +
+                            "<img src='/image/owner.jpg' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
+                        "</div>" +
+                    "</div>"
+                );
+            }
+            else
+                $("#chatMessages").append(
+                    "<div style='display:flex; justify-content:start; align-items:center;' class='my-2'>" +
+                        "<div style='display:flex; align-items:center;'>" +
+                            "<img src='/image/customer.jpg' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
+                            "<span class='bg-light text-dark border border-dark mx-2 p-2 fs-5' style='border-radius:10px;'>" + message.content + "</span>" +
+                        "</div>" +
+                    "</div>"
+                );
         }
 
         $("#messageForm").submit(function (e) {

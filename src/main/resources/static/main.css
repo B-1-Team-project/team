@@ -121,6 +121,25 @@ a:hover {
     overflow:hidden;
 }
 
+.alarmContainer {
+    max-height:110px;
+    overflow:hidden;
+}
+
+.chatContainer {
+    background:lightsteelblue;
+    max-height:700px;
+    overflow:hidden;
+}
+
+.alarmContainer:hover {
+    overflow: scroll;
+}
+
+.chatContainer:hover {
+    overflow: scroll;
+}
+
 .card-container:hover {
     overflow: scroll;
 }
@@ -133,12 +152,24 @@ a:hover {
     overflow: scroll;
 }
 
+.alarmContainer::-webkit-scrollbar {
+    width:0px;
+}
+
+.chatContainer::-webkit-scrollbar {
+    width:5px;
+}
+
 .card-container::-webkit-scrollbar {
-    width:8px;
+    width:0px;
 }
 
 .acContainer::-webkit-scrollbar {
-    width:8px;
+    width:0px;
+}
+
+.chatContainer::-webkit-scrollbar-thumb {
+    background-color: gray;
 }
 
 .reviewContainer::-webkit-scrollbar {
@@ -174,6 +205,3 @@ a:hover {
     color:black;
     font-size:11pt;
 }
-
-
-
