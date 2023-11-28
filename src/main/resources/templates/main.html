@@ -34,6 +34,10 @@
             border-radius:15px;
         }
 
+        .top3 {
+            width:32%;
+        }
+
          @media (max-width: 1600px) {
             .media {
                 flex-direction: column;
@@ -50,10 +54,15 @@
                 width:100%;
                 margin-left: 0;
             }
+
+            .top3 {
+                width:95%;
+                margin-bottom:10px;
+            }
         }
 
         .list-group-item:hover {
-            background:peachpuff;
+            background:linen;
         }
     </style>
     <title>Title</title>
@@ -163,7 +172,7 @@
                     </svg>
                     <div>알림</div>
                 </div>
-                <div class="card-body">
+                <div class="alarmContainer card-body">
                     <div class="card-text" th:each="alarm : ${alarmList}">
                         <div th:if="${alarm.type == 'chat'}">
                             <span th:text="|${alarm.target.name}님이 채팅을 보냈습니다.|"></span>
@@ -176,8 +185,8 @@
     </div>
     <div class="mt-5" style="width:95%; margin:0 auto;">
         <h4 class="border-bottom pb-2">#내 주변 <strong>별점</strong> top3 맛집</h4>
-        <div class="d-flex justify-content-between">
-            <div th:each="starRes : ${starTop3}" style="width:32%;">
+        <div class="media d-flex justify-content-between">
+            <div th:each="starRes : ${starTop3}" class="top3">
                 <div class="card">
                     <div class="card-body">
                         <div class="card-text">
