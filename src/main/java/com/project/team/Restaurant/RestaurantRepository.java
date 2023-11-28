@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
     List<Restaurant> findByAddress(String address);
+
+    List<Restaurant> findTop3ByOrderByAverageStarDesc();
 }

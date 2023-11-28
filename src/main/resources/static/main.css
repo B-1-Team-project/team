@@ -134,11 +134,11 @@ a:hover {
 }
 
 .card-container::-webkit-scrollbar {
-    width:8px;
+    width:0px;
 }
 
 .acContainer::-webkit-scrollbar {
-    width:8px;
+    width:0px;
 }
 
 .reviewContainer::-webkit-scrollbar {

@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <div class="d-flex justify-content-between">
+    <div class="d-flex mt-4 justify-content-between" style="background:white; padding:30px; width:90%; margin:0 auto; border-radius:15px;">
         <!-- 가게 상세 정보 -->
         <div class="card" style="width:30%; height:80vh;">
             <img th:src="@{${restaurant.image}}"
@@ -79,7 +79,7 @@
                               th:text="${restaurant.introduce}"></span>
                         <span th:if="${restaurant.introduce == null || restaurant.introduce == ''}">제공 정보 없음</span>
                     </div>
-                    <label for="introduce" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">별점</label>
+                    <label for="starScore" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">별점</label>
                     <div class="d-flex align-items-center mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
                              class="bi bi-star-fill me-1" viewBox="0 0 16 16">
