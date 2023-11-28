@@ -30,4 +30,9 @@ public class WebSocketController {
         if (alarmList.isEmpty()) alarmService.create(target, writer, "chat", room);
         simpMessagingTemplate.convertAndSend("/topic/" + room, chatDto);
     }
+
+    @MessageMapping("/main")
+    public void mainEvent(String data) {
+        simpMessagingTemplate.convertAndSend("/topic/main", data);
+    }
 }
