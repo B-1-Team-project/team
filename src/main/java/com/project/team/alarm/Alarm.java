@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -17,4 +19,7 @@ public class Alarm {
     @ManyToOne
     private SiteUser user;
     private String type;
+    private LocalDateTime regDate;
+    private Boolean confirm;
+    private String chatRoom;
 }

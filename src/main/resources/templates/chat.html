@@ -2,11 +2,14 @@
 <div layout:fragment="content">
     <form id="messageForm">
         <input type="hidden" id="user" th:value="${user.loginId}">
-        <input type="hidden" id="owner" th:value="${owner.loginId}">
+        <input type="hidden" id="target" th:value="${target.loginId}">
+        <input type="hidden" id="room" th:value="${room}">
         <input type="text" id="messageInput" placeholder="메시지 입력">
         <button type="submit">전송</button>
     </form>
-    <div id="chatMessages"></div>
+    <div id="chatMessages">
+        <p th:each="chat : ${chatList}" th:text="|${chat.writer}: ${chat.content}|"></p>
+    </div>
 </div>
 <script layout:fragment="script">
     $(function () {
@@ -17,7 +20,7 @@
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/' + $("#owner").val() + '/' + $("#user").val(), function (chatMessage) {
+                stompClient.subscribe('/topic/' + $("#room").val(), function (chatMessage) {
                     showMessage(JSON.parse(chatMessage.body));
                 });
             });
@@ -31,20 +34,22 @@
         }
 
         function sendMessage() {
-            var recipient = $("#owner").val();
-            var sender = $("#user").val();
+            var target = $("#target").val();
+            var writer = $("#user").val();
             var messageInput = $("#messageInput").val();
+            var room = $("#room").val();
 
-            stompClient.send("/app/chat/" + $("#owner").val() + '/' + $("#user").val(), {}, JSON.stringify({
+            stompClient.send("/app/chat", {}, JSON.stringify({
                 content: messageInput,
-                sender: sender,
-                recipient: recipient
+                writer: writer,
+                target: target,
+                room: room
             }));
             $("#messageInput").val("");
         }
 
         function showMessage(message) {
-            $("#chatMessages").append("<p>" + message.sender + ": " + message.content + "</p>");
+            $("#chatMessages").append("<p>" + message.writer + ": " + message.content + "</p>");
         }
 
         $("#messageForm").submit(function (e) {
