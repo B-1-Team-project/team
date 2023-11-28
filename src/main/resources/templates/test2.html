@@ -1,20 +1,198 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <style>
+        * {
+          font-family: Pretendard;
+          box-sizing: border-box;
+        }
 
+        body {
+          background: #f7f8fc;
+          height: 960px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+
+        canvas {
+          margin-top: 20px;
+          border-radius: 50%;
+          border: 10px solid #febf00;
+          transition: transform 2s;
+        }
+
+        button {
+          background: #febf00;
+          margin-top: 1rem;
+          padding: .8rem 1.8rem;
+          border: none;
+          font-size: 1.5rem;
+          font-weight: bold;
+          border-radius: 5px;
+          transition: .2s;
+          cursor: pointer;
+        }
+
+        button:active {
+          background: #444;
+          color: #f9f9f9;
+        }
+
+        #menu {
+          width: 100%;
+          max-width: 600px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          text-align: center;
+          flex-direction: column;
+          position: relative;
+        }
+
+        #menu::before {
+          content: "";
+          position: absolute;
+          width: 10px;
+          height: 50px;
+          border-radius: 5px;
+          background: #000;
+          top: -20px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 22;
+        }
+
+        #menu {
+            display: none;
+        }
+        #randomRecommendationBtn {
+            display: block;
+        }
+
+
+    </style>
 </head>
 <body>
 
-<h2>음식점 추천</h2>
-<div th:each="restaurant, loop:${restaurant}">
-    <h2  th:text="${restaurant.name}">  </h2>
-    <div th:text="${restaurant.address}"></div>
-    <div th:text="${restaurant.number}"></div>
-    <div th:text="${restaurant.endTime}"></div>
-    <div th:text="${restaurant.introduce}"></div>
-    <div>(로그인한 유저네임) 을 위한 오늘의 메뉴</div>
+
+<div>
+    <span  th:text="${userName} + '님을 위한 오늘의 추천메뉴'"></span>
+
 </div>
 
 
+<h1 id="food-recommendation">음식 랜덤 추천</h1>
+<button id="randomRecommendationBtn" onclick="showRoulette()">랜덤 음식 추천 받기</button>
+
+
+<div id="menu">
+    <canvas width="300" height="300"></canvas>
+    <button onclick="rotate()">돌려돌려 돌림판</button>
+    <div id="addDiv">
+        <button onclick="addRandomMenu()">메뉴 추가</button>
+    </div>
+</div>
+
+<script src="menu.js"></script>
+
 </body>
+
+<script>
+
+
+    const $c = document.querySelector("canvas");
+    const ctx = $c.getContext("2d");
+    const menuAdd = document.querySelector('#menuAdd');
+    const products = ["기본값1", "기본값2", "기본값3", "기본값4", "기본값5"];
+    const colors = [];
+    const randomRecommendationBtn = document.getElementById("randomRecommendationBtn");
+
+    function showRoulette() {
+        document.getElementById('food-recommendation').style.display = 'none';
+        document.getElementById('menu').style.display = 'flex';
+        newMake();
+        randomRecommendationBtn.style.display = 'none';
+    }
+
+    // 처음 보여질 때
+    const newMake = () => {
+      const [cw, ch] = [$c.width / 2, $c.height / 2];
+      const arc = Math.PI * 2 / products.length;
+
+      for (let i = 0; i < products.length; i++) {
+        ctx.beginPath();
+        if (colors.length === 0) {
+          generateRandomColors();
+        }
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(cw, ch);
+        ctx.arc(cw, ch, cw - 20, arc * i, arc * (i + 1));
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      ctx.fillStyle = "#fff";
+      ctx.font = "18px Pretendard";
+      ctx.textAlign = "center";
+
+      for (let i = 0; i < products.length; i++) {
+        const angle = arc * i + arc / 2;
+
+        ctx.save();
+
+        ctx.translate(
+          cw + Math.cos(angle) * (cw - 60),
+          ch + Math.sin(angle) * (ch - 60)
+        );
+
+        ctx.rotate(angle + Math.PI / 2);
+
+        products[i].split(" ").forEach((text, j) => {
+          ctx.fillText(text, 0, 30 * j);
+        });
+
+        ctx.restore();
+      }
+    };
+
+    // 돌려돌려 돌림판
+    const rotate = () => {
+      $c.style.transform = `initial`;
+      $c.style.transition = `initial`;
+
+      setTimeout(() => {
+        const ran = Math.floor(Math.random() * products.length);
+        const arc = Math.PI * 2 / products.length;
+        const rotate = ran * arc + arc * 40;
+        $c.style.transform = `rotate(${rotate}rad)`;
+        $c.style.transition = `2s`;
+      }, 5);
+    };
+
+
+    // 임의 색
+    function generateRandomColors() {
+      colors.length = 0;
+      for (let l = 0; l < products.length; l++) {
+        let a = Math.floor(Math.random() * 256);
+        let b = Math.floor(Math.random() * 256);
+        let c = Math.floor(Math.random() * 256);
+        colors.push(`rgb(${a},${b},${c})`);
+      }
+    }
+
+    newMake();
+
+    function addRandomMenu() {
+        const predefinedKoreanMenuItems = ["추가값1", "추가값2", "추가값3", "추가값4", "추가값5"];
+        const randomIndex = Math.floor(Math.random() * predefinedKoreanMenuItems.length);
+        const selectedMenu = predefinedKoreanMenuItems[randomIndex];
+        products.push(selectedMenu);
+        generateRandomColors();
+        newMake();
+    }
+</script>
+
 </html>
