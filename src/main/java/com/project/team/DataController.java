@@ -2,7 +2,6 @@ package com.project.team;
 
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
-import com.project.team.User.SiteUserService;
 import com.project.team.Review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -26,7 +25,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DataController {
     private final RestaurantService restaurantService;
-    private final SiteUserService siteUserService;
     private final ReviewService reviewService;
     private final String HEAD = "https://place.map.kakao.com/main/v";
 
