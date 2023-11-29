@@ -44,4 +44,9 @@ public class MainController {
     public String interProcess() {
         return "interprocess";
     }
+
+    @GetMapping("/weatherMenu")
+    public String menuTest() {
+        return "weatherMenu";
+    }
 }

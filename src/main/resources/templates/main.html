@@ -161,7 +161,7 @@
                             <path fill-rule="evenodd"
                                   d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM4.965 1.69a6.972 6.972 0 0 1 3.861-.642c.722.767 1.177 1.887 1.177 3.135 0 1.656-.802 3.088-1.965 3.766 1.263.24 2.655-.815 3.406-2.742.38-.975.537-2.023.492-2.996a7.027 7.027 0 0 1 2.488 3.003c-.303 1.01-1.046 1.966-2.128 2.59-1.44.832-3.09.85-4.26.173l.008.021.012-.006-.01.01c.42 1.218 2.032 1.9 4.08 1.586a7.415 7.415 0 0 0 2.856-1.081 6.963 6.963 0 0 1-1.358 3.662c-1.03.248-2.235.084-3.322-.544-1.433-.827-2.272-2.236-2.279-3.58l-.012-.003c-.845.972-.63 2.71.666 4.327a7.415 7.415 0 0 0 2.37 1.935 6.972 6.972 0 0 1-3.86.65c-.727-.767-1.186-1.892-1.186-3.146 0-1.658.804-3.091 1.969-3.768l-.002-.007c-1.266-.25-2.666.805-3.42 2.74a7.415 7.415 0 0 0-.49 3.012 7.026 7.026 0 0 1-2.49-3.018C1.87 9.757 2.613 8.8 3.696 8.174c1.438-.83 3.084-.85 4.253-.176l.005-.006C7.538 6.77 5.924 6.085 3.872 6.4c-1.04.16-2.03.55-2.853 1.08a6.962 6.962 0 0 1 1.372-3.667l-.002.003c1.025-.243 2.224-.078 3.306.547 1.43.826 2.269 2.23 2.28 3.573L8 7.941c.837-.974.62-2.706-.673-4.319a7.415 7.415 0 0 0-2.362-1.931Z"/>
                         </svg>
-                        <a href="#">메뉴 추천 ></a>
+                        <a href="/weatherMenu">메뉴 추천 ></a>
                     </li>
                 </ul>
             </div>
@@ -172,7 +172,7 @@
                         <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                     </svg>
                     <div>알림</div>
-                    <div class="badge bg-danger text-light ms-1" style="font-size:7pt;" th:text="${#lists.size(alarmList)}"></div>
+                    <div class="badge bg-danger text-light ms-1" style="font-size:7pt;" th:text="${#lists.size(alarmList)}" th:if="${alarmList != null}"></div>
                 </div>
                 <div class="alarmContainer card-body">
                     <div class="card-text" th:each="alarm : ${alarmList}">
@@ -193,36 +193,8 @@
     </div>
     <div class="mt-5" style="width:95%; margin:0 auto;">
         <h4 class="border-bottom pb-2">#내 주변 <strong>별점</strong> top3 맛집</h4>
-        <div class="d-flex justify-content-between">
-            <div th:each="starRes : ${starTop3}" style="width:32%;">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-text">
-                            <img th:src="@{${starRes.image}}" alt=""
-                                 style="height:150px; width:100%; margin-bottom:10px;">
-                            <div class="d-flex">
-                                <a th:text="${starRes.name}" class="me-2"
-                                   style="font-size:13pt; font-weight:bold; border-bottom:1px solid;"
-                                   th:href="@{|/restaurant/detail/${starRes.id}|}"></a>
-                                <div class="d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
-                                         class="bi bi-star-fill me-1" viewBox="0 0 16 16">
-                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                    </svg>
-                                    <div th:text="${starRes.averageStar}"></div>
-                                </div>
-                            </div>
-                            <div th:text="${starRes.address}" style="margin-top:10px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mt-5" style="width:95%; margin:0 auto;">
-        <h4 class="border-bottom pb-2">#내 주변 <strong>별점</strong> top3 맛집</h4>
         <div class="media d-flex justify-content-between">
-            <div th:each="starRes : ${starTop3}" class="top3">
+            <div class="top3" th:each="starRes : ${starTop3}">
                 <div class="card">
                     <div class="card-body">
                         <div class="card-text">
