@@ -172,7 +172,8 @@
                         <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                     </svg>
                     <div>알림</div>
-                    <div class="badge bg-danger text-light ms-1" style="font-size:7pt;" th:text="${#lists.size(alarmList)}"></div>
+                    <div class="badge bg-danger text-light ms-1" style="font-size:7pt;" sec:authorize="isAuthenticated()"
+                         th:text="${#lists.size(alarmList)}" th:if="${alarmList != null}"></div>
                 </div>
                 <div class="alarmContainer card-body">
                     <div class="card-text" th:each="alarm : ${alarmList}">
@@ -251,6 +252,7 @@
         <input type="hidden" id="inputAddress" name="inputAddress" th:value="${inputAddress}">
     </form>
     <input type="hidden" id="searchAddress" th:value="${inputAddress}">
+    <input type="hidden" sec:authorize="isAuthenticated()" id="userId" th:value="${user.loginId}">
     <script th:src="@{/bootstrap.bundle.min.js}"></script>
     <script>
         var token = $("meta[name='_csrf']").attr("content");
@@ -299,10 +301,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script th:inline="javascript">
-<<<<<<< HEAD
     $(function () {
         var stompClient = null;
-        var userId = [[${user.loginId}]];
+        var userId = $("#userId").val();
 
         function connect(userId) {
             var socket = new SockJS('/ws');
@@ -325,33 +326,6 @@
 
         if(userId != null) connect(userId);
     });
-=======
-        $(function () {
-            var stompClient = null;
-            var userId = [[${user.loginId}]];
-
-            function connect(userId) {
-                var socket = new SockJS('/ws');
-                stompClient = Stomp.over(socket);
-                stompClient.connect({}, function (frame) {
-                    stompClient.subscribe('/topic/main/' + userId, function (data) {
-                        if(data.body == "alarm") {
-                            alert("새로운 알림이 도착했습니다.");
-                            location.reload();
-                        }
-                    });
-                });
-            }
-
-            function disconnect() {
-                if (stompClient !== null) {
-                   stompClient.disconnect();
-                }
-            }
-
-            if(userId != null) connect(userId);
-        });
->>>>>>> 7b57daa8636535271dd8222a9ce4ef0003146fbd
     </script>
 </div>
 </body>
