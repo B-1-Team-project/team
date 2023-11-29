@@ -1,5 +1,7 @@
 package com.project.team;
 
+import com.project.team.User.SiteUser;
+import com.project.team.User.SiteUserService;
 import com.project.team.User.UserCreateForm;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -10,12 +12,19 @@ import org.jsoup.Jsoup;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
+
+    private final SiteUserService siteUserService;
 
     @GetMapping("/")
     public String index(UserCreateForm userCreateForm) {
@@ -33,7 +42,7 @@ public class MainController {
         JSONParser jsonParser = new JSONParser();
         JSONObject detail = (JSONObject) jsonParser.parse(doc);
         JSONObject basicInfo = (JSONObject) detail.get("basicInfo");
-        String target = ((JSONObject)((JSONArray)((JSONObject)((JSONArray)((JSONObject)basicInfo.get("openHour")).get("periodList")).get(0)).get("timeList")).get(0)).get("timeSE").toString();
+        String target = ((JSONObject) ((JSONArray) ((JSONObject) ((JSONArray) ((JSONObject) basicInfo.get("openHour")).get("periodList")).get(0)).get("timeList")).get(0)).get("timeSE").toString();
         model.addAttribute("data", detail);
         return "test";
     }
@@ -42,4 +51,20 @@ public class MainController {
     public String interProcess() {
         return "interprocess";
     }
+
+
+    @GetMapping("/weatherMenu")
+    public String weatherMenu(Model model, Principal principal) {
+        if (principal != null) {
+            SiteUser user = this.siteUserService.getUser(principal.getName());
+            model.addAttribute("user", user);
+        }
+        return "weatherMenu";
+    }
+
+    @PostMapping("/recommendMenu")
+    public void recommendMenu(@RequestBody List<Map<String, String>> dataList) {
+
+    }
+
 }
