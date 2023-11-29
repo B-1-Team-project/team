@@ -1,11 +1,9 @@
 package com.project.team;
 
-import com.project.team.Restaurant.RestaurantService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
 import com.project.team.User.UserCreateForm;
 import lombok.RequiredArgsConstructor;
-import org.dom4j.rule.Mode;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -40,7 +38,7 @@ public class MainController {
 
     @GetMapping("/test")
     public String test(Model model) throws IOException, ParseException {
-        String doc = Jsoup.connect("https://place.map.kakao.com/main/v/1874862905").ignoreContentType(true).execute().body();
+        String doc = Jsoup.connect("https://place.map.kakao.com/main/v/10344306").ignoreContentType(true).execute().body();
         JSONParser jsonParser = new JSONParser();
         JSONObject detail = (JSONObject) jsonParser.parse(doc);
         JSONObject basicInfo = (JSONObject) detail.get("basicInfo");
