@@ -38,7 +38,7 @@
             width:32%;
         }
 
-         @media (max-width: 1600px) {
+         @media (max-width: 1200px) {
             .media {
                 flex-direction: column;
                 align-items: center;
@@ -56,7 +56,7 @@
             }
 
             .top3 {
-                width:95%;
+                width:80%;
                 margin-bottom:10px;
             }
         }
@@ -167,12 +167,13 @@
             </div>
             <div class="card">
                 <div class="card-header d-flex align-items-center" style="background:linen;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    <svg id="alarmIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-bell-fill me-1" viewBox="0 0 16 16">
                         <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                     </svg>
                     <div>알림</div>
-                    <div class="badge bg-danger text-light ms-1" style="font-size:7pt;" th:text="${#lists.size(alarmList)}" th:if="${alarmList != null}"></div>
+                    <div class="badge bg-danger text-light ms-1" style="font-size:7pt;" sec:authorize="isAuthenticated()"
+                         th:text="${#lists.size(alarmList)}" th:if="${alarmList != null}"></div>
                 </div>
                 <div class="alarmContainer card-body">
                     <div class="card-text" th:each="alarm : ${alarmList}">
@@ -223,6 +224,7 @@
         <input type="hidden" id="inputAddress" name="inputAddress" th:value="${inputAddress}">
     </form>
     <input type="hidden" id="searchAddress" th:value="${inputAddress}">
+    <input type="hidden" sec:authorize="isAuthenticated()" id="userId" th:value="${user.loginId}">
     <script th:src="@{/bootstrap.bundle.min.js}"></script>
     <script>
         var token = $("meta[name='_csrf']").attr("content");
@@ -271,9 +273,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script th:inline="javascript">
-        $(function () {
-            var stompClient = null;
-            var userId = [[${user.loginId}]];
+
+    $(function () {
+        var stompClient = null;
+        var userId = $("#userId").val();
 
             function connect(userId) {
                 var socket = new SockJS('/ws');
