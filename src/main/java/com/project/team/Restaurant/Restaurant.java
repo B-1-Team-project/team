@@ -10,7 +10,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -57,5 +59,8 @@ public class Restaurant {
     private List<Review> reviews;
 
     private double averageStar;
+
+    @ManyToMany
+    private Set<SiteUser> favoriteUser;
 
 }

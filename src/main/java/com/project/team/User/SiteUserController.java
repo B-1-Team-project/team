@@ -3,6 +3,8 @@ package com.project.team.User;
 import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
+import com.project.team.Restaurant.Restaurant;
+import com.project.team.Restaurant.RestaurantService;
 import com.project.team.test.MailDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ import java.util.List;
 public class SiteUserController {
     private final SiteUserService siteUserService;
     private final ReservationService reservationService;
+    private final RestaurantService restaurantService;
 
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
@@ -245,5 +248,16 @@ public class SiteUserController {
             bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
             return "findId";
         }
+    }
+
+    @GetMapping("/favorite/{restaurantId}")
+    @PreAuthorize("isAuthenticated()")
+    public String favorite(@PathVariable("restaurantId") Integer restaurantId, Principal principal,Model model){
+        SiteUser user = siteUserService.getUser(principal.getName());
+        Restaurant restaurant = restaurantService.getRestaurant(restaurantId);
+        siteUserService.toggleFavorite(user,restaurant);
+        System.out.println(user.getFavorite());
+
+        return "redirect:/restaurant/detail/" + restaurantId;
     }
 }
