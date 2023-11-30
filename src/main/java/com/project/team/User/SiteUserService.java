@@ -1,6 +1,7 @@
 package com.project.team.User;
 
 import com.project.team.DataNotFoundException;
+import com.project.team.Restaurant.Restaurant;
 import com.project.team.test.MailDto;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -156,6 +157,16 @@ public class SiteUserService {
             return user.get();
         }
         else throw new DataNotFoundException("user not found");
+    }
+
+    public void toggleFavorite(SiteUser user, Restaurant restaurant) {
+        if(user.getFavorite().contains(restaurant)){
+            user.getFavorite().remove(restaurant);
+        }
+        else{
+            user.getFavorite().add(restaurant);
+        }
+        siteUserRepository.save(user);
     }
 }
 

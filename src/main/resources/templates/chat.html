@@ -51,6 +51,7 @@
                 <input type="hidden" id="user" th:value="${user.loginId}">
                 <input type="hidden" id="target" th:value="${target.loginId}">
                 <input type="hidden" id="room" th:value="${room}">
+                <input type="hidden" id="restaurantId" th:value="${restaurant.id}">
                 <textarea id="messageInput" placeholder="메시지 입력" rows="5" class="form-control"></textarea>
                 <div class="d-flex justify-content-end m-1">
                     <button type="submit" class="btn" style="background:gold;">전송</button>
@@ -61,7 +62,6 @@
     </div>
 </div>
 <script layout:fragment="script">
-
     $(function () {
         var stompClient = null;
 
@@ -86,12 +86,14 @@
             var writer = $("#user").val();
             var messageInput = $("#messageInput").val();
             var room = $("#room").val();
+            var restaurantId = $("#restaurantId").val();
 
             stompClient.send("/app/chat", {}, JSON.stringify({
                 content: messageInput,
                 writer: writer,
                 target: target,
-                room: room
+                room: room,
+                restaurant: restaurantId
             }));
             $("#messageInput").val("");
         }
@@ -124,6 +126,23 @@
         });
 
         connect();
+
+        $(window).on('beforeunload', function(e) {
+            $.ajax({
+                url: '/alarm/confirm',
+                type: 'post',
+                data: {
+                    room: $("#room").val()
+                },
+                beforeSend: function(jqXHR) {
+                    var header = $("meta[name='_csrf_header']").attr("content");
+                    var token = $("meta[name='_csrf']").attr("content");
+                    jqXHR.setRequestHeader(header, token);
+                }
+            });
+
+            location.href="/main";
+        });
     });
 </script>
 </html>

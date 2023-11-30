@@ -3,21 +3,25 @@ package com.project.team.User;
 import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
+import com.project.team.Restaurant.Restaurant;
+import com.project.team.Restaurant.RestaurantService;
+import com.project.team.chat.Chat;
+import com.project.team.chat.ChatService;
 import com.project.team.test.MailDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.dom4j.rule.Mode;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -29,7 +33,8 @@ import java.util.List;
 public class SiteUserController {
     private final SiteUserService siteUserService;
     private final ReservationService reservationService;
-
+    private final RestaurantService restaurantService;
+    private final ChatService chatService;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
@@ -75,10 +80,12 @@ public class SiteUserController {
     public String userDetail(Model model, @PathVariable("loginId") String loginId, Principal principal) {
         SiteUser siteUser = this.siteUserService.getUser(loginId);
         SiteUser loginUser = this.siteUserService.getUser(principal.getName());
+        List<Chat> chatList = chatService.getRoomList(siteUser);
         List<Reservation> userReservation = this.reservationService.getAllByUser(siteUser);
         model.addAttribute("userReservation", userReservation);
         model.addAttribute("user", siteUser);
         model.addAttribute("loginUser", loginUser);
+        model.addAttribute("chatList", chatList);
         return "userDetail";
     }
 
@@ -245,5 +252,16 @@ public class SiteUserController {
             bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
             return "findId";
         }
+    }
+
+    @GetMapping("/favorite/{restaurantId}")
+    @PreAuthorize("isAuthenticated()")
+    public String favorite(@PathVariable("restaurantId") Integer restaurantId, Principal principal,Model model){
+        SiteUser user = siteUserService.getUser(principal.getName());
+        Restaurant restaurant = restaurantService.getRestaurant(restaurantId);
+        siteUserService.toggleFavorite(user,restaurant);
+        System.out.println(user.getFavorite());
+
+        return "redirect:/restaurant/detail/" + restaurantId;
     }
 }

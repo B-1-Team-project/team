@@ -114,16 +114,20 @@ RestaurantController {
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model, Principal principal) {
+        Restaurant restaurant = this.restaurantService.getRestaurant(id);
+
         if (principal != null) {
             SiteUser user = this.siteUserService.getUser(principal.getName());
             model.addAttribute("user", user);
-        }
-        Restaurant restaurant = this.restaurantService.getRestaurant(id);
+            model.addAttribute("favorite", user.getFavorite().contains(restaurant));
+        } else model.addAttribute("favorite", false);
+
         List<Review> reviews = this.reviewService.getReviews(restaurant);
         double averageStar = this.reviewService.averageStar(reviews);
         model.addAttribute("averageStar", averageStar);
         model.addAttribute("reviews", reviews);
         model.addAttribute("restaurant", restaurant);
+
         return "restaurantDetail";
     }
 
@@ -145,6 +149,7 @@ RestaurantController {
         model.addAttribute("restaurant", restaurant);
         return "test2";
     }
+
 }
 
 
