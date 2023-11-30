@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,10 +35,8 @@ public class SiteUser {
 
     private String authority;
 
-//    ========================================
     @Column(unique = true)
     private String token;
-
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<Restaurant> restaurants;
@@ -48,8 +48,11 @@ public class SiteUser {
     private List<Review> reviews;
 
     private String picture;
+
     private String role = "ROLE_USER";
 
+    @ManyToMany
+    private Set<Restaurant> favorite;
     public SiteUser(){
 
     }
