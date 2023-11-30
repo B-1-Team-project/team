@@ -62,4 +62,8 @@ public class ReservationService {
     public List<Reservation> getAllByUser(SiteUser user) {
         return this.reservationRepository.findByUser(user);
     }
+
+    public List<Reservation> getAllByRestaurants(List<Restaurant> restaurants) {
+        return this.reservationRepository.findByRestaurantIn(restaurants);
+    }
 }

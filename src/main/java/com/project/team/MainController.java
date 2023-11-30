@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,8 +64,10 @@ public class MainController {
     }
 
     @PostMapping("/recommendMenu")
-    public void recommendMenu(@RequestBody List<Map<String, String>> dataList) {
-
+    public ResponseEntity<String> recommendMenu(@RequestBody List<Map<String, String>> dataList) {
+        // 처리 로직
+        String jsonResponse = "{ \"message\": \"Success\" }";
+        return ResponseEntity.ok(jsonResponse);
     }
 
 }

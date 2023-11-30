@@ -38,6 +38,11 @@
             width:32%;
         }
 
+        #media {
+            width:80%;
+            margin:0 auto;
+        }
+
          @media (max-width: 1200px) {
             .media {
                 flex-direction: column;
@@ -53,11 +58,6 @@
             #user {
                 width:100%;
                 margin-left: 0;
-            }
-
-            .top3 {
-                width:80%;
-                margin-bottom:10px;
             }
         }
 
@@ -194,7 +194,7 @@
     </div>
     <div class="mt-5" style="width:95%; margin:0 auto;">
         <h4 class="border-bottom pb-2">#내 주변 <strong>별점</strong> top3 맛집</h4>
-        <div class="media d-flex justify-content-between">
+        <div class="media d-flex justify-content-between" id="media">
             <div class="top3" th:each="starRes : ${starTop3}">
                 <div class="card">
                     <div class="card-body">

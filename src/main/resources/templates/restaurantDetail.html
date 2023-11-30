@@ -1,8 +1,8 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <div class="d-flex mt-4 justify-content-between" style="background:white; padding:30px; width:90%; margin:0 auto; border-radius:15px;">
+    <div class="RD d-flex mt-4 justify-content-between" style="background:white; padding:30px; width:90%; margin:0 auto; border-radius:15px;">
         <!-- 가게 상세 정보 -->
-        <div class="card" style="width:30%; height:80vh;">
+        <div class="details card" >
             <img th:src="@{${restaurant.image}}"
                  class="card-img-top" style="height:300px;">
             <div class="card-header" style="background:linen;">
@@ -100,7 +100,7 @@
             </div>
         </div>
         <!-- 예약 폼 -->
-        <div class="card" style="width:28%;">
+        <div class="reserve card">
             <div class="card-header fs-4 fw-bold" style="background:linen;">예약하기</div>
             <div class="card-body">
                 <div class="card-text">
@@ -169,14 +169,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-end">
-                        <input id="reserveBtn" type="button" class="버튼 btn" value="예약">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <div style="font-size:10pt;" class="me-2" sec:authorize="isAnonymous()">※ 로그인 후 예약 가능합니다.</div>
+                        <input id="reserveBtn" type="button" class="버튼 btn" value="예약" sec:authorize="isAuthenticated()">
+                        <input onclick="disabled()" type="button" class="버튼 btn" value="예약" sec:authorize="isAnonymous()" disabled>
                     </div>
                 </div>
             </div>
         </div>
         <!-- 리뷰 -->
-        <div class="card" style="border-radius:5px; width:38%;">
+        <div class="review card">
             <div class="card-header fs-4 fw-bold" style="background:linen;">리뷰쓰기</div>
             <div class="card-body">
                 <div class="card-text">
@@ -420,250 +422,252 @@
     <script src="/imageButton.js"></script>
     <script layout:fragment="script" type='text/javascript' th:inline="javascript">
 
-            var commentCreateTimes = document.querySelectorAll('.dynamicTime');
+        var commentCreateTimes = document.querySelectorAll('.dynamicTime');
 
-            commentCreateTimes.forEach(function(commentCreateTimeElement) {
-               var commentCreateTime = new Date(commentCreateTimeElement.innerText);
+        commentCreateTimes.forEach(function(commentCreateTimeElement) {
+           var commentCreateTime = new Date(commentCreateTimeElement.innerText);
 
-               // 현재 시간
-               var now = new Date();
+           // 현재 시간
+           var now = new Date();
 
-               // 시간 차이 계산 (밀리초 단위)
-               var timeDifference = now - commentCreateTime;
-               var secondsDifference = Math.floor(timeDifference / 1000); // 밀리초를 초로 변환
-               var minutesDifference = Math.floor(secondsDifference / 60); // 초를 분으로 변환
-               var hoursDifference = Math.floor(minutesDifference / 60); // 분을 시간으로 변환
-               var daysDifference = Math.floor(hoursDifference / 24); // 시간을 일수로 변환
+           // 시간 차이 계산 (밀리초 단위)
+           var timeDifference = now - commentCreateTime;
+           var secondsDifference = Math.floor(timeDifference / 1000); // 밀리초를 초로 변환
+           var minutesDifference = Math.floor(secondsDifference / 60); // 초를 분으로 변환
+           var hoursDifference = Math.floor(minutesDifference / 60); // 분을 시간으로 변환
+           var daysDifference = Math.floor(hoursDifference / 24); // 시간을 일수로 변환
 
-               // 상대적인 시간 표시
-               if (secondsDifference < 60) {
-                   commentCreateTimeElement.innerText = secondsDifference + '초 전';
-               } else if (minutesDifference < 60) {
-                   commentCreateTimeElement.innerText = minutesDifference + '분 전';
-               } else if (hoursDifference < 24) {
-                   commentCreateTimeElement.innerText = hoursDifference + '시간 전';
-               } else if (daysDifference < 7) {
-                   commentCreateTimeElement.innerText = daysDifference + '일 전';
-               } else {
-                   // 원하는 형식으로 시간을 표시
-                   commentCreateTimeElement.innerText = commentCreateTime.toLocaleString('ko-KR');
-               }
-           });
-
-           function saveModify(event, commentId) {
-               console.log(event.target.previousElementSibling.value);
-               event.target.parentNode.submit();
+           // 상대적인 시간 표시
+           if (secondsDifference < 60) {
+               commentCreateTimeElement.innerText = secondsDifference + '초 전';
+           } else if (minutesDifference < 60) {
+               commentCreateTimeElement.innerText = minutesDifference + '분 전';
+           } else if (hoursDifference < 24) {
+               commentCreateTimeElement.innerText = hoursDifference + '시간 전';
+           } else if (daysDifference < 7) {
+               commentCreateTimeElement.innerText = daysDifference + '일 전';
+           } else {
+               // 원하는 형식으로 시간을 표시
+               commentCreateTimeElement.innerText = commentCreateTime.toLocaleString('ko-KR');
            }
+       });
 
-           function modifyComment(event, commentId) {
-               event.target.parentNode.style.display = 'none';
-               event.target.parentNode.previousElementSibling.children[1].style.display = 'none';
-               event.target.parentNode.previousElementSibling.children[2].style.display = 'flex';
-               document.querySelector(".dynamicTime").style.display = 'none';
-           }
+       function saveModify(event, commentId) {
+           console.log(event.target.previousElementSibling.value);
+           event.target.parentNode.submit();
+       }
 
-           const deleteComment = document.querySelectorAll("#cmDeleteBtn");
-           Array.from(deleteComment).forEach(function(element) {
-               element.addEventListener('click', function() {
-                   if (confirm("정말로 삭제하시겠습니까?")) {
-                       location.href = this.dataset.uri;
-                   };
-               });
+       function modifyComment(event, commentId) {
+           event.target.parentNode.style.display = 'none';
+           event.target.parentNode.previousElementSibling.children[1].style.display = 'none';
+           event.target.parentNode.previousElementSibling.children[2].style.display = 'flex';
+           document.querySelector(".dynamicTime").style.display = 'none';
+       }
+
+       const deleteComment = document.querySelectorAll("#cmDeleteBtn");
+       Array.from(deleteComment).forEach(function(element) {
+           element.addEventListener('click', function() {
+               if (confirm("정말로 삭제하시겠습니까?")) {
+                   location.href = this.dataset.uri;
+               };
            });
+       });
 
-           const comment = document.querySelectorAll("#commentBtn");
-           Array.from(comment).forEach(function(element) {
-               element.addEventListener('click', function() {
-                   if(this.previousElementSibling.value  == '')
-                       alert("댓글 내용을 입력해주세요.")
-                   else {
-                       alert("댓글이 등록되었습니다.")
-                       element.parentNode.parentNode.submit();
-                   }
-               });
-           });
-
-           const deleteReview = document.querySelectorAll("#deleteBtn");
-           Array.from(deleteReview).forEach(function(element) {
-               element.addEventListener('click', function() {
-                   if (confirm("정말로 삭제하시겠습니까?")) {
-                       location.href = this.dataset.uri;
-                   };
-               });
-           });
-
-           const review = document.getElementById("reviewBtn");
-           review.addEventListener('click', function() {
-               if (document.querySelector("#star").value == "")
-                   alert("별점을 입력해주세요.");
-               else if (document.querySelector("#comment").value == "")
-                   alert("리뷰 내용을 입력해주세요.");
-               else
-                   document.querySelector("#reviewForm").submit();
-           });
-
-           const reserve = document.getElementById("reserveBtn");
-               reserve.addEventListener('click', function() {
-                   if (document.getElementById('selectedDate').value == "")
-                       alert("예약 날짜를 선택해주세요.");
-                   else if (document.getElementById('selectedTime').value == "")
-                       alert("예약 시간을 선택해주세요.");
-                   else if (document.getElementById('inputCount').value == "")
-                       alert("인원 수를 선택해주세요.");
-                   else if (!document.getElementById('verResult').classList.contains('valid-feedback'))
-                       alert("인증이 완료되지 않았습니다.");
-                   else {
-                       alert("예약이 완료되었습니다.");
-                       document.getElementById('date').value = document.getElementById('selectedDate').value;
-                       document.getElementById('time').value = document.getElementById('selectedTime').value;
-                       document.getElementById('count').value = document.getElementById('inputCount').value;
-                       document.getElementById('reserveForm').submit();
-                   }
-               });
-
-           document.getElementById('copyAddress').addEventListener('click', function() {
-               const textToCopy = this.innerText;
-               const tempInput = document.createElement('input');
-               tempInput.value = textToCopy;
-               document.body.appendChild(tempInput);
-               tempInput.select();
-               document.execCommand('copy');
-               document.body.removeChild(tempInput);
-
-               alert('텍스트가 클립보드에 복사되었습니다.');
-           });
-
-           document.addEventListener("DOMContentLoaded", function() {
-               // 현재 날짜와 시간 설정
-               var currentDate = new Date();
-
-               // 예약 날짜 선택
-               flatpickr("#datepicker", {
-                   enableTime: false,
-                   locale: "ko",
-                   minDate: "today", // 오늘 날짜부터 선택 가능
-                   maxDate: new Date().fp_incr(30), // 30일 이내로 선택 가능
-                   onChange: function(selectedDates, dateStr, instance) {
-                       document.getElementById("selectedDate").value = dateStr;
-
-                       // 예약 시간의 minTime 업데이트
-                       updateMinTime(dateStr);
-                   }
-               });
-
-               // 예약 시간 선택
-               flatpickr("#timepicker", {
-                   enableTime: true,
-                   noCalendar: true,
-                   dateFormat: "H:i",
-                   locale: "ko",
-                   minTime: [[${restaurant.startTime}]],
-                   maxTime: [[${restaurant.endTime}]],
-                   onChange: function(selectedDates, dateStr, instance) {
-                       document.getElementById("selectedTime").value = dateStr;
-                   }
-               });
-
-               function updateMinTime(selectedDate) {
-                   // 선택된 날짜가 오늘이면서 현재 시간 이후의 시간을 계산
-                   var minTime = (selectedDate === flatpickr.formatDate(currentDate, "Y-m-d")) ?
-                       (currentDate.getHours() + ":" + currentDate.getMinutes()) :
-                       [[${restaurant.startTime}]];
-
-                   // 예약 시간의 minTime을 업데이트
-                   document.getElementById("timepicker")._flatpickr.set("minTime", minTime);
-               }
-           });
-
-           function sendMessage() {
-               var phoneNumber = document.getElementById("phoneNum").value;
-               if (phoneNumber == "")
-                   alert("전화번호를 입력해주세요.");
+       const comment = document.querySelectorAll("#commentBtn");
+       Array.from(comment).forEach(function(element) {
+           element.addEventListener('click', function() {
+               if(this.previousElementSibling.value  == '')
+                   alert("댓글 내용을 입력해주세요.")
                else {
-                   // URL 매개변수를 사용하여 서버로 전화번호를 보내는 GET 요청
-                   var xhr = new XMLHttpRequest();
-                   xhr.open("GET", "/send?phoneNumber=" + encodeURIComponent(phoneNumber), true);
-
-                   // 서버에서 응답을 받으면 콘솔에 출력
-                   xhr.onreadystatechange = function () {
-                       if (xhr.readyState == 4 && xhr.status == 200) {
-                           // 응답이 완료되면 modal을 닫음
-                           $('#exampleModal').modal('hide');
-                           // 새로운 인증번호를 받아오기 위해 requestVerificationKey 함수 호출
-                           requestVerificationKey();
-                       }
-                   };
-
-                   xhr.send();
+                   alert("댓글이 등록되었습니다.")
+                   element.parentNode.parentNode.submit();
                }
+           });
+       });
+
+       const deleteReview = document.querySelectorAll("#deleteBtn");
+       Array.from(deleteReview).forEach(function(element) {
+           element.addEventListener('click', function() {
+               if (confirm("정말로 삭제하시겠습니까?")) {
+                   location.href = this.dataset.uri;
+               };
+           });
+       });
+
+       const review = document.getElementById("reviewBtn");
+       review.addEventListener('click', function() {
+           if (document.querySelector("#star").value == "")
+               alert("별점을 입력해주세요.");
+           else if (document.querySelector("#comment").value == "")
+               alert("리뷰 내용을 입력해주세요.");
+           else
+               document.querySelector("#reviewForm").submit();
+       });
+
+       const reserve = document.getElementById("reserveBtn");
+           reserve.addEventListener('click', function() {
+               if (document.getElementById('selectedDate').value == "")
+                   alert("예약 날짜를 선택해주세요.");
+               else if (document.getElementById('selectedTime').value == "")
+                   alert("예약 시간을 선택해주세요.");
+               else if (document.getElementById('inputCount').value == "")
+                   alert("인원 수를 선택해주세요.");
+               else if (!document.getElementById('verResult').classList.contains('valid-feedback'))
+                   alert("인증이 완료되지 않았습니다.");
+               else if (document.getElementById('checkLogin').value == null)
+                   alert("로그인 후 예약 가능합니다.")
+               else {
+                   alert("예약이 완료되었습니다.");
+                   document.getElementById('date').value = document.getElementById('selectedDate').value;
+                   document.getElementById('time').value = document.getElementById('selectedTime').value;
+                   document.getElementById('count').value = document.getElementById('inputCount').value;
+                   document.getElementById('reserveForm').submit();
+               }
+           });
+
+       document.getElementById('copyAddress').addEventListener('click', function() {
+           const textToCopy = this.innerText;
+           const tempInput = document.createElement('input');
+           tempInput.value = textToCopy;
+           document.body.appendChild(tempInput);
+           tempInput.select();
+           document.execCommand('copy');
+           document.body.removeChild(tempInput);
+
+           alert('텍스트가 클립보드에 복사되었습니다.');
+       });
+
+       document.addEventListener("DOMContentLoaded", function() {
+           // 현재 날짜와 시간 설정
+           var currentDate = new Date();
+
+           // 예약 날짜 선택
+           flatpickr("#datepicker", {
+               enableTime: false,
+               locale: "ko",
+               minDate: "today", // 오늘 날짜부터 선택 가능
+               maxDate: new Date().fp_incr(30), // 30일 이내로 선택 가능
+               onChange: function(selectedDates, dateStr, instance) {
+                   document.getElementById("selectedDate").value = dateStr;
+
+                   // 예약 시간의 minTime 업데이트
+                   updateMinTime(dateStr);
+               }
+           });
+
+           // 예약 시간 선택
+           flatpickr("#timepicker", {
+               enableTime: true,
+               noCalendar: true,
+               dateFormat: "H:i",
+               locale: "ko",
+               minTime: [[${restaurant.startTime}]],
+               maxTime: [[${restaurant.endTime}]],
+               onChange: function(selectedDates, dateStr, instance) {
+                   document.getElementById("selectedTime").value = dateStr;
+               }
+           });
+
+           function updateMinTime(selectedDate) {
+               // 선택된 날짜가 오늘이면서 현재 시간 이후의 시간을 계산
+               var minTime = (selectedDate === flatpickr.formatDate(currentDate, "Y-m-d")) ?
+                   (currentDate.getHours() + ":" + currentDate.getMinutes()) :
+                   [[${restaurant.startTime}]];
+
+               // 예약 시간의 minTime을 업데이트
+               document.getElementById("timepicker")._flatpickr.set("minTime", minTime);
            }
+       });
 
-           var serverVerKey; // 전역 변수로 선언
+       function sendMessage() {
+           var phoneNumber = document.getElementById("phoneNum").value;
+           if (phoneNumber == "")
+               alert("전화번호를 입력해주세요.");
+           else {
+               // URL 매개변수를 사용하여 서버로 전화번호를 보내는 GET 요청
+               var xhr = new XMLHttpRequest();
+               xhr.open("GET", "/send?phoneNumber=" + encodeURIComponent(phoneNumber), true);
 
-           // 서버에서 인증번호를 가져오는 함수
-           function requestVerificationKey() {
-               $.ajax({
-                   url: "/sendVerKey",
-                   type: "GET",
-                   data: { timestamp: new Date().getTime() },
-                   success: function (response) {
-                       serverVerKey = response.verKey;
-                       console.log(serverVerKey);
-                   },
-                   error: function () {
-                       console.error("인증번호를 가져오는 중에 오류가 발생했습니다.");
+               // 서버에서 응답을 받으면 콘솔에 출력
+               xhr.onreadystatechange = function () {
+                   if (xhr.readyState == 4 && xhr.status == 200) {
+                       // 응답이 완료되면 modal을 닫음
+                       $('#exampleModal').modal('hide');
+                       // 새로운 인증번호를 받아오기 위해 requestVerificationKey 함수 호출
+                       requestVerificationKey();
                    }
-               });
+               };
+
+               xhr.send();
            }
+       }
 
-           $("#verKeyBtn").click(function () {
-               // 인증번호 입력란 초기화
-               document.getElementById("verKey").value = "";
-               // 새로운 인증번호를 받아오기 위해 requestVerificationKey 함수 호출
-               requestVerificationKey();
-           });
+       var serverVerKey; // 전역 변수로 선언
 
-           // 페이지 로드 시에도 최초 한 번은 인증번호를 가져오도록 호출
-           $(document).ready(function () {
-               requestVerificationKey();
-           });
-
-           // 인증번호를 체크하는 함수
-           function checkVerificationKey() {
-               var enteredKey = document.getElementById("verKey").value;
-               console.log(serverVerKey);
-               console.log(enteredKey);
-
-               if (enteredKey === serverVerKey) {
-                   document.getElementById("verKey").classList.remove("is-invalid");
-                   document.getElementById("verKey").classList.add("is-valid");
-                   document.getElementById("verResult").classList.remove("invalid-feedback");
-                   document.getElementById("verResult").classList.add("valid-feedback");
-                   document.getElementById("verResult").textContent = "인증 완료되었습니다.";
-               } else {
-                   document.getElementById("verKey").classList.add("is-invalid");
-                   document.getElementById("verResult").classList.add("invalid-feedback");
-                   document.getElementById("verResult").textContent = "인증번호가 일치하지 않습니다.";
+       // 서버에서 인증번호를 가져오는 함수
+       function requestVerificationKey() {
+           $.ajax({
+               url: "/sendVerKey",
+               type: "GET",
+               data: { timestamp: new Date().getTime() },
+               success: function (response) {
+                   serverVerKey = response.verKey;
+                   console.log(serverVerKey);
+               },
+               error: function () {
+                   console.error("인증번호를 가져오는 중에 오류가 발생했습니다.");
                }
+           });
+       }
+
+       $("#verKeyBtn").click(function () {
+           // 인증번호 입력란 초기화
+           document.getElementById("verKey").value = "";
+           // 새로운 인증번호를 받아오기 위해 requestVerificationKey 함수 호출
+           requestVerificationKey();
+       });
+
+       // 페이지 로드 시에도 최초 한 번은 인증번호를 가져오도록 호출
+       $(document).ready(function () {
+           requestVerificationKey();
+       });
+
+       // 인증번호를 체크하는 함수
+       function checkVerificationKey() {
+           var enteredKey = document.getElementById("verKey").value;
+           console.log(serverVerKey);
+           console.log(enteredKey);
+
+           if (enteredKey === serverVerKey) {
+               document.getElementById("verKey").classList.remove("is-invalid");
+               document.getElementById("verKey").classList.add("is-valid");
+               document.getElementById("verResult").classList.remove("invalid-feedback");
+               document.getElementById("verResult").classList.add("valid-feedback");
+               document.getElementById("verResult").textContent = "인증 완료되었습니다.";
+           } else {
+               document.getElementById("verKey").classList.add("is-invalid");
+               document.getElementById("verResult").classList.add("invalid-feedback");
+               document.getElementById("verResult").textContent = "인증번호가 일치하지 않습니다.";
            }
+       }
 
-           let count = 1;
+       let count = 1;
 
-           function updateCount() {
-               document.getElementById("inputCount").value = count;
-           }
+       function updateCount() {
+           document.getElementById("inputCount").value = count;
+       }
 
-           function increaseCount() {
-               count++;
+       function increaseCount() {
+           count++;
+           updateCount();
+       }
+
+       function decreaseCount() {
+           if (count > 1) {
+               count--;
                updateCount();
            }
-
-           function decreaseCount() {
-               if (count > 1) {
-                   count--;
-                   updateCount();
-               }
-           }
+       }
     </script>
 </div>
 </html>

@@ -45,7 +45,7 @@ public class ReservationController {
                          @RequestParam(value = "view", defaultValue = "") String view) {
         SiteUser user = this.siteUserService.getUser(principal.getName());
         List<Restaurant> restaurants = user.getRestaurants();
-        List<Reservation> reservations = this.reservationService.getAllByUser(user);
+        List<Reservation> reservations = this.reservationService.getAllByRestaurants(restaurants);
         if (view.equals("가게별")) {
             model.addAttribute("restaurants", restaurants);
         } else if (view.equals("날짜별")) {

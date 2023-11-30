@@ -37,11 +37,24 @@ function success(position) {
      .then(data => {
      const dataList = data.response.body.items.item;
 
-     $.ajax({
-        url: '/recommendMenu',
-        type: 'post',
-        data: dataList
-     });
+        var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+        var csrfToken = $("meta[name='_csrf']").attr("content");
+
+        fetch('/recommendMenu', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken,
+            },
+            body: JSON.stringify(dataList),
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result.message);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 
      handleSkyData(dataList[18].fcstValue, dataList[6].fcstValue);
      handleTemperatureData(dataList[24].fcstValue);
