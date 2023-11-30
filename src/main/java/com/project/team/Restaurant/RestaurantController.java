@@ -149,6 +149,7 @@ RestaurantController {
         model.addAttribute("restaurant", restaurant);
         return "test2";
     }
+
 }
 
 

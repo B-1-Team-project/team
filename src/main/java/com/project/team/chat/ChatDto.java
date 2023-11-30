@@ -10,4 +10,5 @@ public class ChatDto {
     private String writer;
     private String target;
     private String room;
+    private Integer restaurant;
 }

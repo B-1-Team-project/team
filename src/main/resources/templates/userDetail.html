@@ -1,27 +1,50 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
     <!-- 기본 프로필 -->
-    <div style="background:white; width:95%; padding:20px; border-radius:15px; margin:0 auto;" class="my-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="border-bottom pb-2">프로필</h3>
-            <button type="button" id="modifyButton" class="버튼 btn" data-toggle="modal"
-                    th:attr="data-target=${#authorization.expression('isAuthenticated()')} ? '#passwordModal' : ''">
-                정보수정
-            </button>
-        </div>
-        <div style="text-align:center; margin:0 auto;" class="my-3">
-            <img style="border-radius:50%; width:12%; border:2px solid lightgray;" src="/image/owner.jpg" alt="사장 이미지"
-                 class="mb-2" th:if="${user.authority == '사장님'}">
-            <img style="border-radius:50%; width:12%; border:2px solid lightgray;" src="/image/customer.jpg"
-                 alt="손님 이미지" class="mb-2" th:if="${user.authority == '손님'}">
-            <div th:text="${user.name}" class="fw-bold fs-3"></div>
-            <div th:text="${user.authority}" class=" fs-5"></div>
-            <div class="my-2">
+    <div class="d-flex justify-content-between my-4" style="width:95%; margin:0 auto;">
+        <div style="width:49%; background:white; padding:20px; border-radius:15px;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="border-bottom pb-2">프로필</h3>
+                <button type="button" id="modifyButton" class="버튼 btn" data-toggle="modal"
+                        th:attr="data-target=${#authorization.expression('isAuthenticated()')} ? '#passwordModal' : ''">
+                    정보수정
+                </button>
+            </div>
+            <div style="text-align:center; margin:0 auto;" class="my-3">
+                <img style="border-radius:50%; width:12%; border:2px solid lightgray;" src="/image/owner.jpg"
+                     alt="사장 이미지"
+                     class="mb-2" th:if="${user.authority == '사장님'}">
+                <img style="border-radius:50%; width:12%; border:2px solid lightgray;" src="/image/customer.jpg"
+                     alt="손님 이미지" class="mb-2" th:if="${user.authority == '손님'}">
+                <div th:text="${user.name}" class="fw-bold fs-3"></div>
+                <div th:text="${user.authority}" class=" fs-5"></div>
+                <div class="my-2">
                 <span th:text="${user.email}"
                       style="background:lightgray; border:1px solid darkgray; padding:5px; border-radius:10px; font-size:11pt;"></span>
+                </div>
+                <div style="text-decoration:underline;"
+                     th:text="|${#temporals.format(user.createDate, 'yyyy년 MM월 dd일')} 가입|"></div>
             </div>
-            <div style="text-decoration:underline;"
-                 th:text="|${#temporals.format(user.createDate, 'yyyy년 MM월 dd일')} 가입|"></div>
+        </div>
+        <div style="width:49%; background:white; padding:20px; border-radius:15px;">
+            <h3 class="border-bottom pb-2">채팅 목록</h3>
+            <div th:if="${chatList.isEmpty()}" class="p-5 text-center">
+                <h3 style="color:gray;">채팅 내역 없음</h3>
+            </div>
+            <div th:if="${!chatList.isEmpty()}">
+                <div th:each="chat : ${chatList}">
+                    <div class="card mb-2">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <a th:text="|${chat.writer.loginId}님과 ${chat.target.loginId}님의 대화|"
+                               style="background:linen; font-size:13pt; font-weight:bold;"
+                               th:href="@{|/chat/join/${chat.room}|}"></a>
+                            <form th:action="@{|/chat/delete/${chat.room}}" method="post">
+                                <button type="submit" class="btn btn-sm 버튼">삭제</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- 예약 목록 -->
@@ -114,6 +137,8 @@
             alert('비밀번호가 일치하지 않습니다');
             document.querySelector('#modifyButton').click();
         }
+
+        console.log([[${roomList}]]);
     </script>
 </div>
 </html>

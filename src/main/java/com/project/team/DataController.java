@@ -53,10 +53,12 @@ public class DataController {
                 JSONObject basicInfo = (JSONObject) detail.get("basicInfo");
                 String realTime = null;
                 String image = null;
+                String main = null;
                 try {
                     realTime = ((JSONObject) ((JSONArray) ((JSONObject) ((JSONArray) ((JSONObject) basicInfo.get("openHour"))
                             .get("periodList")).get(0)).get("timeList")).get(0)).get("timeSE").toString();
                     image = ((JSONObject)detail.get("placeOwnerInfos")).get("mainPhoto").toString();
+                    main = ((JSONObject)basicInfo.get("category")).get("catename").toString();
                 } catch (Exception ignored) {
                 }
                 String info = null;
@@ -76,7 +78,7 @@ public class DataController {
                 if (basicInfo.get("introduction") != null) info = basicInfo.get("introduction").toString();
 
                 Restaurant restaurant = restaurantService.registerRestaurant(name, address, data.get("phone"),
-                        null, null, null, startTime, endTime, info);
+                        null, main, null, startTime, endTime, info);
                 restaurantService.setLocation(restaurant, data.get("x"), data.get("y"));
                 restaurantService.setImage(restaurant, image);
                 if (detail.get("comment") == null)
