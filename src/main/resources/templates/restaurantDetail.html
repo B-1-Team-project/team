@@ -96,6 +96,25 @@
                             <span>실시간 채팅</span>
                         </a>
                     </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <!-- 조건부로 링크를 표시 -->
+                        <a th:if="${favorite}" th:href="@{|/user/favorite/${restaurant.id}|}" style="font-size: 11pt; color: dimgray; text-decoration: none;" class="me-1">
+                            <!-- SVG 아이콘 (채운 하트) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                 class="bi bi-heart-fill text-danger" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                            </svg>
+                            즐겨찾기
+                        </a>
+                        <a th:if="${!favorite}" th:href="@{|/user/favorite/${restaurant.id}|}" style="font-size: 11pt; color: dimgray; text-decoration: none;" class="me-1">
+                            <!-- SVG 아이콘 (빈 하트) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                 class="bi bi-heart text-dark" viewBox="0 0 16 16">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.060.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                            </svg>
+                            즐겨찾기
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -415,6 +434,7 @@
             <input type="hidden" id="count" name="count">
         </form>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.6/dist/flatpickr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.6/dist/l10n/ko.js"></script>
