@@ -264,4 +264,9 @@ public class SiteUserController {
 
         return "redirect:/restaurant/detail/" + restaurantId;
     }
+    //테스트용 코드
+    @GetMapping("/test2")
+    public String test2() {
+        return "test2";
+    }
 }

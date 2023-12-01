@@ -1,19 +1,334 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <head>
+    <style>
+        * {
+          font-family: Pretendard;
+          box-sizing: border-box;
+        }
 
+        body {
+          background: #f7f8fc;
+          height: 960px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+
+        canvas {
+          margin-top: 20px;
+          border-radius: 50%;
+          border: 10px solid #febf00;
+          transition: transform 2s;
+        }
+
+        button {
+          background: #febf00;
+          margin-top: 1rem;
+          padding: .8rem 1.8rem;
+          border: none;
+          font-size: 1.5rem;
+          font-weight: bold;
+          border-radius: 5px;
+          transition: .2s;
+          cursor: pointer;
+        }
+
+        button:active {
+          background: #444;
+          color: #f9f9f9;
+        }
+
+        #menu {
+          width: 100%;
+          max-width: 600px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          text-align: center;
+          flex-direction: column;
+          position: relative;
+        }
+
+        #menu {
+            width: 100%;
+            height:100%;
+            display: none;
+        }
+        #randomRecommendationBtn {
+            display: block;
+        }
+        #roulette-container {
+            position: relative;
+            width: 300px; /* canvas의 너비에 맞게 조절 */
+            height: 300px; /* canvas의 높이에 맞게 조절 */
+            margin: 20px auto; /* 화면 중앙에 위치하도록 설정 */
+            transition: transform 2s; /* 추가된 부분: transform 속성에 대한 트랜지션 효과 설정 */
+        }
+
+
+        #arrow-container {
+            position: absolute;
+            top:3%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+        }
+
+        #arrow {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid red; /* 수정된 부분: 상단을 가리키도록 변경 */
+            transform-origin: 50% 0%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #result-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px; /* Add margin for better spacing */
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+         }
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+    </style>
 </head>
 <body>
 
-<h2>음식점 추천</h2>
-<div th:each="restaurant, loop:${restaurant}">
-    <h2  th:text="${restaurant.name}">  </h2>
-    <div th:text="${restaurant.address}"></div>
-    <div th:text="${restaurant.number}"></div>
-    <div th:text="${restaurant.endTime}"></div>
-    <div th:text="${restaurant.introduce}"></div>
-    <div>(로그인한 유저네임) 을 위한 오늘의 메뉴</div>
+<div>
+    <span th:text="${userName} + '님을 위한 오늘의 추천메뉴'"></span>
 </div>
+
+<h1 id="food-recommendation">음식 랜덤 추천</h1>
+<button id="randomRecommendationBtn" onclick="showRoulette()">랜덤 음식 추천 받기</button>
+
+<div id="menu">
+    <canvas id="roulette" width="200" height="200"></canvas>
+    <div id="arrow-container">
+        <div id="arrow"></div>
+    </div>
+    <div id="result-container">
+        <div id="result" class="animate__animated"></div>
+    </div>
+    <button onclick="rotate()">돌려돌려 돌림판</button>
+    <div id="addDiv">
+        <button onclick="addRandomMenu()">셔플</button>
+    </div>
+</div>
+<div id="myModal" class="modal">
+    <!-- 모달 창 컨텐츠 -->
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="modalResult"></p>
+    </div>
+</div>
+
+
+<script>
+    const $c = document.getElementById("roulette");
+    const ctx = $c.getContext("2d");
+    let allProducts = ["라면", "햄버거", "치킨", "피자", "한식", "중식", "일식", "국밥", "고기/구이", "카페"];
+    let products = [];
+    const colors = [];
+
+    // 초기에 보여줄 값 개수
+    const initialDisplayCount = 5;
+
+    window.onload = () => {
+        // 초기에는 처음 5개의 값을 보여주기 위해 초기 설정
+        products = allProducts.slice(0, initialDisplayCount);
+        newMake();
+    };
+
+function showRoulette() {
+    document.getElementById('food-recommendation').style.display = 'none';
+    document.getElementById('menu').style.display = 'flex';
+    newMake();
+    randomRecommendationBtn.style.display = 'none';
+}
+
+const showModal = (result) => {
+  const modal = document.getElementById("myModal");
+  const modalResult = document.getElementById("modalResult");
+
+  modalResult.textContent = `${result}`;
+  modal.style.display = "block";
+};
+
+const closeModal = () => {
+  const modal = document.getElementById("myModal");
+  modal.style.display = "none";
+};
+
+const newMake = () => {
+    const [cw, ch] = [$c.width / 2, $c.height / 2];
+    const arc = Math.PI * 2 / products.length;
+
+    for (let i = 0; i < products.length; i++) {
+        ctx.beginPath();
+        if (colors.length === 0) {
+            generateRandomColors();
+        }
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(cw, ch);
+        ctx.arc(cw, ch, cw - 20, arc * i, arc * (i + 1));
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "18px Pretendard";
+    ctx.textAlign = "center";
+
+    for (let i = 0; i < products.length; i++) {
+        const angle = arc * i + arc / 2;
+
+        ctx.save();
+
+        ctx.translate(
+            cw + Math.cos(angle) * (cw - 60),
+            ch + Math.sin(angle) * (ch - 60)
+        );
+
+        ctx.rotate(angle + Math.PI / 2);
+
+        products[i].split(" ").forEach((text, j) => {
+            ctx.fillText(text, 0, 30 * j);
+        });
+
+        ctx.restore();
+    }
+};
+
+const rotate = () => {
+  const rouletteDiv = document.getElementById("roulette");
+  $c.style.transform = `initial`;
+  $c.style.transition = `initial`;
+
+  setTimeout(() => {
+    const ran = Math.floor(Math.random() * products.length);
+    const arc = Math.PI * 2 / products.length;
+    const rotate = ran * arc + arc * 5;
+
+    $c.style.transform = `rotate(${rotate}rad)`;
+    $c.style.transition = `2s`;
+
+    const resultElement = document.getElementById('result');
+    let result;
+
+    if (parseInt(products.length * 2 - rotate) < 0) result = products.length - 1;
+    else result = parseInt(products.length * 2 - rotate);
+    resultElement.classList.add('animate__bounceOutDown');
+    resultElement.addEventListener('animationend', () => {
+      resultElement.classList.remove('animate__bounceOutDown');
+      showModal(products[result]); // 모달 표시 함수 호출
+    }, { once: true });
+  }, 3);
+};
+
+function generateRandomColors() {
+    colors.length = 0;
+    for (let l = 0; l < products.length; l++) {
+        let a = Math.floor(Math.random() * 256);
+        let b = Math.floor(Math.random() * 256);
+        let c = Math.floor(Math.random() * 256);
+        colors.push(`rgb(${a},${b},${c})`);
+    }
+}
+
+
+    // 셔플 버튼 클릭 시 배열을 섞고, 처음 5개의 값만 보여주는 함수
+    const addRandomMenu = () => {
+        // 모든 값에서 무작위로 선택한 5개의 값을 products에 저장
+        products = shuffleArray(allProducts).slice(0, initialDisplayCount);
+
+        // 결과를 콘솔에 출력 (테스트용)
+        console.log("셔플된 배열:", products);
+
+        // 화면 갱신을 위해 새로운 돌림판 생성
+        newMake();
+    };
+
+    // 배열을 무작위로 섞는 함수
+    const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    };
+
+    const resetRoulettePosition = () => {
+    const rouletteDiv = document.getElementById("roulette");
+
+    // 애니메이션 클래스 제거
+    rouletteDiv.classList.remove('animate__slideOutLeft');
+
+    // 초기 위치로 돌아가는 스타일 적용
+    rouletteDiv.style.transform = 'initial';
+};
+
+// 버튼 클릭 시 rotate 함수 호출
+document.getElementById("randomRecommendationBtn").addEventListener("click", rotate);
+
+    // 모달 창 닫기 버튼 이벤트 처리
+  window.onclick = (event) => {
+    const modal = document.getElementById("myModal");
+    if (event.target === modal) {
+      closeModal();
+    }
+  };
+
+</script>
 
 </body>
 </html>

@@ -45,7 +45,7 @@
     </style>
 </head>
 <body>
-<a th:href="@{/test2}" class="btn btn-success position-absolute">테스트2</a>
+<a th:href="@{|/user/test2|}" class="btn btn-success position-absolute" style="z-index:99; left:2%; top:2%;">test</a>
 <a th:href="@{/test}" class="btn btn-success position-absolute" style="z-index:99; left:2%; bottom:2%;">테스트 페이지</a>
 <div class="media d-flex">
     <div id="container" th:classappend="${#authentication.name != null ? 'logged-in' : ''}">
