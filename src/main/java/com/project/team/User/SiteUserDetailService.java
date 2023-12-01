@@ -33,7 +33,6 @@ public class SiteUserDetailService implements UserDetailsService {
         } else {
             authorities.add(new SimpleGrantedAuthority(UserRole.USER.getValue()));
         }
-
         return new User(siteUser.getLoginId(), siteUser.getPassword(), authorities);
     }
 }
