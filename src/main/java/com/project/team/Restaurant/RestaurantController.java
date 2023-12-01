@@ -139,17 +139,6 @@ RestaurantController {
         return "redirect:/main";
     }
 
-    //테스트용 코드
-    @GetMapping("/test2")
-    public String test2(Model model){
-        List<Restaurant> restaurants = restaurantService.getAll();
-        Random random = new Random(); //랜덤 함수
-        int randomMenu = random.nextInt(restaurants.size()); // 랜덤한 메뉴인덱스 생성
-        Restaurant restaurant = restaurants.get(randomMenu); // restaurant 객체에 조회한값 집어넣기
-        model.addAttribute("restaurant", restaurant);
-        return "test2";
-    }
+
 
 }
-
-

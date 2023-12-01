@@ -265,6 +265,7 @@ public class SiteUserController {
         return "redirect:/restaurant/detail/" + restaurantId;
     }
 
+
     @GetMapping("/selectAuthority")
     public String selectAuthority(UserSelectForm userSelectForm, Principal principal, Model model){
         SiteUser user = siteUserService.getUser(principal.getName());
@@ -276,11 +277,17 @@ public class SiteUserController {
     @PreAuthorize("isAuthenticated()")
     public String selectAuthority(@PathVariable("loginId") String loginId, @Valid UserSelectForm userSelectForm, BindingResult bindingResult,Model model) {
         SiteUser user = siteUserService.getUser(loginId);
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
             return "selectAuthority";
         }
         this.siteUserService.saveAuthority(user, userSelectForm.getAuthority());
         return "redirect:/interprocess";
+    }
+
+    //테스트용 코드
+    @GetMapping("/test2")
+    public String test2() {
+        return "test2";
     }
 }
