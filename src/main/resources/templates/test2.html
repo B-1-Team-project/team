@@ -51,63 +51,76 @@
           position: relative;
         }
 
-        #menu::before {
-          content: "";
-          position: absolute;
-          width: 10px;
-          height: 50px;
-          border-radius: 5px;
-          background: #000;
-          top: -20px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 22;
-        }
-
         #menu {
             display: none;
         }
         #randomRecommendationBtn {
             display: block;
         }
+        #roulette-container {
+            position: relative;
+            width: 300px; /* canvas의 너비에 맞게 조절 */
+            height: 300px; /* canvas의 높이에 맞게 조절 */
+            margin: 20px auto; /* 화면 중앙에 위치하도록 설정 */
+        }
 
+        #arrow-container {
+            position: absolute;
+            top:3%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+        }
 
+        #arrow {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid red; /* 수정된 부분: 상단을 가리키도록 변경 */
+            transform-origin: 50% 0%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-
 <div>
-    <span  th:text="${userName} + '님을 위한 오늘의 추천메뉴'"></span>
-
+    <span th:text="${userName} + '님을 위한 오늘의 추천메뉴'"></span>
 </div>
-
 
 <h1 id="food-recommendation">음식 랜덤 추천</h1>
 <button id="randomRecommendationBtn" onclick="showRoulette()">랜덤 음식 추천 받기</button>
 
-
 <div id="menu">
-    <canvas width="300" height="300"></canvas>
+    <canvas id="roulette" width="300" height="300"></canvas>
+    <div id="arrow-container">
+        <div id="arrow"></div>
+    </div>
+    <div id="result"></div>
     <button onclick="rotate()">돌려돌려 돌림판</button>
     <div id="addDiv">
         <button onclick="addRandomMenu()">메뉴 추가</button>
     </div>
 </div>
 
-<script src="menu.js"></script>
 
-</body>
 
 <script>
-
-
-    const $c = document.querySelector("canvas");
+    const $c = document.getElementById("roulette");
     const ctx = $c.getContext("2d");
-    const menuAdd = document.querySelector('#menuAdd');
     const products = ["기본값1", "기본값2", "기본값3", "기본값4", "기본값5"];
     const colors = [];
-    const randomRecommendationBtn = document.getElementById("randomRecommendationBtn");
 
     function showRoulette() {
         document.getElementById('food-recommendation').style.display = 'none';
@@ -116,74 +129,75 @@
         randomRecommendationBtn.style.display = 'none';
     }
 
-    // 처음 보여질 때
     const newMake = () => {
-      const [cw, ch] = [$c.width / 2, $c.height / 2];
-      const arc = Math.PI * 2 / products.length;
-
-      for (let i = 0; i < products.length; i++) {
-        ctx.beginPath();
-        if (colors.length === 0) {
-          generateRandomColors();
-        }
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.moveTo(cw, ch);
-        ctx.arc(cw, ch, cw - 20, arc * i, arc * (i + 1));
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      ctx.fillStyle = "#fff";
-      ctx.font = "18px Pretendard";
-      ctx.textAlign = "center";
-
-      for (let i = 0; i < products.length; i++) {
-        const angle = arc * i + arc / 2;
-
-        ctx.save();
-
-        ctx.translate(
-          cw + Math.cos(angle) * (cw - 60),
-          ch + Math.sin(angle) * (ch - 60)
-        );
-
-        ctx.rotate(angle + Math.PI / 2);
-
-        products[i].split(" ").forEach((text, j) => {
-          ctx.fillText(text, 0, 30 * j);
-        });
-
-        ctx.restore();
-      }
-    };
-
-    // 돌려돌려 돌림판
-    const rotate = () => {
-      $c.style.transform = `initial`;
-      $c.style.transition = `initial`;
-
-      setTimeout(() => {
-        const ran = Math.floor(Math.random() * products.length);
+        const [cw, ch] = [$c.width / 2, $c.height / 2];
         const arc = Math.PI * 2 / products.length;
-        const rotate = ran * arc + arc * 40;
-        $c.style.transform = `rotate(${rotate}rad)`;
-        $c.style.transition = `2s`;
-      }, 5);
+
+        for (let i = 0; i < products.length; i++) {
+            ctx.beginPath();
+            if (colors.length === 0) {
+                generateRandomColors();
+            }
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.moveTo(cw, ch);
+            ctx.arc(cw, ch, cw - 20, arc * i, arc * (i + 1));
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "18px Pretendard";
+        ctx.textAlign = "center";
+
+        for (let i = 0; i < products.length; i++) {
+            const angle = arc * i + arc / 2;
+
+            ctx.save();
+
+            ctx.translate(
+                cw + Math.cos(angle) * (cw - 60),
+                ch + Math.sin(angle) * (ch - 60)
+            );
+
+            ctx.rotate(angle + Math.PI / 2);
+
+            products[i].split(" ").forEach((text, j) => {
+                ctx.fillText(text, 0, 30 * j);
+            });
+
+            ctx.restore();
+        }
     };
 
+    const rotate = () => {
+        $c.style.transform = `initial`;
+        $c.style.transition = `initial`;
 
-    // 임의 색
+        setTimeout(() => {
+            const ran = Math.floor(Math.random() * products.length);
+            const arc = Math.PI * 2 / products.length;
+            const rotate = ran * arc + arc * 5;
+            $c.style.transform = `rotate(${rotate}rad)`;
+            $c.style.transition = `2s`;
+
+            const resultElement = document.getElementById('result');
+            var result;
+            if (parseInt(products.length*2-rotate) < 0) result = products.length - 1;
+            else result = parseInt(products.length*2-rotate);
+            resultElement.textContent = `결과값: ${products[result]}`;
+
+        }, 3);
+    };
+
     function generateRandomColors() {
-      colors.length = 0;
-      for (let l = 0; l < products.length; l++) {
-        let a = Math.floor(Math.random() * 256);
-        let b = Math.floor(Math.random() * 256);
-        let c = Math.floor(Math.random() * 256);
-        colors.push(`rgb(${a},${b},${c})`);
-      }
+        colors.length = 0;
+        for (let l = 0; l < products.length; l++) {
+            let a = Math.floor(Math.random() * 256);
+            let b = Math.floor(Math.random() * 256);
+            let c = Math.floor(Math.random() * 256);
+            colors.push(`rgb(${a},${b},${c})`);
+        }
     }
-
-    newMake();
 
     function addRandomMenu() {
         const predefinedKoreanMenuItems = ["추가값1", "추가값2", "추가값3", "추가값4", "추가값5"];
@@ -195,4 +209,5 @@
     }
 </script>
 
+</body>
 </html>
