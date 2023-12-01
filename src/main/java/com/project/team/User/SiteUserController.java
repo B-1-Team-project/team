@@ -5,7 +5,6 @@ import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
-import com.project.team.chat.Chat;
 import com.project.team.chat.ChatService;
 import com.project.team.test.MailDto;
 import jakarta.validation.Valid;
@@ -80,12 +79,10 @@ public class SiteUserController {
     public String userDetail(Model model, @PathVariable("loginId") String loginId, Principal principal) {
         SiteUser siteUser = this.siteUserService.getUser(loginId);
         SiteUser loginUser = this.siteUserService.getUser(principal.getName());
-        List<Chat> chatList = chatService.getRoomList(siteUser);
         List<Reservation> userReservation = this.reservationService.getAllByUser(siteUser);
         model.addAttribute("userReservation", userReservation);
         model.addAttribute("user", siteUser);
         model.addAttribute("loginUser", loginUser);
-        model.addAttribute("chatList", chatList);
         return "userDetail";
     }
 
