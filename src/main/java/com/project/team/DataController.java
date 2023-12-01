@@ -3,7 +3,10 @@ package com.project.team;
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
 import com.project.team.Review.ReviewService;
+import com.project.team.User.SiteUser;
+import com.project.team.User.SiteUserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.maven.model.Site;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -26,6 +30,7 @@ import java.util.Map;
 public class DataController {
     private final RestaurantService restaurantService;
     private final ReviewService reviewService;
+    private final SiteUserService siteUserService;
     private final String HEAD = "https://place.map.kakao.com/main/v";
 
     @GetMapping("/getData")
@@ -94,7 +99,12 @@ public class DataController {
 
     @GetMapping("/interprocess")
     public String interprocess(@RequestParam(value = "inputAddress", defaultValue = "aroundMe") String inputAddress,
-                               Model model) {
+                               Model model, Principal principal) {
+
+        SiteUser user = siteUserService.getUser(principal.getName());
+        if(user.getAuthority() == null){
+            return "redirect:/user/selectAuthority";
+        }
         model.addAttribute("inputAddress", inputAddress);
         return "interprocess";
     }
