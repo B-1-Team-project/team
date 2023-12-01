@@ -4,7 +4,6 @@ import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
-import com.project.team.alarm.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -22,43 +22,40 @@ import java.util.UUID;
 @RequestMapping("/chat")
 public class ChatController {
     private final SiteUserService userService;
-    private final RestaurantService restaurantService;
     private final ChatService chatService;
-    private final AlarmService alarmService;
+    private final RestaurantService restaurantService;
 
     @GetMapping("/create/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String chatToOwner(@PathVariable(value = "id") Integer id, Model model, Principal principal) {
-        Restaurant restaurant = restaurantService.getRestaurant(id);
-        SiteUser user = userService.getUser(principal.getName());
-        SiteUser owner = restaurant.getOwner();
+    public String create(@PathVariable("id") Integer id, Principal principal) {
         String room = UUID.randomUUID().toString();
-        model.addAttribute("restaurant", restaurant);
-        model.addAttribute("user", user);
-        model.addAttribute("target", owner);
-        model.addAttribute("room", room);
-        return "chat";
+        Restaurant restaurant = restaurantService.getRestaurant(id);
+        chatService.create(new ChatDto("채팅방이 개설되었습니다", restaurant.getOwner().getLoginId(),
+                principal.getName(), room, restaurant.getId(), "info"));
+        return "redirect:/chat/join/" + room;
     }
 
     @GetMapping("/join/{room}")
     @PreAuthorize("isAuthenticated()")
-    public String chatToCustomer(@PathVariable(value = "room") String room, Model model, Principal principal) {
+    public String join(@PathVariable(value = "room") String room, Model model, Principal principal) {
         SiteUser user = userService.getUser(principal.getName());
         SiteUser target = chatService.getByTarget(room, user);
-        Restaurant restaurant = chatService.getByRoom(room).get(0).getRestaurant();
+        Restaurant restaurant = chatService.getInfo(room).get(0).getRestaurant();
+        List<Chat> chatList = chatService.getRoomList(user);
 
         model.addAttribute("user", user);
         model.addAttribute("target", target);
         model.addAttribute("room", room);
         model.addAttribute("chatList", chatService.getByRoom(room));
         model.addAttribute("restaurant", restaurant);
+        model.addAttribute("roomList", chatList);
         return "chat";
     }
 
     @PostMapping("/delete/{room}")
     @PreAuthorize("isAuthenticated()")
-    private String delete() {
-
+    public String delete(@PathVariable("room") String room) {
+        this.chatService.delete(room);
         return "redirect:/";
     }
 }
