@@ -2,6 +2,7 @@ package com.project.team.alarm;
 
 import com.project.team.User.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AlarmService {
     private final AlarmRepository alarmRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public List<Alarm> getByUser(SiteUser user) {
         return this.alarmRepository.findByUserOrderByRegDateDesc(user);
@@ -31,6 +33,7 @@ public class AlarmService {
         alarm.setConfirm(false);
         alarm.setChatRoom(room);
         alarmRepository.save(alarm);
+        simpMessagingTemplate.convertAndSend("/topic/main/" + user.getLoginId(), "alarm");
     }
 
     public void confirm(Alarm alarm) {

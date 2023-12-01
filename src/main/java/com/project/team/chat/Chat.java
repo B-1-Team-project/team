@@ -1,5 +1,6 @@
 package com.project.team.chat;
 
+import com.project.team.Restaurant.Restaurant;
 import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,5 +22,7 @@ public class Chat {
     @ManyToOne
     private SiteUser target;
     private String room;
+    @ManyToOne
+    private Restaurant restaurant;
     private LocalDateTime createDate;
 }

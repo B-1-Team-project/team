@@ -4,26 +4,28 @@ import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
 import com.project.team.Restaurant.Restaurant;
+import com.project.team.Restaurant.RestaurantService;
+import com.project.team.chat.Chat;
+import com.project.team.chat.ChatService;
 import com.project.team.test.MailDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.dom4j.rule.Mode;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Random;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,7 +33,8 @@ import java.util.Random;
 public class SiteUserController {
     private final SiteUserService siteUserService;
     private final ReservationService reservationService;
-
+    private final RestaurantService restaurantService;
+    private final ChatService chatService;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
@@ -77,10 +80,12 @@ public class SiteUserController {
     public String userDetail(Model model, @PathVariable("loginId") String loginId, Principal principal) {
         SiteUser siteUser = this.siteUserService.getUser(loginId);
         SiteUser loginUser = this.siteUserService.getUser(principal.getName());
+        List<Chat> chatList = chatService.getRoomList(siteUser);
         List<Reservation> userReservation = this.reservationService.getAllByUser(siteUser);
         model.addAttribute("userReservation", userReservation);
         model.addAttribute("user", siteUser);
         model.addAttribute("loginUser", loginUser);
+        model.addAttribute("chatList", chatList);
         return "userDetail";
     }
 
@@ -152,7 +157,7 @@ public class SiteUserController {
     }
 
     @PostMapping("/sendEmail")
-    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult) {
+    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult, Model model) {
         try {
             if (bindingResult.hasErrors()) {
                 return "findPw";
@@ -168,6 +173,8 @@ public class SiteUserController {
             String email = siteUserService.getUser(loginId).getEmail();
             MailDto dto = siteUserService.createMail(email);
             siteUserService.sendPasswordResetEmail(loginId);
+
+            model.addAttribute("emailSent", true);
 
             return "findPw";
         } catch (
@@ -187,10 +194,18 @@ public class SiteUserController {
     }
 
     @PostMapping("/resetPassword/{token}")
-    public String resetPassword(@Valid UserResetPwForm userResetPwForm, BindingResult bindingResult) {
+    public String resetPassword(@Valid UserResetPwForm userResetPwForm, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "resetPasswordForm";
         }
+
+        if(!userResetPwForm.getPassword1().equals(userResetPwForm.getPassword2())){
+            bindingResult.rejectValue("password2", "passwordInCorrect", "2개의 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("token", userResetPwForm.getToken());
+            return "resetPasswordForm";
+        }
+
+
         try {
             // 비밀번호를 재설정
             siteUserService.resetPassword(userResetPwForm.getToken(), userResetPwForm.getPassword1());
@@ -198,6 +213,7 @@ public class SiteUserController {
             user.setToken(siteUserService.createToken(user.getLoginId()));
 
             return "redirect:/"; // 비밀번호 재설정이 성공한 경우 로그인 페이지로 리다이렉트
+
         } catch (DataNotFoundException e) {
             // 토큰이 유효하지 않은 경우 처리
             bindingResult.reject("token.invalid", "토큰이 유효하지 않습니다.");
@@ -208,16 +224,49 @@ public class SiteUserController {
             return "resetPasswordForm";
         }
     }
+
+    @GetMapping("/findId")
+    public String findId(UserFindIdForm userFindIdForm) {
+        return "findId";
+    }
+
+    @PostMapping("/findId")
+    public String findId(@Valid UserFindIdForm userFindIdForm, BindingResult bindingResult, Model model) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return "findId";
+            }
+            String email = userFindIdForm.getEmail();
+            String userEmail = siteUserService.getUserByEmail(email).getEmail();
+            SiteUser user = siteUserService.getUserByEmail(email);
+
+            if (!email.equals(userEmail)) {
+                bindingResult.rejectValue("loginId", "loginIdInCorrect", "ID가 정확하지 않습니다.");
+                return "findId";
+            }
+            model.addAttribute("user", user);
+            return "confirmId";
+        } catch (
+                DataNotFoundException e) {
+            // 예외 처리 로직
+            bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
+            return "findId";
+        }
+    }
+
+    @GetMapping("/favorite/{restaurantId}")
+    @PreAuthorize("isAuthenticated()")
+    public String favorite(@PathVariable("restaurantId") Integer restaurantId, Principal principal,Model model){
+        SiteUser user = siteUserService.getUser(principal.getName());
+        Restaurant restaurant = restaurantService.getRestaurant(restaurantId);
+        siteUserService.toggleFavorite(user,restaurant);
+        System.out.println(user.getFavorite());
+
+        return "redirect:/restaurant/detail/" + restaurantId;
+    }
     //테스트용 코드
-    @GetMapping("/test2/{loginId}")
-    public String test2(Model model, @PathVariable("loginId") String loginId) {
-        SiteUser siteUser = this.siteUserService.getUser(loginId);
-        String userName = siteUser.getName();
-
-        model.addAttribute("siteUser", siteUser);
-        model.addAttribute("userName", userName);
-
-
+    @GetMapping("/test2")
+    public String test2() {
         return "test2";
     }
 }

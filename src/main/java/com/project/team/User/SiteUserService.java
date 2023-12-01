@@ -1,28 +1,18 @@
 package com.project.team.User;
 
 import com.project.team.DataNotFoundException;
-import com.project.team.User.SiteUser;
-import com.project.team.User.SiteUserRepository;
-
+import com.project.team.Restaurant.Restaurant;
 import com.project.team.test.MailDto;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.apache.maven.model.Site;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLOutput;
+
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.Optional;
 
 @Service
@@ -68,11 +58,6 @@ public class SiteUserService {
             return user.get();
         } else return create("testUser", "temp", "익명", null, "손님");
     }
-
-
-
-
-
 
     public MailDto createMail(String email) {
         String str = getAuthNum();
@@ -166,5 +151,22 @@ public class SiteUserService {
         else throw new DataNotFoundException("user not found");
     }
 
+    public SiteUser getUserByEmail(String email){
+        Optional<SiteUser> user = siteUserRepository.findByEmail(email);
+        if(user.isPresent()){
+            return user.get();
+        }
+        else throw new DataNotFoundException("user not found");
+    }
+
+    public void toggleFavorite(SiteUser user, Restaurant restaurant) {
+        if(user.getFavorite().contains(restaurant)){
+            user.getFavorite().remove(restaurant);
+        }
+        else{
+            user.getFavorite().add(restaurant);
+        }
+        siteUserRepository.save(user);
+    }
 }
 

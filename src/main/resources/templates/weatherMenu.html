@@ -1,0 +1,29 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <div style="background:white; width:95%; margin:0 auto; border-radius:15px; padding:30px;" class="my-4 text-center">
+        <div class="d-flex justify-content-center align-items-center my-3">
+            <img src="" alt="" style="height:150px; width:auto;" class="me-4" id="skyStatus">
+            <div>
+                <h3 th:text="|${user.name}님이 계신 곳의 위치는|"></h3>
+                <div class="d-flex justify-content-center">
+                    <div class="me-2">하늘은</div>
+                    <h5 id="sky"></h5>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="me-2">기온은</div>
+                    <h5 id="temp1"></h5>
+                    <div class="me-2">로</div>
+                    <h5 id="temp2" class="me-2"></h5>
+                    <div>입니다.</div>
+                </div>
+                <div id="rain"></div>
+            </div>
+            <img src="" alt="" style="height:150px; width:auto;" class="ms-4" id="tempStatus">
+        </div>
+        <div class="my-5">
+            <h3>오늘은 이런 메뉴를 추천해드릴게요!</h3>
+        </div>
+    </div>
+    <script src="/weather.js"></script>
+</div>
+</html>
