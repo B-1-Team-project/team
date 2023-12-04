@@ -3,23 +3,28 @@
     <div style="width:95%; margin:0 auto; background:white; padding:30px; border-radius:15px;" class="mt-5">
         <h3 class="border-bottom pb-2 mb-3">내 가게 관리</h3>
         <div class="card-container">
-            <div th:each="restaurant : ${restaurants}">
-                <div class="card mb-3">
-                    <div>
-                        <div class="card-header d-flex justify-content-between align-items-center"
-                             style="background:linen;">
-                            <a th:href="@{|/restaurant/detail/${restaurant.id}|}" class="fs-5 fw-bold"
-                               th:text="${restaurant.name}"></a>
-                            <div>
-                                <a class="버튼 btn btn-sm me-1"
-                                   th:href="@{|/restaurant/modify/${restaurant.id}|}">수정</a>
-                                <a th:data-uri="@{|/restaurant/delete/${restaurant.id}|}" href="javascript:void(0)"
-                                   class="버튼 btn btn-sm" id="deleteBtn">삭제</a>
+            <div th:if="${restaurants.isEmpty()}" class="p-5 text-center">
+                <h3 style="color:gray;">등록된 가게 없음</h3>
+            </div>
+            <div th:if="${!restaurants.isEmpty()}">
+                <div th:each="restaurant : ${restaurants}">
+                    <div class="card mb-3">
+                        <div>
+                            <div class="card-header d-flex justify-content-between align-items-center"
+                                 style="background:linen;">
+                                <a th:href="@{|/restaurant/detail/${restaurant.id}|}" class="fs-5 fw-bold"
+                                   th:text="${restaurant.name}"></a>
+                                <div>
+                                    <a class="버튼 btn btn-sm me-1"
+                                       th:href="@{|/restaurant/modify/${restaurant.id}|}">수정</a>
+                                    <a th:data-uri="@{|/restaurant/delete/${restaurant.id}|}" href="javascript:void(0)"
+                                       class="버튼 btn btn-sm" id="deleteBtn">삭제</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-text" th:text="${restaurant.address}"></div>
+                        <div class="card-body">
+                            <div class="card-text" th:text="${restaurant.address}"></div>
+                        </div>
                     </div>
                 </div>
             </div>

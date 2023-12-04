@@ -34,16 +34,10 @@
             </div>
         </div>
     </div>
+    <input type="hidden" th:value="${user.loginId}" id="userId" th:if="${user}">
     <script th:if="${emailSent}" th:inline="javascript">
         /*<![CDATA[*/
         alert('가입된 이메일로 링크가 발급되었습니다.');
-        /*]]>*/
-
-        /*<![CDATA[*/
-        var foundId = /*[[${user?.loginId}]]*/ null;
-        if (foundId) {
-            alert('회원님의 아이디는 ' + foundId + ' 입니다.');
-        }
         /*]]>*/
     </script>
     <script type='text/javascript'>
@@ -62,6 +56,8 @@
             else
                 document.querySelector("#pwForm").submit();
         });
+
+        alert("회원님의 아이디는 " + document.querySelector("#userId").value + " 입니다.");
     </script>
 </div>
 </html>

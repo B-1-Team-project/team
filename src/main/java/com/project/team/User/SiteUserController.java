@@ -217,9 +217,8 @@ public class SiteUserController {
     @PostMapping("/findId")
     public String findId(Model model, String email) {
         try {
-            if (this.siteUserService.getUserByEmail(email) == null) {
+            if (siteUserService.getUserByEmail(email) == null) {
                 model.addAttribute("emailError", "가입되지 않은 이메일입니다.");
-                return "findIdAndPw";
             }
             SiteUser user = siteUserService.getUserByEmail(email);
             model.addAttribute("user", user);
