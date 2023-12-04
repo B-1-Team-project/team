@@ -9,12 +9,8 @@
             <li class="list-group-item d-flex justify-content-between align-items-center"
                 th:each="chat : ${roomList}" th:classappend="${chat.room == room} ? 'active'">
                 <div>
-                    <a th:if="${user.loginId.equals(chat.writer.loginId)}" th:href="@{|/chat/join/${chat.room}|}"
-                       th:text="|${chat.target.name}님과 대화|"></a>
-                    <a th:if="${user.loginId.equals(chat.target.loginId)}" th:href="@{|/chat/join/${chat.room}|}"
-                       th:text="|${chat.writer.name}님과 대화|"></a>
-                    <span th:id="|alarm_${chat.room}|" class="badge bg-danger text-light"
-                          style="display:none;">N</span>
+                    <a th:href="@{|/chat/join/${chat.room}|}" th:text="|${chat.target.name}님과 대화|"></a>
+                    <span th:if="${!chat.confirm}" class="badge bg-danger text-light">N</span>
                 </div>
                 <form th:action="@{|/chat/delete/${chat.room}}" method="post">
                     <button type="submit" class="btn btn-sm 버튼">삭제</button>

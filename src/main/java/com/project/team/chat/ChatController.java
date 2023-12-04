@@ -32,6 +32,8 @@ public class ChatController {
         Restaurant restaurant = restaurantService.getRestaurant(id);
         chatService.create(new ChatDto("채팅방이 개설되었습니다", restaurant.getOwner().getLoginId(),
                 principal.getName(), room, restaurant.getId(), "info"));
+        chatService.create(new ChatDto("채팅방이 개설되었습니다", principal.getName(),
+                restaurant.getOwner().getLoginId(), room, restaurant.getId(), "info"));
         return "redirect:/chat/join/" + room;
     }
 
@@ -49,8 +51,8 @@ public class ChatController {
     @GetMapping("/join/{room}")
     @PreAuthorize("isAuthenticated()")
     public String join(@PathVariable(value = "room") String room, Model model, Principal principal) {
-        chatService.setConfirm(room, true);
         SiteUser user = userService.getUser(principal.getName());
+        chatService.setConfirm(room, user, true);
         SiteUser target = chatService.getByTarget(room, user);
         Restaurant restaurant = chatService.getInfo(room).get(0).getRestaurant();
         List<Chat> chatList = chatService.getRoomList(user);
