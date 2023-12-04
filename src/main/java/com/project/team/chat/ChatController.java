@@ -4,6 +4,7 @@ import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
+import com.project.team.alarm.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ public class ChatController {
     private final SiteUserService userService;
     private final ChatService chatService;
     private final RestaurantService restaurantService;
+    private final AlarmService alarmService;
 
     @GetMapping("/create/{id}")
     @PreAuthorize("isAuthenticated()")
@@ -72,6 +74,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable("room") String room) {
         this.chatService.delete(room);
+        this.alarmService.deleteAll(alarmService.getAllByRoom(room));
         return "redirect:/";
     }
 }
