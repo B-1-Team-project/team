@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 import java.util.List;
@@ -20,6 +21,7 @@ public class AlarmController {
 
     @PostMapping("/confirm")
     @PreAuthorize("isAuthenticated()")
+    @ResponseBody
     public void confirm(String room, Principal principal) {
         SiteUser user = userService.getUser(principal.getName());
         List<Alarm> alarmList = alarmService.getByRoom(user, room);

@@ -27,6 +27,7 @@ public class ChatService {
         chat.setRestaurant(restaurantService.getRestaurant(chatDto.getRestaurant()));
         chat.setCreateDate(LocalDateTime.now());
         chat.setType(chatDto.getType());
+        chat.setConfirm(false);
         this.chatRepository.save(chat);
     }
 
@@ -51,5 +52,11 @@ public class ChatService {
 
     public List<Chat> getInfo(String room) {
         return chatRepository.findByRoomAndType(room, "info");
+    }
+
+    public void setConfirm(String room, Boolean confirm) {
+        Chat chat = chatRepository.findByRoom(room).get(0);
+        chat.setConfirm(confirm);
+        chatRepository.save(chat);
     }
 }

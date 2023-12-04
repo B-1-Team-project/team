@@ -6,7 +6,6 @@ import com.project.team.Review.ReviewService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.maven.model.Site;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
