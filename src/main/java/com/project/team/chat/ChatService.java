@@ -18,26 +18,27 @@ public class ChatService {
 
     public void create(ChatDto chatDto) {
         Chat chat = new Chat();
-        chat.setWriter(userService.getUser(chatDto.getWriter()));
-        chat.setTarget(userService.getUser(chatDto.getTarget()));
+        SiteUser writer = userService.getUser(chatDto.getWriter());
+        SiteUser target = userService.getUser(chatDto.getTarget());
+        chat.setWriter(writer);
+        chat.setTarget(target);
         chat.setContent(chatDto.getContent());
         chat.setRoom(chatDto.getRoom());
         chat.setRestaurant(restaurantService.getRestaurant(chatDto.getRestaurant()));
         chat.setCreateDate(LocalDateTime.now());
+        chat.setType(chatDto.getType());
         this.chatRepository.save(chat);
     }
 
     public List<Chat> getByRoom(String room) {
-        return this.chatRepository.findByRoom(room);
+        return this.chatRepository.findByRoomAndType(room, "chat");
     }
 
     public SiteUser getByTarget(String room, SiteUser user) {
-        List<Chat> chats = this.chatRepository.findByRoom(room);
-        for (Chat chat : chats) {
-            if (chat.getWriter().getLoginId().equals(user.getLoginId())) return chat.getTarget();
-            else if (chat.getTarget().getLoginId().equals(user.getLoginId())) return chat.getWriter();
-        }
-        return null;
+        List<Chat> info = this.chatRepository.findByRoomAndType(room, "info");
+        if (info.get(0).getWriter().getLoginId().equals(user.getLoginId())) return info.get(0).getTarget();
+        else if (info.get(0).getTarget().getLoginId().equals(user.getLoginId())) return info.get(0).getWriter();
+        else return null;
     }
 
     public List<Chat> getRoomList(SiteUser user) {
@@ -46,5 +47,9 @@ public class ChatService {
 
     public void delete(String room) {
         chatRepository.deleteAll(chatRepository.findByRoom(room));
+    }
+
+    public List<Chat> getInfo(String room) {
+        return chatRepository.findByRoomAndType(room, "info");
     }
 }

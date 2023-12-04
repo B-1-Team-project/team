@@ -45,7 +45,7 @@
     </style>
 </head>
 <body>
-<a th:href="@{/test2}" class="btn btn-success position-absolute">테스트2</a>
+<a th:href="@{|/user/test2|}" class="btn btn-success position-absolute" style="z-index:99; left:2%; top:2%;">test</a>
 <a th:href="@{/test}" class="btn btn-success position-absolute" style="z-index:99; left:2%; bottom:2%;">테스트 페이지</a>
 <div class="media d-flex">
     <div id="container" th:classappend="${#authentication.name != null ? 'logged-in' : ''}">
@@ -150,6 +150,7 @@
                 <a href="#" onclick="showForm('signupForm')" id="signupLink">회원가입</a>
                 <a th:href="@{user/findId}" >아이디 찾기</a>
                 <a th:href="@{user/findPw}" >비밀번호 찾기</a>
+
             </div>
         </div>
     </div>

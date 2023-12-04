@@ -26,26 +26,6 @@
                      th:text="|${#temporals.format(user.createDate, 'yyyy년 MM월 dd일')} 가입|"></div>
             </div>
         </div>
-        <div style="width:49%; background:white; padding:20px; border-radius:15px;">
-            <h3 class="border-bottom pb-2">채팅 목록</h3>
-            <div th:if="${chatList.isEmpty()}" class="p-5 text-center">
-                <h3 style="color:gray;">채팅 내역 없음</h3>
-            </div>
-            <div th:if="${!chatList.isEmpty()}">
-                <div th:each="chat : ${chatList}">
-                    <div class="card mb-2">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <a th:text="|${chat.writer.loginId}님과 ${chat.target.loginId}님의 대화|"
-                               style="background:linen; font-size:13pt; font-weight:bold;"
-                               th:href="@{|/chat/join/${chat.room}|}"></a>
-                            <form th:action="@{|/chat/delete/${chat.room}}" method="post">
-                                <button type="submit" class="btn btn-sm 버튼">삭제</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <!-- 예약 목록 -->
     <div class="d-flex justify-content-between mb-4" style="width:95%; margin:0 auto;">

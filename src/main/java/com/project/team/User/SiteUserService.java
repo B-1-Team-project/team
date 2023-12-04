@@ -168,5 +168,10 @@ public class SiteUserService {
         }
         siteUserRepository.save(user);
     }
+
+    public void saveAuthority(SiteUser user, String authority) {
+        user.setAuthority(authority);
+        siteUserRepository.save(user);
+    }
 }
 
