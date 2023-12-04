@@ -240,7 +240,54 @@ a:hover {
     margin:0 auto;
 }
 
+.chatList {
+    background:white;
+    width:25%;
+    margin:0 auto;
+    padding:30px;
+    border-radius:15px;
+}
+
+.chatContent {
+     background:white;
+     width:70%;
+     margin:0 auto;
+     padding:30px;
+     border-radius:15px;
+}
+
+.chatRoom {
+    width:80%;
+    margin:0 auto;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.activeRoom {
+    background:antiquewhite;
+}
+
 @media (max-width: 1200px) {
+    .chatList {
+        width:95%;
+        margin:0 auto;
+        margin-top:20px;
+        margin-bottom:20px;
+    }
+
+    .chatContent {
+        width:95%;
+        margin:0 auto;
+    }
+
+    .chatRoom {
+        width:100%;
+    }
+
+    .chat {
+        flex-direction: column;
+        align-items: center;
+    }
+
     .RD {
         flex-direction: column;
         align-items: center;

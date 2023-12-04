@@ -122,6 +122,10 @@ public class RestaurantService {
         return this.restaurantRepository.findTop3ByOrderByAverageStarDesc();
     }
 
+    public List<Restaurant> top3ReviewCount() {
+        return this.restaurantRepository.findTop3ByOrderByReviewsCountDesc();
+    }
+
     public void saveAverageStar(Restaurant restaurant) {
         double averageStar = this.reviewService.averageStar(restaurant.getReviews());
         restaurant.setAverageStar(averageStar);
