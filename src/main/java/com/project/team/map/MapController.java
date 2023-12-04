@@ -39,6 +39,7 @@ public class MapController {
         }
         model.addAttribute("inputAddress", inputAddress);
         model.addAttribute("starTop3", this.restaurantService.top3AverageStar());
+        model.addAttribute("reviewTop3", this.restaurantService.top3ReviewCount());
 
         List<Restaurant> restaurantList = restaurantService.getAround(lon, lat, 0.005);
 

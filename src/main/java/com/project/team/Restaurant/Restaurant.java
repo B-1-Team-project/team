@@ -68,4 +68,8 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
     private List<Chat> chatList;
 
+    public int getReviewsCount() {
+        return reviews != null ? reviews.size() : 0;
+    }
+
 }
