@@ -13,4 +13,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     Page<Reservation> findByRestaurantIn(Pageable pageable, List<Restaurant> restaurants);
 
     List<Reservation> findByUser(SiteUser user);
+
+    List<Reservation> findByRestaurantIn(List<Restaurant> restaurants);
 }
