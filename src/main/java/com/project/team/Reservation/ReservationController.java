@@ -63,7 +63,7 @@ public class ReservationController {
     @GetMapping("/approve/{id}")
     public String approve(@PathVariable("id") Integer id) {
         Reservation reservation = this.reservationService.getReservation(id);
-        this.reservationService.approveReservation("예약 확정", reservation);
+        this.reservationService.statusReservation("예약 확정", reservation);
         return String.format("redirect:/reserve/manage");
     }
 
@@ -71,7 +71,7 @@ public class ReservationController {
     @GetMapping("/refuse/{id}")
     public String refuse(@PathVariable("id") Integer id) {
         Reservation reservation = this.reservationService.getReservation(id);
-        this.reservationService.refuseReservation(reservation);
+        this.reservationService.statusReservation("예약 거절", reservation);
         return String.format("redirect:/reserve/manage");
     }
 
@@ -83,5 +83,13 @@ public class ReservationController {
         SiteUser user = this.siteUserService.getUser(principal.getName());
         model.addAttribute("user", user);
         return "reserveCheck";
+    }
+
+    @GetMapping("/cancel/{id}")
+    public String cancel(@PathVariable("id") Integer id, Principal principal) {
+        Reservation reservation = this.reservationService.getReservation(id);
+        SiteUser user = this.siteUserService.getUser(principal.getName());
+        this.reservationService.cancelReservation(reservation);
+        return "redirect:/user/userDetail/" + user.getLoginId();
     }
 }
