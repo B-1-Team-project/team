@@ -11,8 +11,9 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     List<Chat> findByRoom(String room);
     List<Chat> findByRoomAndTarget(String room, SiteUser target);
 
-    @Query("SELECT c FROM Chat c WHERE (writer = :user OR target = :user) AND type = 'info'")
+    @Query("SELECT c FROM Chat c WHERE writer = :user AND type = 'info'")
     List<Chat> findChatRoom(@Param("user") SiteUser user);
 
     List<Chat> findByRoomAndType(String room, String type);
+    List<Chat> findByRoomAndTypeAndWriter(String room, String type, SiteUser user);
 }
