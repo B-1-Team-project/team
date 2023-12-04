@@ -53,6 +53,8 @@ public class SiteUser {
 
     @ManyToMany
     private Set<Restaurant> favorite;
+
+    private boolean local;
     public SiteUser(){
 
     }

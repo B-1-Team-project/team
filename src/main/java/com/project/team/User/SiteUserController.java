@@ -100,6 +100,30 @@ public class SiteUserController {
         return "userModify";
     }
 
+    @GetMapping("/snsUserModify/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String snsUserModify(Model model, SnsUserModifyForm snsUserModifyForm, @PathVariable("loginId") String loginId, Principal principal){
+        SiteUser user = this.siteUserService.getUser(principal.getName());
+        model.addAttribute("user", user);
+        if (!user.getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+        snsUserModifyForm.setAuthority(user.getAuthority());
+        return "snsUserModify";
+    }
+
+    @PostMapping("/snsUserModify/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String snsUserModify(Model model, @Valid SnsUserModifyForm snsUserModifyForm, BindingResult bindingResult, @PathVariable("loginId") String loginId, Principal principal){
+        SiteUser user = siteUserService.getUser(loginId);
+        model.addAttribute("user", user);
+        if(bindingResult.hasErrors()){
+            return "snsUserModify";
+        }
+        siteUserService.saveAuthority(user, snsUserModifyForm.getAuthority());
+        return "userDetail";
+    }
+
     @PostMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userModify(Model model, @Valid UserModifyForm userModifyForm, BindingResult bindingResult, @PathVariable("loginId") String loginId, Principal principal) {
@@ -219,6 +243,7 @@ public class SiteUserController {
         try {
             if (siteUserService.getUserByEmail(email) == null) {
                 model.addAttribute("emailError", "가입되지 않은 이메일입니다.");
+                return "findIdAndPw";
             }
             SiteUser user = siteUserService.getUserByEmail(email);
             model.addAttribute("user", user);
