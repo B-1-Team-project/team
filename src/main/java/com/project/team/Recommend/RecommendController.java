@@ -54,7 +54,7 @@ public class RecommendController {
         List<Restaurant> restaurantList = this.restaurantService.byMain("%" + recommendList.get(0).getMenu() + "%", "%" + recommendList.get(1).getMenu() + "%",
                 "%" + recommendList.get(2).getMenu() + "%");
         List<Map<String, String>> mapList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < restaurantList.size(); i++) {
             Map<String, String> restaurantMap = new HashMap<>();
             restaurantMap.put("id", String.valueOf(restaurantList.get(i).getId()));
             restaurantMap.put("name", restaurantList.get(i).getName());

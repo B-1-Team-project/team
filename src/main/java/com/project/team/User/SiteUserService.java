@@ -151,14 +151,6 @@ public class SiteUserService {
         else throw new DataNotFoundException("user not found");
     }
 
-    public SiteUser getUserByEmail(String email){
-        Optional<SiteUser> user = siteUserRepository.findByEmail(email);
-        if(user.isPresent()){
-            return user.get();
-        }
-        else throw new DataNotFoundException("user not found");
-    }
-
     public void toggleFavorite(SiteUser user, Restaurant restaurant) {
         if(user.getFavorite().contains(restaurant)){
             user.getFavorite().remove(restaurant);
@@ -172,6 +164,16 @@ public class SiteUserService {
     public void saveAuthority(SiteUser user, String authority) {
         user.setAuthority(authority);
         siteUserRepository.save(user);
+    }
+
+    public SiteUser findUserByLoginID(String loginId) {
+        Optional<SiteUser> user = this.siteUserRepository.findByLoginId(loginId);
+        return user.orElse(null);
+    }
+
+    public SiteUser getUserByEmail(String email){
+        Optional<SiteUser> user = siteUserRepository.findByEmail(email);
+        return user.orElse(null);
     }
 }
 

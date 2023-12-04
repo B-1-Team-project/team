@@ -65,18 +65,28 @@ function success(position) {
                    document.querySelector("#menu3").innerText = result[0][2].menu;
                    document.querySelector("#ex3").innerText = result[0][2].explanation;
 
-                   document.querySelector("#rImage1").src = result[1][0].image;
-                   document.querySelector("#rImage2").src = result[1][1].image;
-                   document.querySelector("#rImage3").src = result[1][2].image;
-                   document.querySelector("#rName1").innerText = result[1][0].name;
-                   document.querySelector("#rName2").innerText = result[1][1].name;
-                   document.querySelector("#rName3").innerText = result[1][2].name;
-                   document.querySelector("#rName1").href = "/restaurant/detail/" + result[1][0].id;
-                   document.querySelector("#rName2").href = "/restaurant/detail/" + result[1][1].id;
-                   document.querySelector("#rName3").href = "/restaurant/detail/" + result[1][2].id;
-                   document.querySelector("#rAddress1").innerText = result[1][0].address;
-                   document.querySelector("#rAddress2").innerText = result[1][1].address;
-                   document.querySelector("#rAddress3").innerText = result[1][2].address;
+                   if (result[1][0]) {
+                      document.querySelector("#card1").style.display = "block";
+                      document.querySelector("#rImage1").src = result[1][0].image;
+                      document.querySelector("#rName1").innerText = result[1][0].name;
+                      document.querySelector("#rName1").href = "/restaurant/detail/" + result[1][0].id;
+                      document.querySelector("#rAddress1").innerText = result[1][0].address;
+                   }
+
+                   if (result[1][1]) {
+                       document.querySelector("#card2").style.display = "block";
+                       document.querySelector("#rImage2").src = result[1][1].image;
+                       document.querySelector("#rName2").innerText = result[1][1].name;
+                       document.querySelector("#rName2").href = "/restaurant/detail/" + result[1][1].id;
+                       document.querySelector("#rAddress2").innerText = result[1][1].address;
+                   }
+                   if (result[1][2]) {
+                       document.querySelector("#card3").style.display = "block";
+                       document.querySelector("#rImage3").src = result[1][2].image;
+                       document.querySelector("#rName3").innerText = result[1][2].name;
+                       document.querySelector("#rName3").href = "/restaurant/detail/" + result[1][2].id;
+                       document.querySelector("#rAddress3").innerText = result[1][2].address;
+                   }
                },
                error: function(error) {
                    console.error('Error:', error);
