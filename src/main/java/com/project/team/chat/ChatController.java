@@ -63,6 +63,8 @@ public class ChatController {
         model.addAttribute("chatList", chatService.getByRoom(room));
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("roomList", chatList);
+        model.addAttribute("owner", chatService.getInfo(room).get(0).getWriter());
+        model.addAttribute("customer", chatService.getInfo(room).get(0).getTarget());
         return "chat";
     }
 
