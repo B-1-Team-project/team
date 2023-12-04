@@ -30,6 +30,7 @@ public class SiteUserService {
         siteUser.setPassword(passwordEncoder.encode(password));
         siteUser.setCreateDate(LocalDateTime.now());
         siteUser.setAuthority(authority);
+        siteUser.setLocal(true);
         siteUserRepository.save(siteUser);
         return siteUser;
     }
@@ -171,7 +172,9 @@ public class SiteUserService {
 
     public void saveAuthority(SiteUser user, String authority) {
         user.setAuthority(authority);
+        user.setLocal(false);
         siteUserRepository.save(user);
     }
+
 }
 
