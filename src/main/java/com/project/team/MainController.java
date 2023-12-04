@@ -1,6 +1,6 @@
 package com.project.team;
 
-import com.project.team.User.SiteUser;
+
 import com.project.team.User.SiteUserService;
 import com.project.team.User.UserCreateForm;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +12,9 @@ import org.jsoup.Jsoup;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -50,21 +46,6 @@ public class MainController {
     @GetMapping("/process")
     public String interProcess() {
         return "interprocess";
-    }
-
-
-    @GetMapping("/weatherMenu")
-    public String weatherMenu(Model model, Principal principal) {
-        if (principal != null) {
-            SiteUser user = this.siteUserService.getUser(principal.getName());
-            model.addAttribute("user", user);
-        }
-        return "weatherMenu";
-    }
-
-    @PostMapping("/recommendMenu")
-    public void recommendMenu(@RequestBody List<Map<String, String>> dataList) {
-
     }
 
 }

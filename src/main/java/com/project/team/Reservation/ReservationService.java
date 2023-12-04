@@ -50,16 +50,20 @@ public class ReservationService {
         } else throw new DataNotFoundException("reservation not found");
     }
 
-    public void approveReservation(String status, Reservation reservation) {
+    public void statusReservation(String status, Reservation reservation) {
         reservation.setStatus(status);
         this.reservationRepository.save(reservation);
     }
 
-    public void refuseReservation(Reservation reservation) {
+    public void cancelReservation(Reservation reservation) {
         this.reservationRepository.delete(reservation);
     }
 
     public List<Reservation> getAllByUser(SiteUser user) {
         return this.reservationRepository.findByUser(user);
+    }
+
+    public List<Reservation> getAllByRestaurants(List<Restaurant> restaurants) {
+        return this.reservationRepository.findByRestaurantIn(restaurants);
     }
 }

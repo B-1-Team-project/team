@@ -1,8 +1,10 @@
 package com.project.team.Restaurant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.team.Reservation.Reservation;
 import com.project.team.User.SiteUser;
 import com.project.team.Review.Review;
+import com.project.team.chat.Chat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -62,5 +64,8 @@ public class Restaurant {
 
     @ManyToMany
     private Set<SiteUser> favoriteUser;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
+    private List<Chat> chatList;
 
 }

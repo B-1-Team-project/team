@@ -1,0 +1,63 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <div style="background:white; width:95%; margin:0 auto; border-radius:15px;" class="my-4 p-5">
+        <div style="width:50%; margin:0 auto;">
+            <h3 class="border-bottom pb-2">아이디 / 비밀번호 찾기</h3>
+            <div class="mb-4 border-bottom pb-2">
+                <h5 class="my-3">아이디 찾기</h5>
+                <div class="alert alert-danger" role="alert" th:text="${emailError}" th:if="${emailError}"></div>
+                <form id="idForm" th:action="@{/user/findId}" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">이메일</label>
+                        <input type="text" name="email" id="email" class="form-control"
+                               placeholder="이메일" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="button" value="아이디 찾기" class="버튼 btn btn-sm" id="idBtn">
+                    </div>
+                </form>
+            </div>
+            <div>
+                <h5 class="my-3">비밀번호 찾기</h5>
+                <div class="alert alert-danger" role="alert" th:text="${idError}" th:if="${idError}"></div>
+                <form id="pwForm" th:action="@{/user/sendEmail}" method="post">
+                    <div class="mb-3">
+                        <label for="loginId" class="form-label">ID</label>
+                        <input type="text" name="loginId" id="loginId" class="form-control"
+                               placeholder="아이디"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="button" value="인증링크 발급" class="버튼 btn btn-sm" id="pwBtn">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" th:value="${user.loginId}" id="userId" th:if="${user}">
+    <script th:if="${emailSent}" th:inline="javascript">
+        /*<![CDATA[*/
+        alert('가입된 이메일로 링크가 발급되었습니다.');
+        /*]]>*/
+
+    </script>
+    <script type='text/javascript'>
+        const findId = document.querySelector("#idBtn");
+        findId.addEventListener('click', function() {
+            if (document.querySelector("#email").value == '')
+                alert("이메일을 입력해주세요.");
+            else
+                document.querySelector("#idForm").submit();
+        });
+
+        const findPw = document.querySelector("#pwBtn");
+        findPw.addEventListener('click', function() {
+            if (document.querySelector("#loginId").value == '')
+                alert("아이디를 입력해주세요.");
+            else
+                document.querySelector("#pwForm").submit();
+        });
+        alert("회원님의 아이디는 " + document.querySelector("#userId").value + " 입니다.");
+    </script>
+</div>
+</html>

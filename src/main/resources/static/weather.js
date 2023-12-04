@@ -16,7 +16,6 @@ function success(position) {
 
    var grid = dfs_xy_conv("toXY", lat, lon);
    var url = new URL("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst");
-   getWeather(apiKey, grid.x, grid.y);
    var params = {
      serviceKey: apiKey,
      pageNo: 1,
@@ -30,18 +29,69 @@ function success(position) {
 
    url.search = new URLSearchParams(params).toString();
 
-   fetch(decodeURI(url))
-     .then(res => {
-     return res.json();
-   })
-     .then(data => {
-     const dataList = data.response.body.items.item;
+   $.ajax({
+       url: decodeURI(url),
+       method: 'GET',
+       dataType: 'json',
+       success: function(data) {
+           const dataList = data.response.body.items.item;
+           console.log(data);
 
-     $.ajax({
-        url: '/recommendMenu',
-        type: 'post',
-        data: dataList
-     });
+           var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+           var csrfToken = $("meta[name='_csrf']").attr("content");
+
+           var weatherList = new Array();
+           weatherList.push(dataList[6].fcstValue);
+           weatherList.push(dataList[18].fcstValue);
+           weatherList.push(dataList[24].fcstValue);
+
+           $.ajax({
+               url: '/recommend/weather',
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+                   [csrfHeader]: csrfToken,
+               },
+               data: JSON.stringify(weatherList),
+               success: function(result) {
+               console.log(result);
+                   document.querySelector("#image1").src = result[0][0].image;
+                   document.querySelector("#menu1").innerText = result[0][0].menu;
+                   document.querySelector("#ex1").innerText = result[0][0].explanation;
+                   document.querySelector("#image2").src = result[0][1].image;
+                   document.querySelector("#menu2").innerText = result[0][1].menu;
+                   document.querySelector("#ex2").innerText = result[0][1].explanation;
+                   document.querySelector("#image3").src = result[0][2].image;
+                   document.querySelector("#menu3").innerText = result[0][2].menu;
+                   document.querySelector("#ex3").innerText = result[0][2].explanation;
+
+                   if (result[1][0]) {
+                      document.querySelector("#card1").style.display = "block";
+                      document.querySelector("#rImage1").src = result[1][0].image;
+                      document.querySelector("#rName1").innerText = result[1][0].name;
+                      document.querySelector("#rName1").href = "/restaurant/detail/" + result[1][0].id;
+                      document.querySelector("#rAddress1").innerText = result[1][0].address;
+                   }
+
+                   if (result[1][1]) {
+                       document.querySelector("#card2").style.display = "block";
+                       document.querySelector("#rImage2").src = result[1][1].image;
+                       document.querySelector("#rName2").innerText = result[1][1].name;
+                       document.querySelector("#rName2").href = "/restaurant/detail/" + result[1][1].id;
+                       document.querySelector("#rAddress2").innerText = result[1][1].address;
+                   }
+                   if (result[1][2]) {
+                       document.querySelector("#card3").style.display = "block";
+                       document.querySelector("#rImage3").src = result[1][2].image;
+                       document.querySelector("#rName3").innerText = result[1][2].name;
+                       document.querySelector("#rName3").href = "/restaurant/detail/" + result[1][2].id;
+                       document.querySelector("#rAddress3").innerText = result[1][2].address;
+                   }
+               },
+               error: function(error) {
+                   console.error('Error:', error);
+               }
+           });
 
      handleSkyData(dataList[18].fcstValue, dataList[6].fcstValue);
      handleTemperatureData(dataList[24].fcstValue);
@@ -51,25 +101,17 @@ function success(position) {
          const skyElement = document.querySelector("#sky");
          const skyImage = document.getElementById("skyStatus");
 
-         switch (skyValue) {
-             case 1:
-                 skyElement.innerText = "맑고";
-                    if (![1, 2, 3].includes(precipitationValue)) {
-                        skyImage.src = "/image/weather/쨍쨍.png";
-                    }
-                 break;
-             case 2:
-                 skyElement.innerText = "구름이 많고";
-                 if (![1, 2, 3].includes(precipitationValue)) {
-                     skyImage.src = "/image/weather/구름많음.png";
-                 }
-                 break;
-             default:
-                 skyElement.innerText = "흐리고";
-                 if (![1, 2, 3].includes(precipitationValue)) {
-                     skyImage.src = "/image/weather/흐림.png";
-                 }
-                 break;
+         if (![1, 2, 3, 4].includes(precipitationValue)) {
+            if (skyValue == 1) {
+                skyElement.innerText = "맑고"
+                skyImage.src = "/image/weather/쨍쨍.png"
+            } else if (skyValue == 3) {
+                skyElement.innerText = "구름이 많고"
+                skyImage.src = "/image/weather/구름많음.png"
+            } else {
+                skyElement.innerText = "흐리고"
+                skyImage.src = "/image/weather/흐림.png"
+            }
          }
      }
 
@@ -119,12 +161,19 @@ function success(position) {
          }
      }
 
-   })
-     .catch(err => {
-     console.log('Fetch Error', err);
-   });
+   },
+   error: function(err) {
+           console.log('Ajax Error', err);
+   }
 
+});
 }
+
+function error() {
+   alert("위치 정보를 불러올 수 없습니다.");
+}
+
+navigator.geolocation.getCurrentPosition(success, error);
 
 function add30Minutes(timeString) {
     const hours = parseInt(timeString.substring(0, 2), 10);
@@ -137,12 +186,6 @@ function add30Minutes(timeString) {
 
     return newTimeString;
 }
-
-function error() {
-   alert("위치 정보를 불러올 수 없습니다.");
-}
-
-navigator.geolocation.getCurrentPosition(success, error);
 
 function getCurrentDateTime() {
     const now = new Date();
@@ -175,29 +218,6 @@ function roundDownToHalfHour(date) {
     return roundedDate;
 }
 
-
-
-function getWeather(apiKey, lat, lon) {
-    const baseUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
-
-    const currentDateTime = getCurrentDateTime();
-
-    const url = `${baseUrl}?serviceKey=${apiKey}&pageNo=1&numOfRows=60&dataType=JSON&base_date=${currentDateTime.date}&base_time=${currentDateTime.time}&nx=${lat}&ny=${lon}`;
-
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data.response);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
 
 function dfs_xy_conv(code, v1, v2) {
     var DEGRAD = Math.PI / 180.0;
@@ -254,6 +274,3 @@ function dfs_xy_conv(code, v1, v2) {
     }
     return rs;
 }
-
-
-

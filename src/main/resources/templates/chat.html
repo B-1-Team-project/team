@@ -112,10 +112,15 @@
         }
 
         function showAlarm(data) {
+<<<<<<< HEAD
             if (data.room != $('#room').val()) {
                 var elementId = '#alarm_' + data.room;
                 $(elementId).show();
             }
+=======
+            var elementId = '#alarm_' + data.room;
+            $(elementId).show();
+>>>>>>> a089aa98fac804cdffdd5f07638330f15dd0e5cd
         }
 
         function disconnect() {
