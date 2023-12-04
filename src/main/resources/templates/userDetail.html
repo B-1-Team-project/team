@@ -113,6 +113,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script th:inline="javascript" layout:fragment="script" type='text/javascript'>
+
+        var isLocal = [[${user.local}]];
+        var loginId = [[${user.loginId}]]; // 유저의 loginId 가져오기
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', function () {
+        // local이 false인 경우
+        if (!isLocal) {
+            // 모달 표시 대신 수정 페이지로 바로 이동
+            document.querySelector('#modifyButton').addEventListener('click', function () {
+                window.location.href = '/user/snsUserModify/' + loginId; // 수정 페이지의 URL로 변경 (loginId 추가)
+                });
+            }
+        });
+
         if ([[${error}]] == true) {
             alert('비밀번호가 일치하지 않습니다');
             document.querySelector('#modifyButton').click();
