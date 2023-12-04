@@ -127,5 +127,9 @@ public class RestaurantService {
         restaurant.setAverageStar(averageStar);
         this.restaurantRepository.save(restaurant);
     }
+
+    public List<Restaurant> byMain(String main1, String main2, String main3) {
+        return this.restaurantRepository.byMain(main1, main2, main3);
+    }
 }
 
