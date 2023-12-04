@@ -172,9 +172,7 @@ public class SiteUserService {
 
     public void saveAuthority(SiteUser user, String authority) {
         user.setAuthority(authority);
-        user.setLocal(false);
         siteUserRepository.save(user);
     }
-
 }
 

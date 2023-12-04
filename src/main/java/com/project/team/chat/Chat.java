@@ -25,4 +25,5 @@ public class Chat {
     @ManyToOne
     private Restaurant restaurant;
     private LocalDateTime createDate;
+    private String type;
 }
