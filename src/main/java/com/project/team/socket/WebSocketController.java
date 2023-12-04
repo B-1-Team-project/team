@@ -28,7 +28,8 @@ public class WebSocketController {
         SiteUser target = userService.getUser(chatDto.getTarget());
         String room = chatDto.getRoom();
         List<Alarm> alarmList = alarmService.get(target, writer, "chat", false);
-        chatService.setConfirm(chatDto.getRoom(), false);
+        chatService.setConfirm(chatDto.getRoom(), target, false);
+        chatService.setConfirm(chatDto.getRoom(), writer, true);
         if (alarmList.isEmpty()) alarmService.create(target, writer, "chat", room);
         simpMessagingTemplate.convertAndSend("/topic/" + room, chatDto);
         simpMessagingTemplate.convertAndSend("/topic/room", chatDto);

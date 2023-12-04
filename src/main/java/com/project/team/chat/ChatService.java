@@ -54,8 +54,8 @@ public class ChatService {
         return chatRepository.findByRoomAndType(room, "info");
     }
 
-    public void setConfirm(String room, Boolean confirm) {
-        Chat chat = chatRepository.findByRoom(room).get(0);
+    public void setConfirm(String room, SiteUser user, Boolean confirm) {
+        Chat chat = chatRepository.findByRoomAndTypeAndWriter(room, "info", user).get(0);
         chat.setConfirm(confirm);
         chatRepository.save(chat);
     }

@@ -10,10 +10,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center"
                     th:each="chat : ${roomList}" th:classappend="${chat.room == room} ? 'activeRoom'">
                     <div>
-                        <a th:if="${user.loginId.equals(chat.writer.loginId)}" th:href="@{|/chat/join/${chat.room}|}"
-                           th:text="|${chat.target.name}님과 대화|"></a>
-                        <a th:if="${user.loginId.equals(chat.target.loginId)}" th:href="@{|/chat/join/${chat.room}|}"
-                           th:text="|${chat.writer.name}님과 대화|"></a>
+                        <a th:href="@{|/chat/join/${chat.room}|}" th:text="|${chat.target.name}님과 대화|"></a>
                         <span th:id="|alarm_${chat.room}|" class="confirm badge bg-danger text-light"
                               style="display:none;" th:data-value="${chat.confirm}">N</span>
                     </div>
@@ -112,8 +109,10 @@
         }
 
         function showAlarm(data) {
-            var elementId = '#alarm_' + data.room;
-            $(elementId).show();
+            if (data.room != $('#room').val()) {
+                var elementId = '#alarm_' + data.room;
+                $(elementId).show();
+            }
         }
 
         function disconnect() {

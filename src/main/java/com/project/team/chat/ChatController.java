@@ -4,6 +4,7 @@ import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
+import com.project.team.alarm.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ public class ChatController {
     private final SiteUserService userService;
     private final ChatService chatService;
     private final RestaurantService restaurantService;
+    private final AlarmService alarmService;
 
     @GetMapping("/create/{id}")
     @PreAuthorize("isAuthenticated()")
@@ -32,6 +34,8 @@ public class ChatController {
         Restaurant restaurant = restaurantService.getRestaurant(id);
         chatService.create(new ChatDto("채팅방이 개설되었습니다", restaurant.getOwner().getLoginId(),
                 principal.getName(), room, restaurant.getId(), "info"));
+        chatService.create(new ChatDto("채팅방이 개설되었습니다", principal.getName(),
+                restaurant.getOwner().getLoginId(), room, restaurant.getId(), "info"));
         return "redirect:/chat/join/" + room;
     }
 
@@ -49,8 +53,8 @@ public class ChatController {
     @GetMapping("/join/{room}")
     @PreAuthorize("isAuthenticated()")
     public String join(@PathVariable(value = "room") String room, Model model, Principal principal) {
-        chatService.setConfirm(room, true);
         SiteUser user = userService.getUser(principal.getName());
+        chatService.setConfirm(room, user, true);
         SiteUser target = chatService.getByTarget(room, user);
         Restaurant restaurant = chatService.getInfo(room).get(0).getRestaurant();
         List<Chat> chatList = chatService.getRoomList(user);
@@ -61,6 +65,8 @@ public class ChatController {
         model.addAttribute("chatList", chatService.getByRoom(room));
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("roomList", chatList);
+        model.addAttribute("owner", chatService.getInfo(room).get(0).getWriter());
+        model.addAttribute("customer", chatService.getInfo(room).get(0).getTarget());
         return "chat";
     }
 
@@ -68,6 +74,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable("room") String room) {
         this.chatService.delete(room);
+        this.alarmService.deleteAll(alarmService.getAllByRoom(room));
         return "redirect:/";
     }
 }
