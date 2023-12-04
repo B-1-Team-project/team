@@ -35,9 +35,21 @@ public class ChatController {
         return "redirect:/chat/join/" + room;
     }
 
+    @GetMapping("/join")
+    @PreAuthorize("isAuthenticated()")
+    public String join(Model model, Principal principal) {
+        SiteUser user = userService.getUser(principal.getName());
+        List<Chat> chatList = chatService.getRoomList(user);
+
+        model.addAttribute("user", user);
+        model.addAttribute("roomList", chatList);
+        return "room";
+    }
+
     @GetMapping("/join/{room}")
     @PreAuthorize("isAuthenticated()")
     public String join(@PathVariable(value = "room") String room, Model model, Principal principal) {
+        chatService.setConfirm(room, true);
         SiteUser user = userService.getUser(principal.getName());
         SiteUser target = chatService.getByTarget(room, user);
         Restaurant restaurant = chatService.getInfo(room).get(0).getRestaurant();

@@ -6,7 +6,6 @@ import com.project.team.Review.ReviewService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.maven.model.Site;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -62,8 +61,8 @@ public class DataController {
                 try {
                     realTime = ((JSONObject) ((JSONArray) ((JSONObject) ((JSONArray) ((JSONObject) basicInfo.get("openHour"))
                             .get("periodList")).get(0)).get("timeList")).get(0)).get("timeSE").toString();
-                    image = ((JSONObject)detail.get("placeOwnerInfos")).get("mainPhoto").toString();
-                    main = ((JSONObject)basicInfo.get("category")).get("catename").toString();
+                    image = ((JSONObject) detail.get("placeOwnerInfos")).get("mainPhoto").toString();
+                    main = ((JSONObject) basicInfo.get("category")).get("catename").toString();
                 } catch (Exception ignored) {
                 }
                 String info = null;
@@ -100,10 +99,11 @@ public class DataController {
     @GetMapping("/interprocess")
     public String interprocess(@RequestParam(value = "inputAddress", defaultValue = "aroundMe") String inputAddress,
                                Model model, Principal principal) {
-
-        SiteUser user = siteUserService.getUser(principal.getName());
-        if(user.getAuthority() == null){
-            return "redirect:/user/selectAuthority";
+        if (principal != null) {
+            SiteUser user = siteUserService.getUser(principal.getName());
+            if (user.getAuthority() == null) {
+                return "redirect:/user/selectAuthority";
+            }
         }
         model.addAttribute("inputAddress", inputAddress);
         return "interprocess";
