@@ -2,7 +2,6 @@ package com.project.team.map;
 
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
-import com.project.team.Review.ReviewService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
 import com.project.team.alarm.AlarmService;
@@ -23,7 +22,6 @@ public class MapController {
 
     private final SiteUserService siteUserService;
     private final RestaurantService restaurantService;
-    private final ReviewService reviewService;
     private final AlarmService alarmService;
 
     @GetMapping("/view")
@@ -37,14 +35,15 @@ public class MapController {
             model.addAttribute("user", user);
             model.addAttribute("alarmList", alarmService.getByUser(user));
         }
-        model.addAttribute("inputAddress", inputAddress);
-        model.addAttribute("starTop3", this.restaurantService.top3AverageStar());
-        model.addAttribute("reviewTop3", this.restaurantService.top3ReviewCount());
 
         List<Restaurant> restaurantList = restaurantService.getAround(lon, lat, 0.005);
 
         for (Restaurant restaurant : restaurantList)
             this.restaurantService.saveAverageStar(restaurant);
+
+        model.addAttribute("inputAddress", inputAddress);
+        model.addAttribute("starTop3", this.restaurantService.top3AverageStar(restaurantList));
+        model.addAttribute("reviewTop3", this.restaurantService.top3ReviewCount(restaurantList));
         model.addAttribute("resList", restaurantList);
         model.addAttribute("y", lat);
         model.addAttribute("x", lon);

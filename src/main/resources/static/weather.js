@@ -87,6 +87,9 @@ function success(position) {
                        document.querySelector("#rName3").href = "/restaurant/detail/" + result[1][2].id;
                        document.querySelector("#rAddress3").innerText = result[1][2].address;
                    }
+
+                   products = [result[0][0].menu, result[0][1].menu, result[0][2].menu];
+                   newMake();
                },
                error: function(error) {
                    console.error('Error:', error);
@@ -274,3 +277,101 @@ function dfs_xy_conv(code, v1, v2) {
     }
     return rs;
 }
+
+const newMake = () => {
+        const [cw, ch] = [$c.width / 2, $c.height / 2];
+        const arc = Math.PI * 2 / products.length;
+
+        for (let i = 0; i < products.length; i++) {
+            ctx.beginPath();
+            if (colors.length === 0) {
+                generateRandomColors();
+            }
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.moveTo(cw, ch);
+            ctx.arc(cw, ch, cw - 20, arc * i, arc * (i + 1));
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "18px Pretendard";
+        ctx.textAlign = "center";
+
+        for (let i = 0; i < products.length; i++) {
+            const angle = arc * i + arc / 2;
+
+            ctx.save();
+
+            ctx.translate(
+                cw + Math.cos(angle) * (cw - 60),
+                ch + Math.sin(angle) * (ch - 60)
+            );
+
+            ctx.rotate(angle + Math.PI / 2);
+
+            products[i].split(" ").forEach((text, j) => {
+                ctx.fillText(text, 0, 30 * j);
+            });
+
+            ctx.restore();
+        }
+    };
+
+    const rotate = () => {
+        const rouletteDiv = document.getElementById("roulette");
+        $c.style.transform = `initial`;
+        $c.style.transition = `initial`;
+
+        setTimeout(() => {
+            const ran = Math.floor(Math.random() * products.length);
+            const arc = Math.PI * 2 / products.length;
+            const rotate = ran * arc + arc * 5;
+
+            $c.style.transform = `rotate(${rotate}rad)`;
+            $c.style.transition = `2s`;
+
+            const resultElement = document.getElementById('result');
+            let result;
+
+            if (parseInt(products.length * 2 - rotate) < 0) result = products.length - 1;
+            else result = parseInt(products.length * 2 - rotate);
+            resultElement.classList.add('animate__bounceOutDown');
+            resultElement.addEventListener('animationend', () => {
+                resultElement.classList.remove('animate__bounceOutDown');
+            }, { once: true });
+        }, 3);
+    };
+
+    function generateRandomColors() {
+        colors.length = 0;
+        for (let l = 0; l < products.length; l++) {
+            let a = Math.floor(Math.random() * 256);
+            let b = Math.floor(Math.random() * 256);
+            let c = Math.floor(Math.random() * 256);
+            colors.push(`rgb(${a},${b},${c})`);
+        }
+    }
+
+
+        const addRandomMenu = () => {
+            products = shuffleArray(allProducts).slice(0, initialDisplayCount);
+
+            newMake();
+        };
+
+        const shuffleArray = (array) => {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        };
+
+        const resetRoulettePosition = () => {
+        const rouletteDiv = document.getElementById("roulette");
+
+        rouletteDiv.classList.remove('animate__slideOutLeft');
+
+        rouletteDiv.style.transform = 'initial';
+    };

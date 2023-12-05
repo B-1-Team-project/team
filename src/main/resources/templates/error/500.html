@@ -55,11 +55,20 @@
             <div style="font-family: 'IBM Plex Sans KR', sans-serif; text-shadow:none; font-weight:bold; margin-top:10px; font-size:13pt;">
                 현재 팀프로젝트에서 요청을 처리할 수 없습니다.
             </div>
-            <a href="/" class="badge bg-light text-dark fs-4 mt-5 p-2 border border-dark" type="button"
+            <a href="/" class="badge bg-light text-dark fs-5 mt-5 p-2 border border-dark me-4" type="button"
                style="font-family: 'IBM Plex Sans KR', sans-serif; text-decoration:none; text-shadow:none; box-shadow:2px 2px 4px rgba(0, 0, 0, 0.5);">GO
                 HOME →</a>
+            <a href="javascript:void(0)" onclick="goBack()"
+               class="badge bg-light text-dark fs-5 mt-5 p-2 border border-dark" type="button"
+               style="font-family: 'IBM Plex Sans KR', sans-serif; text-decoration:none; text-shadow:none; box-shadow:2px 2px 4px rgba(0, 0, 0, 0.5);">GO BACK
+                →</a>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </body>
 </html>
