@@ -7,6 +7,6 @@ import java.util.Comparator;
 public class SortByReview implements Comparator<Restaurant> {
     @Override
     public int compare(Restaurant o1, Restaurant o2) {
-        return Integer.compare(o1.getReviews().size(), o2.getReviews().size());
+        return Integer.compare(o2.getReviews().size(), o1.getReviews().size());
     }
 }

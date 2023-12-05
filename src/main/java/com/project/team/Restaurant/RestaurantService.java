@@ -1,6 +1,7 @@
 package com.project.team.Restaurant;
 
 import com.project.team.DataNotFoundException;
+import com.project.team.Restaurant.sort.SortByAverageStar;
 import com.project.team.Restaurant.sort.SortByReview;
 import com.project.team.Review.ReviewService;
 import com.project.team.User.SiteUser;
@@ -116,7 +117,7 @@ public class RestaurantService {
     }
 
     public List<Restaurant> top3AverageStar(List<Restaurant> restaurants) {
-        restaurants.sort(new SortByReview());
+        restaurants.sort(new SortByAverageStar());
         List<Restaurant> result = new ArrayList<>(3);
         for (int i = 0; i < 3; i++) result.add(restaurants.get(i));
         return result;
