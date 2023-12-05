@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/map")
@@ -47,6 +49,34 @@ public class MapController {
         model.addAttribute("resList", restaurantList);
         model.addAttribute("y", lat);
         model.addAttribute("x", lon);
+
+        return "main";
+    }
+
+    @GetMapping("/findByKeyword")
+    public String findByKeyword(@RequestParam String keyword, Model model, Principal principal) {
+        if (principal != null) {
+            SiteUser user = this.siteUserService.getUser(principal.getName());
+            model.addAttribute("user", user);
+            model.addAttribute("alarmList", alarmService.getByUser(user));
+        }
+
+
+        List<Restaurant> searchResult = restaurantService.getRestaurantByKeyword(keyword);
+        List<String> latList = new ArrayList<>();
+        List<String> lonList = new ArrayList<>();
+        // 각 음식점의 위치 정보를 가져와서 모델에 추가
+        for (Restaurant restaurant : searchResult) {
+            String lat = restaurant.getLocationX();
+            String lon = restaurant.getLocationY();
+            latList.add(lat);
+            lonList.add(lon);
+        }
+        model.addAttribute("latList", latList);
+        model.addAttribute("lonList", lonList);
+        model.addAttribute("searchResult", searchResult);
+        model.addAttribute("inputAddress", "aroundMe");
+        model.addAttribute("starTop3", restaurantService.top3AverageStar());
 
         return "main";
     }
