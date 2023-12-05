@@ -126,10 +126,10 @@ function success(position) {
          if (tempValue < 0) {
              tempElement2.innerText = `매우 추운 날씨`;
              tempImage.src = "/image/weather/추워온도계.png";
-         } else if (tempValue >= 0 && tempValue < 10) {
+         } else if (tempValue >= 0 && tempValue < 15) {
              tempElement2.innerText = `추운 날씨`;
              tempImage.src = "/image/weather/추운사람.png";
-         } else if (tempValue >= 10 && tempValue < 20) {
+         } else if (tempValue >= 15 && tempValue < 20) {
              tempElement2.innerText = `선선한 날씨`;
              tempImage.src = "/image/weather/딱좋아온도계.png";
          } else if (tempValue >= 20 && tempValue < 25) {
@@ -294,8 +294,8 @@ const newMake = () => {
             ctx.closePath();
         }
 
-        ctx.fillStyle = "#fff";
-        ctx.font = "18px Pretendard";
+        ctx.fillStyle = "#000";
+        ctx.font = "18px IBM Plex Sans KR";
         ctx.textAlign = "center";
 
         for (let i = 0; i < products.length; i++) {
@@ -344,15 +344,33 @@ const newMake = () => {
     };
 
     function generateRandomColors() {
+        const predefinedColors = [
+            'linen',
+            'antiquewhite',
+            'bisque',
+            'peachpuff',
+            'burlywood',
+            'tan',
+            'wheat',
+            'snow',
+            'lightyellow',
+            'navajowhite',
+            'sandybrown',
+            'peru',
+            'saddlebrown',
+            'sienna',
+            'moccasin'
+        ];
+
         colors.length = 0;
+
         for (let l = 0; l < products.length; l++) {
-            let a = Math.floor(Math.random() * 256);
-            let b = Math.floor(Math.random() * 256);
-            let c = Math.floor(Math.random() * 256);
-            colors.push(`rgb(${a},${b},${c})`);
+            let randomIndex = Math.floor(Math.random() * predefinedColors.length);
+            let selectedColor = predefinedColors[randomIndex];
+
+            colors.push(selectedColor);
         }
     }
-
 
         const addRandomMenu = () => {
             products = shuffleArray(allProducts).slice(0, initialDisplayCount);

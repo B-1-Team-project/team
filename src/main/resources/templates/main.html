@@ -95,6 +95,9 @@
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link fw-bold" aria-current="page" th:href="@{/user/logout}">LOG-OUT</a>
                 </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link fw-bold" aria-current="page" th:href="@{/post/list}">자유게시판</a>
+                </li>
             </ul>
         </div>
     </div>

@@ -24,8 +24,8 @@
             <h3 class="border-bottom pb-2">실시간 채팅 문의</h3>
             <div class="chatRoom card my-3">
                 <div class="card-header p-3 d-flex justify-content-between" style="background:#9FB3CD">
-                    <h4 th:text="|${restaurant.name} >|" th:if="${target.authority == 'owner'}"></h4>
-                    <h4 th:text="|${target.name} >|" th:if="${target.authority == 'customer'}"></h4>
+                    <h4 th:text="|${restaurant.name} >|" th:if="${user.loginId == customer.loginId}"></h4>
+                    <h4 th:text="|${target.name} >|" th:if="${user.loginId == owner.loginId}"></h4>
                     <div class="d-flex align-items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                              class="bi bi-search" viewBox="0 0 16 16">

@@ -24,7 +24,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="reservation, loop:${paging}" class="text-center">
+                <tr th:each="reservation, loop:${paging}" class="text-center" th:if="${reservation.status != '예약 거절'}">
                     <td th:text="${reservation.restaurant.name}"></td>
                     <td th:text="${reservation.user.name}"></td>
                     <td th:text="${reservation.count}"></td>
@@ -86,7 +86,7 @@
                     <div class="fs-5 fw-bold">가게별 예약 관리</div>
                 </div>
                 <div class="accordion" id="accordionExample">
-                    <div class="accordion-item" th:each="restaurant : ${restaurants}">
+                    <div class="accordion-item" th:each="restaurant : ${restaurants}" >
                         <h2 class="accordion-header">
                             <button th:text="${restaurant.name}" class="accordion-button fw-bold" type="button"
                                     data-bs-toggle="collapse" th:data-bs-target="|#collapse${restaurant.id}|"
@@ -94,7 +94,7 @@
                                     th:aria-controls="|collapse${restaurant.id}|">
                             </button>
                         </h2>
-                        <div th:id="|collapse${restaurant.id}|" class="accordion-collapse collapse row"
+                        <div  th:id="|collapse${restaurant.id}|" class="accordion-collapse collapse row"
                              data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <table class="table table-hover">
@@ -108,7 +108,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="reservation : ${restaurant.reservations}" class="text-center">
+                                    <tr th:each="reservation : ${restaurant.reservations}" class="text-center" th:if="${reservation.status != '예약 거절'}">
                                         <td th:text="${reservation.user.name}"></td>
                                         <td th:text="${reservation.count}"></td>
                                         <td th:text="${#temporals.format(reservation?.date, 'yyyy-MM-dd')}"></td>
@@ -160,9 +160,7 @@
                             <h5 class="modal-title" id="eventModalLabel">이벤트 정보</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" id="eventModalBody">
-                            <!-- 이벤트 정보를 표시할 내용이 들어갈 자리 -->
-                        </div>
+                        <div class="modal-body" id="eventModalBody"></div>
                         <div class="modal-footer" id="eventModalFooter">
                             <button type="button" class="버튼 btn" data-bs-dismiss="modal">닫기</button>
                         </div>
@@ -190,15 +188,17 @@
                 height: 630,
                 events: [
                     /*[# th:each="reservation : ${reservations}"]*/
+                    /*[# th:if="${reservation.status != '예약 거절'}"]*/
                     {
-                    title: /*[[${reservation.restaurant.name}]]*/,
-                    start: [[${reservation.dateTime}]],
-                    username: [[${reservation.user.name}]],
-                    status: [[${reservation.status}]],
-                    reservationId:  [[${reservation.id}]],
-                    color: 'tan'
+                        title: /*[[${reservation.restaurant.name}]]*/,
+                        start: [[${reservation.dateTime}]],
+                        username: [[${reservation.user.name}]],
+                        status: [[${reservation.status}]],
+                        reservationId:  [[${reservation.id}]],
+                        color: 'tan'
                     },
-                /*[/]*/
+                    /*[/]*/
+                    /*[/]*/
                 ],
                 eventTimeFormat: { // 시간 형식 설정
                     hour: 'numeric',

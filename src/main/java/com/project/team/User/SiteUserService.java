@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,12 @@ public class SiteUserService {
             return user.get();
         } else
             throw new DataNotFoundException("user not found");
+    }
+
+
+
+    public List<SiteUser> getUserList(){
+        return this.siteUserRepository.findAll();
     }
 
     public void modifyUser(SiteUser siteUser, String name, String email, String password, String authority) {
