@@ -122,7 +122,25 @@ a:hover {
     overflow:hidden;
 }
 
+.reviews {
+    max-height:500px;
+    overflow:hidden;
+}
+
+.reserves {
+    max-height:500px;
+    overflow:hidden;
+}
+
 .favorites:hover {
+    overflow:scroll;
+}
+
+.reviews:hover {
+    overflow:scroll;
+}
+
+.reserves:hover {
     overflow:scroll;
 }
 
@@ -147,6 +165,14 @@ a:hover {
 }
 
 .favorites::-webkit-scrollbar {
+    width:0px;
+}
+
+.reserves::-webkit-scrollbar {
+    width:0px;
+}
+
+.reviews::-webkit-scrollbar {
     width:0px;
 }
 

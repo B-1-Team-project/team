@@ -28,7 +28,7 @@
         </div>
         <!-- 즐찾 -->
         <div id="userFavorite" class="shadow">
-            <h3 class="border-bottom pb-2">즐겨 찾기 목록</h3>
+            <h3 class="border-bottom pb-2 mb-2">즐겨 찾기 목록</h3>
             <div th:if="${user.favorite.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">즐겨 찾기 없음</h3>
             </div>
@@ -51,7 +51,7 @@
             <div th:if="${user.reservations.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">예약 내역 없음</h3>
             </div>
-            <div class="row" th:if="${!user.reservations.isEmpty()}">
+            <div class="reserves row" th:if="${!user.reservations.isEmpty()}">
                 <div th:each="reservation : ${user.reservations}" class="col-6">
                     <div class="card mb-2">
                         <div class="card-header d-flex justify-content-between align-items-center"
@@ -76,7 +76,7 @@
             <div th:if="${user.reviews.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">작성한 리뷰 없음</h3>
             </div>
-            <div th:if="${!user.reviews.isEmpty()}">
+            <div class="reviews" th:if="${!user.reviews.isEmpty()}">
                 <div th:each="review : ${user.reviews}">
                     <div class="card mb-2">
                         <a class="card-header" th:text="${review.restaurant.name}"
