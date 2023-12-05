@@ -37,14 +37,15 @@ public class MapController {
             model.addAttribute("user", user);
             model.addAttribute("alarmList", alarmService.getByUser(user));
         }
-        model.addAttribute("inputAddress", inputAddress);
-        model.addAttribute("starTop3", this.restaurantService.top3AverageStar());
-        model.addAttribute("reviewTop3", this.restaurantService.top3ReviewCount());
 
         List<Restaurant> restaurantList = restaurantService.getAround(lon, lat, 0.005);
 
         for (Restaurant restaurant : restaurantList)
             this.restaurantService.saveAverageStar(restaurant);
+
+        model.addAttribute("inputAddress", inputAddress);
+        model.addAttribute("starTop3", this.restaurantService.top3AverageStar(restaurantList));
+        model.addAttribute("reviewTop3", this.restaurantService.top3ReviewCount(restaurantList));
         model.addAttribute("resList", restaurantList);
         model.addAttribute("y", lat);
         model.addAttribute("x", lon);
