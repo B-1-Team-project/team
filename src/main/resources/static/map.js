@@ -35,27 +35,25 @@
         });
 
         var tmpOverlay = new kakao.maps.CustomOverlay({
-            content: '<div class="card">'+element.name+'</div>',
+            content: '<div class="badge text-dark" style="background:white; border:1px solid tan;">'+element.name+'</div>',
             position: marker.getPosition(),
             map: map,
             yAnchor: 2.6
         });
 
-        var img = (element.image == null) ? "" : '<img src="'+element.image+'" class="card-img-top" alt="" style="width:100%;height:100px;">';
+        var img = (element.image == null) ? "" : '<img src="'+element.image+'" alt="" style="width:100%;height:100px;">';
 
         var content =
-        '<div class="card">'+
-            '<div class="text-end pb-0">'+
-               '<button type="button" class="btn-close mt-2 me-2" aria-label="Close" onclick="closeOverlay();"></button>'+
+        '<div class="card" style="width:200px;">'+
+            '<div class="text-end">'+
+               '<button type="button" class="btn-close me-2" aria-label="Close" onclick="closeOverlay();"></button>'+
             '</div>'+
             img+
-            '<div class="card-body pt-0">'+
-                '<a href="/restaurant/detail/'+element.id+'" class="card-title text-center">'+
-                    '<h5>'+
+            '<div class="p-1">'+
+                '<a href="/restaurant/detail/'+element.id+'" class="card-title" style="font-size:12pt;">'+
                         element.name +
-                    '</h5>'+
                 '</a>'+
-                '<p class="card-text text-secondary">'+
+                '<p class="card-text text-secondary" style="font-size:10pt;">'+
                     element.address +
                 '</p>'+
             '</div>'+

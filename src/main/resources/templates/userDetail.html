@@ -32,10 +32,14 @@
             <div th:if="${user.favorite.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">즐겨 찾기 없음</h3>
             </div>
-            <div th:if="${!user.favorite.isEmpty()}">
+            <div th:if="${!user.favorite.isEmpty()}" class="favorites">
                 <div th:each="restaurant : ${user.favorite}">
-                    <a th:href="@{|/restaurant/detail/${restaurant.id}|}" th:text="${restaurant.name}"></a>
-                    <!-- 여기에서 필요한 정보를 표시하십시오. -->
+                    <div class="card mb-2">
+                        <a class="card-header p-2" th:text="${restaurant.name}"
+                           style="background:linen; font-size:12pt; font-weight:bold;"
+                           th:href="@{|/restaurant/detail/${restaurant.id}|}"></a>
+                        <div class="card-text p-2" th:text="${restaurant.address}"></div>
+                    </div>
                 </div>
             </div>
         </div>
