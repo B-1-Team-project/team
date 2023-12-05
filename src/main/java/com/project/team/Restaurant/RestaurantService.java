@@ -119,14 +119,20 @@ public class RestaurantService {
     public List<Restaurant> top3AverageStar(List<Restaurant> restaurants) {
         restaurants.sort(new SortByAverageStar());
         List<Restaurant> result = new ArrayList<>(3);
-        for (int i = 0; i < 3; i++) result.add(restaurants.get(i));
+        for (int i = 0; i < restaurants.size(); i++) {
+            result.add(restaurants.get(i));
+            if (i == 2) break;
+        }
         return result;
     }
 
     public List<Restaurant> top3ReviewCount(List<Restaurant> restaurants) {
         restaurants.sort(new SortByReview());
         List<Restaurant> result = new ArrayList<>(3);
-        for (int i = 0; i < 3; i++) result.add(restaurants.get(i));
+        for (int i = 0; i < restaurants.size(); i++) {
+            result.add(restaurants.get(i));
+            if (i == 2) break;
+        }
         return result;
     }
 
