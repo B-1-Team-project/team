@@ -44,13 +44,18 @@
                             <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
                             <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                         </svg>
-                        <span th:if="${restaurant.address != null && restaurant.address != ''}"
-                              th:text="${restaurant.address}" style="cursor: pointer;" id="copyAddress"></span>
+                        <div th:if="${restaurant.address != null && restaurant.address != ''}"
+                             class="d-flex align-items-center">
+                            <span th:text="${restaurant.address}" id="rAddress"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="gray"
+                                 class="bi bi-files ms-1" viewBox="0 0 16 16" style="cursor: pointer;" id="copyAddress">
+                                <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"/>
+                            </svg>
+                        </div>
                         <span th:if="${restaurant.address == null || restaurant.address == ''}">제공 정보 없음</span>
                     </div>
                     <!-- 가게 전화번호 -->
                     <label for="number" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">전화번호</label>
-                    <div th:if="${restaurant.number == null || restaurant.number == ''}">제공 정보 없음</div>
                     <div class="d-flex align-items-center mb-2" th:if="${restaurant.number != null}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-telephone me-1" viewBox="0 0 16 16">
@@ -76,22 +81,21 @@
                         </span>
                         <span th:if="${restaurant.startTime == null || restaurant.startTime == ''}">제공 정보 없음</span>
                     </div>
+                    <!-- 가게 편의 시설 및 서비스 -->
                     <label for="facilities" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">편의 시설 및
                         서비스</label>
-                    <!-- 가게 편의 시설 및 서비스 -->
-                    <div th:if="${restaurant.facilities == null || restaurant.facilities == ''}">제공 정보 없음</div>
-                    <div class="d-flex align-items-center mb-2" th:if="${restaurant.facilities != null}">
+                    <div class="d-flex align-items-center mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-info-circle me-1" viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                             <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                         </svg>
                         <div th:each="facility, stat : ${restaurant.facilities}"
-                             th:if="${#lists.size(restaurant.facilities.size) > 0}">
+                             th:if="${!restaurant.facilities != null}">
                             <span th:text="${facility}"></span>
                             <span th:if="${!stat.last}">, </span>
                         </div>
-                        <span th:if="${restaurant.facilities.isEmpty()}">제공 정보 없음</span>
+                        <span th:if="${restaurant.facilities == null}">제공 정보 없음</span>
                     </div>
                     <!-- 가게 소개 -->
                     <label for="introduce" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">소개</label>
@@ -559,7 +563,7 @@
            });
 
        document.getElementById('copyAddress').addEventListener('click', function() {
-           const textToCopy = this.innerText;
+           const textToCopy = document.querySelector("#rAddress").innerText;
            const tempInput = document.createElement('input');
            tempInput.value = textToCopy;
            document.body.appendChild(tempInput);
