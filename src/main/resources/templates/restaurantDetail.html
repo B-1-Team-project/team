@@ -7,13 +7,13 @@
             <img th:if="${restaurant.image != null}" th:src="@{${restaurant.image}}"
                  class="card-img-top" style="height:300px;">
             <img th:if="${restaurant.image == null}" src="/image/startImage.jpg" alt="">
-            <div class="card-header d-flex justify-content-between align-items-end" style="background:linen;">
+            <div class="resName card-header d-flex justify-content-between align-items-center" style="background:linen;">
                 <!-- 가게 이름 & 주 메뉴 -->
                 <div>
-                    <span th:text="${restaurant.name}" class="fw-bold fs-4 me-1"></span>
-                    <span th:text="${restaurant.main}"></span>
+                    <div th:text="${restaurant.name}" class="fw-bold fs-4 me-1"></div>
+                    <div th:text="${restaurant.main}"></div>
                 </div>
-                <div class="d-flex align-items-center mb-2">
+                <div class="favorite d-flex align-items-center mb-2">
                     <a th:if="${favorite}" th:href="@{|/user/favorite/${restaurant.id}|}"
                        style="font-size: 11pt; color: dimgray; text-decoration: none;" class="me-1">
                         즐겨찾기
@@ -220,31 +220,31 @@
                             <input type="hidden" id="star" name="star">
                             <div class="d-flex justify-content-around my-1" id="starScore">
                                 <div class="star-container" data-index="1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
@@ -260,7 +260,7 @@
                             <input type="file" accept="image/*" required multiple style="display:none;" class="upload3"
                                    name="image3">
                             <div class="d-flex justify-content-around">
-                                <div style="width:21%;">
+                                <div class="reviewImage">
                                     <img class="clickUpload1" src="/image/inputImage.jpg" alt=""
                                          style="width:100%; height:115px; border:2px solid tan; border-radius:10px; margin-bottom:5px;">
                                     <div id="fileName1" class="px-2 p-1"
@@ -268,7 +268,7 @@
                                         선택된 파일 없음
                                     </div>
                                 </div>
-                                <div style="width:21%;">
+                                <div class="reviewImage">
                                     <img class="clickUpload2" src="/image/inputImage.jpg" alt=""
                                          style="width:100%; height:115px; border:2px solid tan; border-radius:10px; margin-bottom:5px;">
                                     <div id="fileName2" class="px-2 p-1"
@@ -276,7 +276,7 @@
                                         선택된 파일 없음
                                     </div>
                                 </div>
-                                <div style="width:21%;">
+                                <div class="reviewImage">
                                     <img class="clickUpload3" src="/image/inputImage.jpg" alt=""
                                          style="width:100%; height:115px; border:2px solid tan; border-radius:10px; margin-bottom:5px;">
                                     <div id="fileName3" class="px-2 p-1"
@@ -530,8 +530,10 @@
                alert("별점을 입력해주세요.");
            else if (document.querySelector("#comment").value == "")
                alert("리뷰 내용을 입력해주세요.");
-           else
+           else {
+               alert("리뷰가 등록되었습니다.");
                document.querySelector("#reviewForm").submit();
+           }
        });
 
        const reserve = document.getElementById("reserveBtn");
