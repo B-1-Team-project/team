@@ -1,5 +1,6 @@
 package com.project.team.User;
 
+import com.project.team.Board.Post;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Review.Review;
@@ -46,6 +47,9 @@ public class SiteUser {
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
 
     private String picture;
 

@@ -1,5 +1,7 @@
 package com.project.team.User;
 
+import com.project.team.Board.Post;
+import com.project.team.Board.PostService;
 import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
@@ -36,6 +38,7 @@ public class SiteUserController {
     private final ChatService chatService;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
+    private final PostService postService;
 
 
     @GetMapping("/signup")
@@ -284,6 +287,8 @@ public class SiteUserController {
         this.siteUserService.saveAuthority(user, userSelectForm.getAuthority());
         return "redirect:/interprocess";
     }
+
+
 
     //테스트용 코드
     @GetMapping("/test2")
