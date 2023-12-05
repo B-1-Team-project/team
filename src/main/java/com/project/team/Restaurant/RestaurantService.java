@@ -1,6 +1,7 @@
 package com.project.team.Restaurant;
 
 import com.project.team.DataNotFoundException;
+import com.project.team.Restaurant.sort.SortByReview;
 import com.project.team.Review.ReviewService;
 import com.project.team.User.SiteUser;
 import lombok.RequiredArgsConstructor;
@@ -114,12 +115,18 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
-    public List<Restaurant> top3AverageStar() {
-        return this.restaurantRepository.findTop3ByOrderByAverageStarDesc();
+    public List<Restaurant> top3AverageStar(List<Restaurant> restaurants) {
+        restaurants.sort(new SortByReview());
+        List<Restaurant> result = new ArrayList<>(3);
+        for (int i = 0; i < 3; i++) result.add(restaurants.get(i));
+        return result;
     }
 
-    public List<Restaurant> top3ReviewCount() {
-        return this.restaurantRepository.findTop3ByOrderByReviewsCountDesc();
+    public List<Restaurant> top3ReviewCount(List<Restaurant> restaurants) {
+        restaurants.sort(new SortByReview());
+        List<Restaurant> result = new ArrayList<>(3);
+        for (int i = 0; i < 3; i++) result.add(restaurants.get(i));
+        return result;
     }
 
     public void saveAverageStar(Restaurant restaurant) {
