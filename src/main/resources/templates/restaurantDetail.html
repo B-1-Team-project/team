@@ -1,14 +1,37 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <div class="RD d-flex mt-4 justify-content-between" style="background:white; padding:30px; width:90%; margin:0 auto; border-radius:15px;">
+    <div class="RD d-flex my-4 justify-content-between"
+         style="background:white; padding:30px; width:90%; margin:0 auto; border-radius:15px;">
         <!-- 가게 상세 정보 -->
-        <div class="details card" >
-            <img th:src="@{${restaurant.image}}"
+        <div class="details card">
+            <img th:if="${restaurant.image != null}" th:src="@{${restaurant.image}}"
                  class="card-img-top" style="height:300px;">
-            <div class="card-header" style="background:linen;">
+            <img th:if="${restaurant.image == null}" src="/image/startImage.jpg" alt="">
+            <div class="resName card-header d-flex justify-content-between align-items-center" style="background:linen;">
                 <!-- 가게 이름 & 주 메뉴 -->
-                <span th:text="${restaurant.name}" class="fw-bold fs-4 me-1"></span>
-                <span th:text="${restaurant.main}"></span>
+                <div>
+                    <div th:text="${restaurant.name}" class="fw-bold fs-4 me-1"></div>
+                    <div th:text="${restaurant.main}"></div>
+                </div>
+                <div class="favorite d-flex align-items-center mb-2">
+                    <a th:if="${favorite}" th:href="@{|/user/favorite/${restaurant.id}|}"
+                       style="font-size: 11pt; color: dimgray; text-decoration: none;" class="me-1">
+                        즐겨찾기
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                             class="bi bi-heart-fill text-danger" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                        </svg>
+                    </a>
+                    <a th:if="${!favorite}" th:href="@{|/user/favorite/${restaurant.id}|}"
+                       style="font-size: 11pt; color: dimgray; text-decoration: none;" class="me-1">
+                        즐겨찾기
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                             class="bi bi-heart text-dark" viewBox="0 0 16 16">
+                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.060.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="card-text">
@@ -87,32 +110,15 @@
                         </svg>
                         <span style="font-size:13pt;" th:text="${#numbers.formatDecimal(averageStar, 1, 1)}"></span>
                     </div>
-                    <div class="d-flex justify-content-end" sec:authorize="isAuthenticated()" th:if="${restaurant.owner != null}">
-                        <a class="d-flex align-items-center mb-2" style="text-decoration:underline;" th:href="@{|/chat/create/${restaurant.id}|}">
+                    <div class="d-flex justify-content-end" sec:authorize="isAuthenticated()"
+                         th:if="${restaurant.owner != null}">
+                        <a class="d-flex align-items-center mb-2" style="text-decoration:underline;"
+                           th:href="@{|/chat/create/${restaurant.id}|}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  class="bi bi-chat-square-quote-fill me-1" viewBox="0 0 16 16">
                                 <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/>
                             </svg>
                             <span>실시간 채팅</span>
-                        </a>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <!-- 조건부로 링크를 표시 -->
-                        <a th:if="${favorite}" th:href="@{|/user/favorite/${restaurant.id}|}" style="font-size: 11pt; color: dimgray; text-decoration: none;" class="me-1">
-                            <!-- SVG 아이콘 (채운 하트) -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                 class="bi bi-heart-fill text-danger" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                            </svg>
-                            즐겨찾기
-                        </a>
-                        <a th:if="${!favorite}" th:href="@{|/user/favorite/${restaurant.id}|}" style="font-size: 11pt; color: dimgray; text-decoration: none;" class="me-1">
-                            <!-- SVG 아이콘 (빈 하트) -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                 class="bi bi-heart text-dark" viewBox="0 0 16 16">
-                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.060.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                            </svg>
-                            즐겨찾기
                         </a>
                     </div>
                 </div>
@@ -190,8 +196,10 @@
                     </div>
                     <div class="d-flex justify-content-end align-items-center">
                         <div style="font-size:10pt;" class="me-2" sec:authorize="isAnonymous()">※ 로그인 후 예약 가능합니다.</div>
-                        <input id="reserveBtn" type="button" class="버튼 btn" value="예약" sec:authorize="isAuthenticated()">
-                        <input onclick="disabled()" type="button" class="버튼 btn" value="예약" sec:authorize="isAnonymous()" disabled>
+                        <input id="reserveBtn" type="button" class="버튼 btn" value="예약"
+                               sec:authorize="isAuthenticated()">
+                        <input onclick="disabled()" type="button" class="버튼 btn" value="예약"
+                               sec:authorize="isAnonymous()" disabled>
                     </div>
                 </div>
             </div>
@@ -212,31 +220,31 @@
                             <input type="hidden" id="star" name="star">
                             <div class="d-flex justify-content-around my-1" id="starScore">
                                 <div class="star-container" data-index="1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 </div>
                                 <div class="star-container" data-index="5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="gold"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold"
                                          class="bi bi-star" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
@@ -252,7 +260,7 @@
                             <input type="file" accept="image/*" required multiple style="display:none;" class="upload3"
                                    name="image3">
                             <div class="d-flex justify-content-around">
-                                <div style="width:21%;">
+                                <div class="reviewImage">
                                     <img class="clickUpload1" src="/image/inputImage.jpg" alt=""
                                          style="width:100%; height:115px; border:2px solid tan; border-radius:10px; margin-bottom:5px;">
                                     <div id="fileName1" class="px-2 p-1"
@@ -260,7 +268,7 @@
                                         선택된 파일 없음
                                     </div>
                                 </div>
-                                <div style="width:21%;">
+                                <div class="reviewImage">
                                     <img class="clickUpload2" src="/image/inputImage.jpg" alt=""
                                          style="width:100%; height:115px; border:2px solid tan; border-radius:10px; margin-bottom:5px;">
                                     <div id="fileName2" class="px-2 p-1"
@@ -268,7 +276,7 @@
                                         선택된 파일 없음
                                     </div>
                                 </div>
-                                <div style="width:21%;">
+                                <div class="reviewImage">
                                     <img class="clickUpload3" src="/image/inputImage.jpg" alt=""
                                          style="width:100%; height:115px; border:2px solid tan; border-radius:10px; margin-bottom:5px;">
                                     <div id="fileName3" class="px-2 p-1"
@@ -405,9 +413,11 @@
                                                         <input type="button" class="버튼 btn btn-sm" value="수정"
                                                                th:onclick="|saveModify(event, ${review.commentContent.id})|">
                                                     </form>
-                                                    <div th:if="${review.commentContent.modifyDate == null}" style="font-size:8pt; color:darkgray;" class="dynamicTime ms-1"
+                                                    <div th:if="${review.commentContent.modifyDate == null}"
+                                                         style="font-size:8pt; color:darkgray;" class="dynamicTime ms-1"
                                                          th:text="${#temporals.format(review.commentContent.createDate, 'yyyy-MM-dd HH:mm')}"></div>
-                                                    <div th:if="${review.commentContent.modifyDate != null}" style="font-size:8pt; color:darkgray;" class="dynamicTime ms-1"
+                                                    <div th:if="${review.commentContent.modifyDate != null}"
+                                                         style="font-size:8pt; color:darkgray;" class="dynamicTime ms-1"
                                                          th:text="${#temporals.format(review.commentContent.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
                                                 </div>
                                                 <div style="font-size:8pt;" class="me-2 badge bg-light text-dark">
@@ -520,8 +530,10 @@
                alert("별점을 입력해주세요.");
            else if (document.querySelector("#comment").value == "")
                alert("리뷰 내용을 입력해주세요.");
-           else
+           else {
+               alert("리뷰가 등록되었습니다.");
                document.querySelector("#reviewForm").submit();
+           }
        });
 
        const reserve = document.getElementById("reserveBtn");
