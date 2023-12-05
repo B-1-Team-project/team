@@ -288,12 +288,7 @@ public class SiteUserController {
         return "redirect:/interprocess";
     }
 
-    @GetMapping("/board")
-    public String Post(Model model){
-        List<Post> postList = postService.postList();
-        model.addAttribute("postList", postList);
-        return "board";
-    }
+
 
     //테스트용 코드
     @GetMapping("/test2")

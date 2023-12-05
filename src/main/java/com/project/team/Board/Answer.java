@@ -1,27 +1,25 @@
 package com.project.team.Board;
 
-import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class Post {
+public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
-    private String title;
-    private String content;
-    private LocalDateTime createDate;
-    @ManyToOne
-    private SiteUser user;
-    @OneToMany(mappedBy = "post" , cascade = CascadeType.REMOVE)
-    private List<Answer> answerList;
+    private Integer id;
 
+    private String content;
+
+    private LocalDateTime createDate;
+
+    @ManyToOne
+    private Post post;
 }

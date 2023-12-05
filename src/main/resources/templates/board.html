@@ -3,22 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <!-- 부트스트랩 CSS 추가 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
 </head>
 <body>
-<table>
-    <thead>
-    <tr>
-        <th>글슨이</th>
-        <th>작성일시</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="siteUser, index : ${siteUserList}">
-        <td th:text="${siteUser.name}"></td>
-        <td th:text="${siteUser.createDate}"></td>
-    </tr>
-    </tbody>
-</table>
 
-</body>
-</html>
+<div class="container mt-5">
+    <form th:action="@{/user/board/createPost}" th:object="${postForm}" method="post" class="mb-3">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+        <div class="form-group">
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content">내용:</label>
+            <textarea id="content" name="content" class="form-control" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">게시글 작성</button>
+    </form>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${postList}" >
+            <td>
+                <a th:href="@{|/user/post/detail/${post.id}|}" th:text="${post.title}"></a>
+            </td>
+            <td th:text="${post.user != null ? post.user.name : 'Unknown'}"></td>
+            <td th:text="|${#temporals.format(post.createDate, 'yyyy-MM-dd')}|"></td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/user/board/createPost}" class="btn btn-success">게시글 작성</a>
+</div>

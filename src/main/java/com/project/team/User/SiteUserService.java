@@ -44,6 +44,8 @@ public class SiteUserService {
             throw new DataNotFoundException("user not found");
     }
 
+
+
     public List<SiteUser> getUserList(){
         return this.siteUserRepository.findAll();
     }
