@@ -25,9 +25,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     private final SiteUserService siteUserService;
-    private final String HEAD = "https://place.map.kakao.com/main/v";
-
-    private String uploadPath = "C:/uploads/review";
 
     public Review createReview(Restaurant restaurant, SiteUser user, Integer star, String comment) {
         Review review = new Review();
@@ -91,6 +88,7 @@ public class ReviewService {
     }
 
     public void uploadImage(Review review, MultipartFile image1, MultipartFile image2, MultipartFile image3) throws IOException {
+        String uploadPath = "C:/uploads/review";
         File uploadDirectory = new File(uploadPath);
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();

@@ -74,10 +74,6 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
-    public List<Restaurant> getAll() {
-        return restaurantRepository.findAll();
-    }
-
     public List<Restaurant> getByAddress(String address) {
         return restaurantRepository.findByAddress(address);
     }

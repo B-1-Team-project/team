@@ -530,8 +530,10 @@
                alert("별점을 입력해주세요.");
            else if (document.querySelector("#comment").value == "")
                alert("리뷰 내용을 입력해주세요.");
-           else
+           else {
+               alert("리뷰가 등록되었습니다.");
                document.querySelector("#reviewForm").submit();
+           }
        });
 
        const reserve = document.getElementById("reserveBtn");
