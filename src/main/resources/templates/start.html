@@ -41,12 +41,9 @@
                 margin-bottom:50px;
             }
         }
-
     </style>
 </head>
 <body>
-<a th:href="@{|/user/test2|}" class="btn btn-success position-absolute" style="z-index:99; left:2%; top:2%;">test</a>
-<a th:href="@{/test}" class="btn btn-success position-absolute" style="z-index:99; left:2%; bottom:2%;">테스트 페이지</a>
 <div class="media d-flex">
     <div id="container" th:classappend="${#authentication.name != null ? 'logged-in' : ''}">
         <img style="width:100%; height:100vh; opacity:0.5;" src="/image/startImage.jpg"
@@ -160,7 +157,6 @@
 <script th:src="@{/bootstrap.bundle.min.js}"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script th:inline="javascript">
-
     function searchForAddress() {
         new daum.Postcode({
             oncomplete: function(data) {
@@ -172,11 +168,11 @@
 
     window.onload = function() {
         const showError = document.querySelector("#signupError").value;
-            if (showError == "에러 메시지") {
-                showForm('signupForm');
-            } else {
-                showForm('loginForm');
-            }
+        if (showError == "에러 메시지") {
+            showForm('signupForm');
+        } else {
+            showForm('loginForm');
+        }
     };
 
     function showForm(formId) {
