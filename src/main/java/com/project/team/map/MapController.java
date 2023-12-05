@@ -76,7 +76,6 @@ public class MapController {
         model.addAttribute("lonList", lonList);
         model.addAttribute("searchResult", searchResult);
         model.addAttribute("inputAddress", "aroundMe");
-        model.addAttribute("starTop3", restaurantService.top3AverageStar());
 
         return "main";
     }
