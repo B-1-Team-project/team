@@ -308,26 +308,54 @@ a:hover {
 }
 
 #userInfo {
-     width:69%; background:white; padding:20px; border-radius:15px;
+     width:69%;
+     background:white;
+     padding:20px;
+     border-radius:15px;
 }
 
 #userFavorite {
-    width:29%; background:white; padding:20px; border-radius:15px;
+    width:29%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
 }
 
 #userReserve {
-    width:49%; background:white; padding:20px; border-radius:15px;
+    width:49%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
 }
 
 #userReview {
-    width:49%; background:white; padding:20px; border-radius:15px;
+    width:49%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
 }
 
 #userModify {
-     background:white; width:60%; padding:20px; border-radius:15px; margin:0 auto;
+     background:white;
+     width:60%;
+     padding:20px;
+     border-radius:15px;
+     margin:0 auto;
+}
+
+.authority {
+   background:white;
+   width:60%;
+   padding:20px;
+   border-radius:15px;
+   margin:0 auto;
 }
 
 @media (max-width: 1200px) {
+
+    .authority {
+        width:90%;
+    }
 
     #userModify {
         width:90%;
