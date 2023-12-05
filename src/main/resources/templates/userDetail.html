@@ -2,7 +2,7 @@
 <div layout:fragment="content">
     <!-- 기본 프로필 -->
     <div class="d-flex justify-content-between my-4" style="width:95%; margin:0 auto;">
-        <div style="width:49%; background:white; padding:20px; border-radius:15px;">
+        <div style="width:69%; background:white; padding:20px; border-radius:15px;" class="shadow">
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="border-bottom pb-2">프로필</h3>
                 <button type="button" id="modifyButton" class="버튼 btn" data-toggle="modal"
@@ -26,10 +26,23 @@
                      th:text="|${#temporals.format(user.createDate, 'yyyy년 MM월 dd일')} 가입|"></div>
             </div>
         </div>
+        <!-- 즐찾 -->
+        <div style="width:29%; background:white; padding:20px; border-radius:15px;" class="shadow">
+            <h3 class="border-bottom pb-2">즐겨 찾기 목록</h3>
+            <div th:if="${user.favorite.isEmpty()}" class="p-5 text-center">
+                <h3 style="color:gray;">즐겨 찾기 없음</h3>
+            </div>
+            <div th:if="${!user.favorite.isEmpty()}">
+                <div th:each="restaurant : ${user.favorite}">
+                    <a th:href="@{|/restaurant/detail/${restaurant.id}|}" th:text="${restaurant.name}"></a>
+                    <!-- 여기에서 필요한 정보를 표시하십시오. -->
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- 예약 목록 -->
     <div class="d-flex justify-content-between mb-4" style="width:95%; margin:0 auto;">
-        <div style="width:49%; background:white; padding:20px; border-radius:15px;">
+        <!-- 예약 목록 -->
+        <div style="width:49%; background:white; padding:20px; border-radius:15px;" class="shadow">
             <h3 class="border-bottom pb-2">예약 목록</h3>
             <div th:if="${user.reservations.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">예약 내역 없음</h3>
@@ -37,8 +50,12 @@
             <div class="row" th:if="${!user.reservations.isEmpty()}">
                 <div th:each="reservation : ${user.reservations}" class="col-6">
                     <div class="card mb-2">
-                        <div class="card-header" th:text="${reservation.restaurant.name}"
-                             style="background: linen;"></div>
+                        <div class="card-header d-flex justify-content-between align-items-center"
+                             style="background: linen;">
+                            <div th:text="${reservation.restaurant.name}"></div>
+                            <a href="javascript:void(0)" th:data-uri="@{|/reserve/cancel/${reservation.id}|}"
+                               class="btn btn-danger btn-sm" id="cancelBtn">예약 취소</a>
+                        </div>
                         <div class="card-body">
                             <div th:text="|예약일시 : ${#temporals.format(reservation.dateTime, 'yyyy년 MM월 dd일 hh시 mm분')}|"></div>
                             <div th:text="|인원 수 : ${reservation.count}|"></div>
@@ -49,7 +66,8 @@
                 </div>
             </div>
         </div>
-        <div style="width:49%; background:white; padding:20px; border-radius:15px;">
+        <!-- 리뷰 -->
+        <div style="width:49%; background:white; padding:20px; border-radius:15px;" class="shadow">
             <h3 class="border-bottom pb-2">리뷰 목록</h3>
             <div th:if="${user.reviews.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">작성한 리뷰 없음</h3>
@@ -70,20 +88,6 @@
             </div>
         </div>
     </div>
-
-    <div style="width:49%; background:white; padding:20px; border-radius:15px;">
-        <h3 class="border-bottom pb-2">즐겨 찾기 목록</h3>
-        <div th:if="${user.favorite.isEmpty()}" class="p-5 text-center">
-            <h3 style="color:gray;">즐겨 찾기 없음</h3>
-        </div>
-        <div th:if="${!user.favorite.isEmpty()}">
-            <div th:each="restaurant : ${user.favorite}">
-                <a th:href="@{|/restaurant/detail/${restaurant.id}|}" th:text="${restaurant.name}"></a>
-                <!-- 여기에서 필요한 정보를 표시하십시오. -->
-            </div>
-        </div>
-    </div>
-
     <!-- 비번 확인 모달 -->
     <div th:if="${#authorization.expression('isAuthenticated()')}" class="modal fade" id="passwordModal" tabindex="-1"
          role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
@@ -113,12 +117,36 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script th:inline="javascript" layout:fragment="script" type='text/javascript'>
+
+        var isLocal = [[${user.local}]];
+        var loginId = [[${user.loginId}]]; // 유저의 loginId 가져오기
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', function () {
+        // local이 false인 경우
+        if (!isLocal) {
+            // 모달 표시 대신 수정 페이지로 바로 이동
+            document.querySelector('#modifyButton').addEventListener('click', function () {
+                window.location.href = '/user/snsUserModify/' + loginId; // 수정 페이지의 URL로 변경 (loginId 추가)
+                });
+            }
+        });
+
         if ([[${error}]] == true) {
             alert('비밀번호가 일치하지 않습니다');
             document.querySelector('#modifyButton').click();
         }
 
         console.log([[${roomList}]]);
+
+        const cancel = document.querySelectorAll("#cancelBtn");
+        Array.from(cancel).forEach(function(element) {
+           element.addEventListener('click', function() {
+               if (confirm("정말로 취소하시겠습니까?")) {
+                   location.href = this.dataset.uri;
+               };
+           });
+       });
     </script>
 </div>
 </html>

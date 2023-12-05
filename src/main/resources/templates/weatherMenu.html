@@ -1,25 +1,35 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
     <div style="background:white; width:95%; margin:0 auto; border-radius:15px; padding:30px;" class="my-4 text-center">
-        <div class="weather d-flex justify-content-center align-items-center my-3">
-            <img src="" alt="" id="skyStatus">
-            <div>
-                <h3 th:text="|${user.name}님이 계신 곳의 위치는|" sec:authorize="isAuthenticated()"></h3>
-                <h3 sec:authorize="isAnonymous()">게스트님이 계신 곳의 위치는</h3>
-                <div class="d-flex justify-content-center">
-                    <div class="me-2">하늘은</div>
-                    <h5 id="sky"></h5>
+        <div class="weather d-flex justify-content-around align-items-center my-3">
+            <div class="d-flex align-items-center">
+                <img src="" alt="" id="skyStatus">
+                <div>
+                    <h3 th:text="|${user.name}님이 계신 곳의 위치는|" sec:authorize="isAuthenticated()"></h3>
+                    <h3 sec:authorize="isAnonymous()">게스트님이 계신 곳의 위치는</h3>
+                    <div class="d-flex justify-content-center">
+                        <div class="me-2">하늘은</div>
+                        <h5 id="sky"></h5>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="me-2">기온은</div>
+                        <h5 id="temp1"></h5>
+                        <div class="me-2">로</div>
+                        <h5 id="temp2" class="me-2"></h5>
+                        <div>입니다.</div>
+                    </div>
+                    <div id="rain"></div>
                 </div>
-                <div class="d-flex justify-content-center">
-                    <div class="me-2">기온은</div>
-                    <h5 id="temp1"></h5>
-                    <div class="me-2">로</div>
-                    <h5 id="temp2" class="me-2"></h5>
-                    <div>입니다.</div>
-                </div>
-                <div id="rain"></div>
+                <img src="" alt="" id="tempStatus">
             </div>
-            <img src="" alt="" id="tempStatus">
+            <div id="menu" style="position:relative;">
+                <canvas id="roulette" width="200" height="200"></canvas>
+                <div>
+                    <div id="arrow"></div>
+                    <div id="result" class="animate__animated"></div>
+                </div>
+                <button onclick="rotate()">돌려돌려 돌림판</button>
+            </div>
         </div>
         <div class="my-5">
             <h3>오늘은 이런 메뉴를 추천해드릴게요!</h3>
@@ -29,7 +39,7 @@
                 <img src="" alt="" id="image1" class="card-img-top" style="height:200px;">
                 <div class="card-body">
                     <h5 class="card-title" id="menu1"></h5>
-                    <div style="color:gray;" class="card-text" >
+                    <div style="color:gray;" class="card-text">
                         <img src="/image/따옴표1.png" alt="" style="width:10px; height:10px;">
                         <span id="ex1" style="font-style:italic;"></span>
                         <img src="/image/따옴표2.png" alt="" style="width:10px; height:10px;">
@@ -40,7 +50,7 @@
                 <img src="" alt="" id="image2" class="card-img-top" style="height:200px;">
                 <div class="card-body">
                     <h5 class="card-title" id="menu2"></h5>
-                    <div style="color:gray;" class="card-text" >
+                    <div style="color:gray;" class="card-text">
                         <img src="/image/따옴표1.png" alt="" style="width:10px; height:10px;">
                         <span id="ex2" style="font-style:italic;"></span>
                         <img src="/image/따옴표2.png" alt="" style="width:10px; height:10px;">
@@ -51,7 +61,7 @@
                 <img src="" alt="" id="image3" class="card-img-top" style="height:200px;">
                 <div class="card-body">
                     <h5 class="card-title" id="menu3"></h5>
-                    <div style="color:gray;" class="card-text" >
+                    <div style="color:gray;" class="card-text">
                         <img src="/image/따옴표1.png" alt="" style="width:10px; height:10px;">
                         <span id="ex3" style="font-style:italic;"></span>
                         <img src="/image/따옴표2.png" alt="" style="width:10px; height:10px;">
@@ -60,10 +70,10 @@
             </div>
         </div>
         <div class="my-5">
-            <h3>맛집을 추천해드릴게요!</h3>
+            <h3>추천된 메뉴로 주변 맛집을 소개해드릴게요!</h3>
         </div>
         <div class="d-flex recommend my-5 justify-content-center">
-            <div class="menu card p-0">
+            <div class="menu card p-0" id="card1" style="display:none;">
                 <img src="" alt="" id="rImage1" class="card-img-top" style="height:200px;">
                 <div class="card-body">
                     <a class="card-title fs-5" id="rName1"></a>
@@ -74,22 +84,22 @@
                     </div>
                 </div>
             </div>
-            <div class="menu card p-0">
+            <div class="menu card p-0" id="card2" style="display:none;">
                 <img src="" alt="" id="rImage2" class="card-img-top" style="height:200px;">
                 <div class="card-body">
                     <a class="card-title fs-5" id="rName2"></a>
-                    <div style="color:gray;" class="card-text" >
+                    <div style="color:gray;" class="card-text">
                         <img src="/image/따옴표1.png" alt="" style="width:10px; height:10px;">
                         <span id="rAddress2" style="font-style:italic;"></span>
                         <img src="/image/따옴표2.png" alt="" style="width:10px; height:10px;">
                     </div>
                 </div>
             </div>
-            <div class="menu card p-0">
+            <div class="menu card p-0" id="card3" style="display:none;">
                 <img src="" alt="" id="rImage3" class="card-img-top" style="height:200px;">
                 <div class="card-body">
                     <a class="card-title fs-5" id="rName3"></a>
-                    <div style="color:gray;" class="card-text" >
+                    <div style="color:gray;" class="card-text">
                         <img src="/image/따옴표1.png" alt="" style="width:10px; height:10px;">
                         <span id="rAddress3" style="font-style:italic;"></span>
                         <img src="/image/따옴표2.png" alt="" style="width:10px; height:10px;">
@@ -99,5 +109,6 @@
         </div>
     </div>
     <script src="/weather.js"></script>
+    <script src="/roulette.js"></script>
 </div>
 </html>

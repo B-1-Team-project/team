@@ -26,4 +26,5 @@ public class Chat {
     private Restaurant restaurant;
     private LocalDateTime createDate;
     private String type;
+    private Boolean confirm;
 }

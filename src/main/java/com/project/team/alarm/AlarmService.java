@@ -40,4 +40,16 @@ public class AlarmService {
         alarm.setConfirm(true);
         alarmRepository.save(alarm);
     }
+
+    public void delete(Alarm alarm) {
+        alarmRepository.delete(alarm);
+    }
+
+    public void deleteAll(List<Alarm> alarmList) {
+        alarmRepository.deleteAll(alarmList);
+    }
+
+    public List<Alarm> getAllByRoom(String room) {
+        return alarmRepository.findByChatRoom(room);
+    }
 }

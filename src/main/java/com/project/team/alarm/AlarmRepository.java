@@ -8,4 +8,5 @@ public interface AlarmRepository extends JpaRepository<Alarm, Integer> {
     List<Alarm> findByUserOrderByRegDateDesc(SiteUser user);
     List<Alarm> findByUserAndTargetAndTypeAndConfirm(SiteUser user, SiteUser target, String type, Boolean confirm);
     List<Alarm> findByUserAndChatRoom(SiteUser user, String room);
+    List<Alarm> findByChatRoom(String room);
 }

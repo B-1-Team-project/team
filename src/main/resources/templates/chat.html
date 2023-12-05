@@ -1,19 +1,18 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <div class="d-flex my-4">
-        <div style="background:white; width:25%; margin:0 auto; padding:30px; border-radius:15px;">
+    <div class="chat d-flex my-4">
+        <div class="chatList">
             <h3 class="border-bottom pb-2">채팅 목록</h3>
             <div th:if="${roomList.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">채팅 내역 없음</h3>
             </div>
             <ul class="list-group" th:if="${!roomList.isEmpty()}">
                 <li class="list-group-item d-flex justify-content-between align-items-center"
-                    th:each="chat : ${roomList}" th:classappend="${chat.room == room} ? 'active'">
+                    th:each="chat : ${roomList}" th:classappend="${chat.room == room} ? 'activeRoom'">
                     <div>
-                        <a th:href="@{|/chat/join/${chat.room}|}"
-                           th:text="|${target.name}님과 대화|"></a>
-                        <span th:id="|alarm_${chat.room}|" class="badge bg-danger text-light"
-                              style="display:none;">N</span>
+                        <a th:href="@{|/chat/join/${chat.room}|}" th:text="|${chat.target.name}님과 대화|"></a>
+                        <span th:id="|alarm_${chat.room}|" class="confirm badge bg-danger text-light"
+                              style="display:none;" th:data-value="${chat.confirm}">N</span>
                     </div>
                     <form th:action="@{|/chat/delete/${chat.room}}" method="post">
                         <button type="submit" class="btn btn-sm 버튼">삭제</button>
@@ -21,11 +20,12 @@
                 </li>
             </ul>
         </div>
-        <div style="background:white; width:70%; margin:0 auto; padding:30px; border-radius:15px;">
+        <div class="chatContent">
             <h3 class="border-bottom pb-2">실시간 채팅 문의</h3>
-            <div style="width:80%; margin:0 auto; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);" class="card my-3">
+            <div class="chatRoom card my-3">
                 <div class="card-header p-3 d-flex justify-content-between" style="background:#9FB3CD">
-                    <h4 th:text="|${target.name} >|"></h4>
+                    <h4 th:text="|${restaurant.name} >|" th:if="${target.authority == 'owner'}"></h4>
+                    <h4 th:text="|${target.name} >|" th:if="${target.authority == 'customer'}"></h4>
                     <div class="d-flex align-items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                              class="bi bi-search" viewBox="0 0 16 16">
@@ -56,13 +56,13 @@
                                  style="width:50px; height:50px; border-radius:40%; border:1px solid gray;">
                             <div th:text="${#temporals.format(chat.createDate, 'a h시 m분')}"
                                  th:if="${chat.writer.loginId == user.loginId}"
-                                 style="font-size:11pt; color:gray;"></div>
-                            <div th:text="${chat.content}" class="mx-2 p-2 fs-5"
-                                 style="border-radius:10px; background:gold;"
+                                 style="font-size:10pt; color:gray;"></div>
+                            <div th:text="${chat.content}" class="mx-2 p-2"
+                                 style="border-radius:10px; background:gold; font-size:13pt;"
                                  th:classappend="${chat.writer.loginId == user.loginId} ? 'text-dark' : 'bg-light border border-dark'"></div>
                             <div th:text="${#temporals.format(chat.createDate, 'a h시 m분')}"
                                  th:if="${chat.writer.loginId != user.loginId}"
-                                 style="font-size:11pt; color:gray;"></div>
+                                 style="font-size:10pt; color:gray;"></div>
                             <img src="/image/owner.jpg" alt=""
                                  style="width:50px; height:50px; border-radius:40%; border:1px solid gray;"
                                  th:if="${chat.writer.loginId == user.loginId}">
@@ -75,11 +75,10 @@
                     <input type="hidden" id="target" th:value="${target.loginId}">
                     <input type="hidden" id="room" th:value="${room}">
                     <input type="hidden" id="restaurantId" th:value="${restaurant.id}">
-                    <textarea id="messageInput" placeholder="메시지 입력" rows="5" class="form-control"></textarea>
-                    <div class="d-flex justify-content-end m-1">
-                        <button type="submit" class="btn" style="background:gold;">전송</button>
+                    <div class="input-group">
+                        <input id="messageInput" placeholder="메시지 입력" class="form-control">
+                        <input type="submit" class="btn" style="background:gold;" value="전송">
                     </div>
-                    <input type="hidden">
                 </form>
             </div>
         </div>
@@ -87,6 +86,12 @@
 </div>
 <script layout:fragment="script">
     $(function () {
+        $('.confirm').each(function(index, element) {
+            if ($(element).attr('data-value') == 'false') {
+                $(element).show();
+            }
+        });
+
         var stompClient = null;
 
         function connect() {
@@ -104,8 +109,10 @@
         }
 
         function showAlarm(data) {
-            var elementId = '#alarm_' + data.room;
-            $(elementId).show();
+            if (data.room != $('#room').val()) {
+                var elementId = '#alarm_' + data.room;
+                $(elementId).show();
+            }
         }
 
         function disconnect() {
@@ -132,12 +139,14 @@
             $("#messageInput").val("");
         }
 
+        const currentTime = getCurrentTime();
+
         function showMessage(message) {
             if (message.writer == $("#user").val()) {
                 $("#chatMessages").append(
                     "<div style='display:flex; justify-content:end; align-items:center;' class='my-2'>" +
-                        "<div style='display:flex; align-items:center;'>" +
-                            "<span class='text-dark mx-2 p-2 fs-5' style='background:gold; border-radius:10px;'>" + message.content + "</span>" +
+                        "<div style='display:flex; align-items:end;'>" + "<span style='color:gray; font-size:10pt;'>" + currentTime + "</span>" +
+                            "<span class='text-dark mx-2 p-2' style='background:gold; border-radius:10px; font-size:13pt;'>" + message.content + "</span>" +
                             "<img src='/image/owner.jpg' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
                         "</div>" +
                     "</div>"
@@ -148,7 +157,8 @@
                     "<div style='display:flex; justify-content:start; align-items:center;' class='my-2'>" +
                         "<div style='display:flex; align-items:center;'>" +
                             "<img src='/image/customer.jpg' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
-                            "<span class='bg-light text-dark border border-dark mx-2 p-2 fs-5' style='border-radius:10px;'>" + message.content + "</span>" +
+                            "<span class='bg-light text-dark border border-dark mx-2 p-2 ' style='font-size:13pt; border-radius:10px;'>" + message.content + "</span>" +
+                            "<span style='color:gray; font-size:10pt;'>" + currentTime + "</span>" +
                         "</div>" +
                     "</div>"
                 );
@@ -178,5 +188,19 @@
             location.href="/main";
         });
     });
+
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+
+        const ampm = hours >= 12 ? '오후' : '오전';
+
+        const displayHours = hours % 12 || 12;
+
+        const timeString = `${ampm} ${displayHours}시 ${minutes < 10 ? '0' : ''}${minutes}분`;
+
+        return timeString;
+    }
 </script>
 </html>

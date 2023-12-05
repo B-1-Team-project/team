@@ -103,6 +103,30 @@ public class SiteUserController {
         return "userModify";
     }
 
+    @GetMapping("/snsUserModify/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String snsUserModify(Model model, SnsUserModifyForm snsUserModifyForm, @PathVariable("loginId") String loginId, Principal principal){
+        SiteUser user = this.siteUserService.getUser(principal.getName());
+        model.addAttribute("user", user);
+        if (!user.getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+        snsUserModifyForm.setAuthority(user.getAuthority());
+        return "snsUserModify";
+    }
+
+    @PostMapping("/snsUserModify/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String snsUserModify(Model model, @Valid SnsUserModifyForm snsUserModifyForm, BindingResult bindingResult, @PathVariable("loginId") String loginId, Principal principal){
+        SiteUser user = siteUserService.getUser(loginId);
+        model.addAttribute("user", user);
+        if(bindingResult.hasErrors()){
+            return "snsUserModify";
+        }
+        siteUserService.saveAuthority(user, snsUserModifyForm.getAuthority());
+        return "userDetail";
+    }
+
     @PostMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
     public String userModify(Model model, @Valid UserModifyForm userModifyForm, BindingResult bindingResult, @PathVariable("loginId") String loginId, Principal principal) {
@@ -151,23 +175,17 @@ public class SiteUserController {
         }
     }
 
-    @GetMapping("/findPw")
-    public String findPw(UserFindPwForm userFindPwForm) {
-        return "findPw";
+    @GetMapping("/findIdAndPw")
+    public String findIdAndPw() {
+        return "findIdAndPw";
     }
 
     @PostMapping("/sendEmail")
-    public String findPw(@Valid UserFindPwForm userFindPwForm, BindingResult bindingResult, Model model) {
+    public String findPw(Model model, String loginId) {
         try {
-            if (bindingResult.hasErrors()) {
-                return "findPw";
-            }
-            String loginId = userFindPwForm.getLoginId();
-            String userLoginId = siteUserService.getUser(loginId).getLoginId();
-
-            if (!loginId.equals(userLoginId)) {
-                bindingResult.rejectValue("loginId", "loginIdInCorrect", "ID가 정확하지 않습니다.");
-                return "findPw";
+            if (this.siteUserService.findUserByLoginID(loginId) == null) {
+                model.addAttribute("idError", "가입되지 않은 아이디입니다.");
+                return "findIdAndPw";
             }
 
             String email = siteUserService.getUser(loginId).getEmail();
@@ -176,12 +194,10 @@ public class SiteUserController {
 
             model.addAttribute("emailSent", true);
 
-            return "findPw";
-        } catch (
-                DataNotFoundException e) {
-            // 예외 처리 로직
-            bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
-            return "findPw";
+            return "findIdAndPw";
+        } catch (DataNotFoundException e) {
+            e.printStackTrace();
+            return "findIdAndPw";
         }
     }
 
@@ -225,32 +241,19 @@ public class SiteUserController {
         }
     }
 
-    @GetMapping("/findId")
-    public String findId(UserFindIdForm userFindIdForm) {
-        return "findId";
-    }
-
     @PostMapping("/findId")
-    public String findId(@Valid UserFindIdForm userFindIdForm, BindingResult bindingResult, Model model) {
+    public String findId(Model model, String email) {
         try {
-            if (bindingResult.hasErrors()) {
-                return "findId";
+            if (siteUserService.getUserByEmail(email) == null) {
+                model.addAttribute("emailError", "가입되지 않은 이메일입니다.");
+                return "findIdAndPw";
             }
-            String email = userFindIdForm.getEmail();
-            String userEmail = siteUserService.getUserByEmail(email).getEmail();
             SiteUser user = siteUserService.getUserByEmail(email);
-
-            if (!email.equals(userEmail)) {
-                bindingResult.rejectValue("loginId", "loginIdInCorrect", "ID가 정확하지 않습니다.");
-                return "findId";
-            }
             model.addAttribute("user", user);
-            return "confirmId";
-        } catch (
-                DataNotFoundException e) {
-            // 예외 처리 로직
-            bindingResult.reject("userNotFound", "유저를 찾을 수 없습니다.");
-            return "findId";
+            return "findIdAndPw";
+        } catch (DataNotFoundException e) {
+            e.printStackTrace();
+            return "findIdAndPw";
         }
     }
 
@@ -267,7 +270,7 @@ public class SiteUserController {
 
 
     @GetMapping("/selectAuthority")
-    public String selectAuthority(UserSelectForm userSelectForm, Principal principal, Model model){
+    public String selectAuthority(UserSelectForm userSelectForm, Principal principal, Model model) {
         SiteUser user = siteUserService.getUser(principal.getName());
         model.addAttribute("user", user);
         return "selectAuthority";
@@ -275,7 +278,7 @@ public class SiteUserController {
 
     @PostMapping("/selectAuthority/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String selectAuthority(@PathVariable("loginId") String loginId, @Valid UserSelectForm userSelectForm, BindingResult bindingResult,Model model) {
+    public String selectAuthority(@PathVariable("loginId") String loginId, @Valid UserSelectForm userSelectForm, BindingResult bindingResult, Model model) {
         SiteUser user = siteUserService.getUser(loginId);
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
