@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <div style="background:white; width:60%; padding:20px; border-radius:15px; margin:0 auto; margin-top:150px;">
+    <div class="authority my-4">
         <h3 class="border-bottom pb-2">회원정보 수정</h3>
         <form th:action="@{|/user/selectAuthority/${user.loginId}|}" th:object="${userSelectForm}" method="post">
             <div th:replace="~{form_errors :: formErrorsFragment}"></div>

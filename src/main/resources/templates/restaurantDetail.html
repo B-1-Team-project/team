@@ -7,7 +7,8 @@
             <img th:if="${restaurant.image != null}" th:src="@{${restaurant.image}}"
                  class="card-img-top" style="height:300px;">
             <img th:if="${restaurant.image == null}" src="/image/startImage.jpg" alt="">
-            <div class="resName card-header d-flex justify-content-between align-items-center" style="background:linen;">
+            <div class="resName card-header d-flex justify-content-between align-items-center"
+                 style="background:linen;">
                 <!-- 가게 이름 & 주 메뉴 -->
                 <div>
                     <div th:text="${restaurant.name}" class="fw-bold fs-4 me-1"></div>
@@ -61,7 +62,6 @@
                     </div>
                     <!-- 가게 영업시간 -->
                     <label for="time" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">영업시간</label>
-                    <div th:if="${restaurant.startTime == null && restaurant.endTime == null}">제공 정보 없음</div>
                     <div class="d-flex align-items-center mb-2"
                          th:if="${restaurant.startTime != null && restaurant.endTime != null}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -69,8 +69,11 @@
                             <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
                             <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
                         </svg>
-                        <span th:if="${restaurant.startTime != null && restaurant.startTime != ''}"
+                        <span th:if="${restaurant.startTime != null && restaurant.startTime != '' && restaurant.startTime != restaurant.endTime}"
                               th:text="|${restaurant.startTime} - ${restaurant.endTime}|"></span>
+                        <span th:if="${restaurant.startTime != null && restaurant.startTime != '' && restaurant.startTime == restaurant.endTime}">
+                            24시간 영업
+                        </span>
                         <span th:if="${restaurant.startTime == null || restaurant.startTime == ''}">제공 정보 없음</span>
                     </div>
                     <label for="facilities" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">편의 시설 및
@@ -567,47 +570,49 @@
            alert('텍스트가 클립보드에 복사되었습니다.');
        });
 
-       document.addEventListener("DOMContentLoaded", function() {
-           // 현재 날짜와 시간 설정
-           var currentDate = new Date();
+        document.addEventListener("DOMContentLoaded", function () {
+            // 현재 날짜와 시간 설정
+            var currentDate = new Date();
 
-           // 예약 날짜 선택
-           flatpickr("#datepicker", {
-               enableTime: false,
-               locale: "ko",
-               minDate: "today", // 오늘 날짜부터 선택 가능
-               maxDate: new Date().fp_incr(30), // 30일 이내로 선택 가능
-               onChange: function(selectedDates, dateStr, instance) {
-                   document.getElementById("selectedDate").value = dateStr;
+            // 예약 날짜 선택
+            flatpickr("#datepicker", {
+                enableTime: false,
+                locale: "ko",
+                minDate: "today", // 오늘 날짜부터 선택 가능
+                maxDate: new Date().fp_incr(30), // 30일 이내로 선택 가능
+                onChange: function (selectedDates, dateStr, instance) {
+                    document.getElementById("selectedDate").value = dateStr;
 
-                   // 예약 시간의 minTime 업데이트
-                   updateMinTime(dateStr);
-               }
-           });
+                    // 예약 시간의 minTime 업데이트
+                    updateMinTime(dateStr);
+                }
+            });
 
-           // 예약 시간 선택
-           flatpickr("#timepicker", {
-               enableTime: true,
-               noCalendar: true,
-               dateFormat: "H:i",
-               locale: "ko",
-               minTime: [[${restaurant.startTime}]],
-               maxTime: [[${restaurant.endTime}]],
-               onChange: function(selectedDates, dateStr, instance) {
-                   document.getElementById("selectedTime").value = dateStr;
-               }
-           });
+            // 예약 시간 선택
+            flatpickr("#timepicker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                locale: "ko",
+                // 조건 추가: startTime과 endTime이 같은 경우에는 모든 시간 예약 가능
+                minTime: ([[${restaurant.startTime}]] === [[${restaurant.endTime}]]) ? "00:00" : [[${restaurant.startTime}]],
+                maxTime: [[${restaurant.endTime}]],
+                onChange: function (selectedDates, dateStr, instance) {
+                    document.getElementById("selectedTime").value = dateStr;
+                }
+            });
 
-           function updateMinTime(selectedDate) {
-               // 선택된 날짜가 오늘이면서 현재 시간 이후의 시간을 계산
-               var minTime = (selectedDate === flatpickr.formatDate(currentDate, "Y-m-d")) ?
-                   (currentDate.getHours() + ":" + currentDate.getMinutes()) :
-                   [[${restaurant.startTime}]];
+            function updateMinTime(selectedDate) {
+                // 선택된 날짜가 오늘이면서 현재 시간 이후의 시간을 계산
+                var minTime = (selectedDate === flatpickr.formatDate(currentDate, "Y-m-d")) ?
+                    (currentDate.getHours() + ":" + currentDate.getMinutes()) :
+                    ([[${restaurant.startTime}]] === [[${restaurant.endTime}]]) ? "00:00" : [[${restaurant.startTime}]];
 
-               // 예약 시간의 minTime을 업데이트
-               document.getElementById("timepicker")._flatpickr.set("minTime", minTime);
-           }
-       });
+                // 예약 시간의 minTime을 업데이트
+                document.getElementById("timepicker")._flatpickr.set("minTime", minTime);
+            }
+        });
+
 
        function sendMessage() {
            var phoneNumber = document.getElementById("phoneNum").value;

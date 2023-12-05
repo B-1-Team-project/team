@@ -39,8 +39,6 @@ public class RestaurantService {
         restaurant.setFacilities(facilities);
         restaurant.setMain(main);
         restaurant.setRegDate(LocalDateTime.now());
-        restaurant.setStartTime(startTime);
-        restaurant.setEndTime(endTime);
         restaurant.setIntroduce(introduce);
         this.restaurantRepository.save(restaurant);
         return restaurant;

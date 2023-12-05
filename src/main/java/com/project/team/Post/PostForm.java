@@ -1,4 +1,4 @@
-package com.project.team.Board;
+package com.project.team.Post;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

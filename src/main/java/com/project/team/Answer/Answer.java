@@ -1,15 +1,15 @@
-package com.project.team.Board;
+package com.project.team.Answer;
 
+import com.project.team.Post.Post;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
+@Entity
 public class Answer {
 
     @Id

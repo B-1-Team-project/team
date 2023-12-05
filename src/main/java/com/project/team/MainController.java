@@ -29,12 +29,12 @@ public class MainController {
 
     @GetMapping("/main")
     public String mainPage() {
-        return "redirect:/process";
+        return "redirect:/interprocess";
     }
 
     @GetMapping("/process")
     public String interProcess() {
-        return "interprocess";
+        return "redirect:/interprocess";
     }
 
 }
