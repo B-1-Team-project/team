@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>글슨이</th>
+        <th>작성일시</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="siteUser, index : ${siteUserList}">
+        <td th:text="${siteUser.name}"></td>
+        <td th:text="${siteUser.createDate}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

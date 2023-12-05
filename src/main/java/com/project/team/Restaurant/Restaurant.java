@@ -1,5 +1,6 @@
 package com.project.team.Restaurant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.team.Reservation.Reservation;
 import com.project.team.User.SiteUser;
 import com.project.team.Review.Review;

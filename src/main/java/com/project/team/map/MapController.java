@@ -33,8 +33,8 @@ public class MapController {
                          Principal principal) {
         if (principal != null) {
             SiteUser user = this.siteUserService.getUser(principal.getName());
-            model.addAttribute("user", user);
 
+            model.addAttribute("user", user);
             model.addAttribute("alarmList", alarmService.getByUser(user));
         }
         model.addAttribute("inputAddress", inputAddress);

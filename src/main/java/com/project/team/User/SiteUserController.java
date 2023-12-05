@@ -1,11 +1,12 @@
 package com.project.team.User;
 
+import com.project.team.Board.Post;
+import com.project.team.Board.PostService;
 import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Restaurant.RestaurantService;
-import com.project.team.chat.Chat;
 import com.project.team.chat.ChatService;
 import com.project.team.test.MailDto;
 import jakarta.validation.Valid;
@@ -37,6 +38,7 @@ public class SiteUserController {
     private final ChatService chatService;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
+    private final PostService postService;
 
 
     @GetMapping("/signup")
@@ -80,12 +82,10 @@ public class SiteUserController {
     public String userDetail(Model model, @PathVariable("loginId") String loginId, Principal principal) {
         SiteUser siteUser = this.siteUserService.getUser(loginId);
         SiteUser loginUser = this.siteUserService.getUser(principal.getName());
-        List<Chat> chatList = chatService.getRoomList(siteUser);
         List<Reservation> userReservation = this.reservationService.getAllByUser(siteUser);
         model.addAttribute("userReservation", userReservation);
         model.addAttribute("user", siteUser);
         model.addAttribute("loginUser", loginUser);
-        model.addAttribute("chatList", chatList);
         return "userDetail";
     }
 
@@ -199,7 +199,7 @@ public class SiteUserController {
             return "resetPasswordForm";
         }
 
-        if(!userResetPwForm.getPassword1().equals(userResetPwForm.getPassword2())){
+        if (!userResetPwForm.getPassword1().equals(userResetPwForm.getPassword2())) {
             bindingResult.rejectValue("password2", "passwordInCorrect", "2개의 비밀번호가 일치하지 않습니다.");
             model.addAttribute("token", userResetPwForm.getToken());
             return "resetPasswordForm";
@@ -256,14 +256,42 @@ public class SiteUserController {
 
     @GetMapping("/favorite/{restaurantId}")
     @PreAuthorize("isAuthenticated()")
-    public String favorite(@PathVariable("restaurantId") Integer restaurantId, Principal principal,Model model){
+    public String favorite(@PathVariable("restaurantId") Integer restaurantId, Principal principal, Model model) {
         SiteUser user = siteUserService.getUser(principal.getName());
         Restaurant restaurant = restaurantService.getRestaurant(restaurantId);
-        siteUserService.toggleFavorite(user,restaurant);
+        siteUserService.toggleFavorite(user, restaurant);
         System.out.println(user.getFavorite());
 
         return "redirect:/restaurant/detail/" + restaurantId;
     }
+
+
+    @GetMapping("/selectAuthority")
+    public String selectAuthority(UserSelectForm userSelectForm, Principal principal, Model model){
+        SiteUser user = siteUserService.getUser(principal.getName());
+        model.addAttribute("user", user);
+        return "selectAuthority";
+    }
+
+    @PostMapping("/selectAuthority/{loginId}")
+    @PreAuthorize("isAuthenticated()")
+    public String selectAuthority(@PathVariable("loginId") String loginId, @Valid UserSelectForm userSelectForm, BindingResult bindingResult,Model model) {
+        SiteUser user = siteUserService.getUser(loginId);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            return "selectAuthority";
+        }
+        this.siteUserService.saveAuthority(user, userSelectForm.getAuthority());
+        return "redirect:/interprocess";
+    }
+
+    @GetMapping("/board")
+    public String Post(Model model){
+        List<Post> postList = postService.postList();
+        model.addAttribute("postList", postList);
+        return "board";
+    }
+
     //테스트용 코드
     @GetMapping("/test2")
     public String test2() {
