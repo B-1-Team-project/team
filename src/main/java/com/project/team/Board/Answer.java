@@ -1,15 +1,16 @@
-package com.project.team.Answer;
+package com.project.team.Board;
 
-import com.project.team.Post.Post;
+import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
-@Entity
 public class Answer {
 
     @Id
@@ -22,4 +23,7 @@ public class Answer {
 
     @ManyToOne
     private Post post;
+
+    @ManyToOne
+    private SiteUser user;
 }

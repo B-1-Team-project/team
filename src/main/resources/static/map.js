@@ -70,7 +70,7 @@
 
     if (inputAddress == 'aroundMe') {
         displayMarker_myLocation(locPosition);
-    } else {
+    } else if (inputAddress !== 'searchKeyword') {
 
         var marker = new kakao.maps.Marker({
             map: map,

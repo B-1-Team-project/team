@@ -1,4 +1,4 @@
-package com.project.team.Post;
+package com.project.team.Board;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

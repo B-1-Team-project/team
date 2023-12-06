@@ -1,6 +1,5 @@
-package com.project.team.Post;
+package com.project.team.Board;
 
-import com.project.team.Answer.Answer;
 import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
