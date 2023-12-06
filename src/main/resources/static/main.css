@@ -34,7 +34,10 @@ a:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    background:tan;
+    background-image:url('/image/logo/logo.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     padding:30px;
     border-radius:20px;
     width:45%;
@@ -259,6 +262,15 @@ a:hover {
     margin:0 auto;
 }
 
+.clickMap {
+    cursor:pointer;
+}
+
+.clickMap:hover {
+    cursor:grabbing;
+    color:sienna;
+}
+
 .recommend {
     width:80%;
     margin:0 auto;
@@ -308,26 +320,63 @@ a:hover {
 }
 
 #userInfo {
-     width:69%; background:white; padding:20px; border-radius:15px;
+     width:69%;
+     background:white;
+     padding:20px;
+     border-radius:15px;
+     position:relative;
 }
 
 #userFavorite {
-    width:29%; background:white; padding:20px; border-radius:15px;
+    width:29%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
 }
 
 #userReserve {
-    width:49%; background:white; padding:20px; border-radius:15px;
+    width:49%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
 }
 
 #userReview {
-    width:49%; background:white; padding:20px; border-radius:15px;
+    width:49%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
 }
 
 #userModify {
-     background:white; width:60%; padding:20px; border-radius:15px; margin:0 auto;
+     background:white;
+     width:60%;
+     padding:20px;
+     border-radius:15px;
+     margin:0 auto;
+}
+
+.authority {
+   background:white;
+   width:60%;
+   padding:20px;
+   border-radius:15px;
+   margin:0 auto;
+}
+
+#menu {
+    position:relative;
 }
 
 @media (max-width: 1200px) {
+
+    #menu {
+        margin-top:20px;
+    }
+
+    .authority {
+        width:90%;
+    }
 
     #userModify {
         width:90%;
@@ -392,6 +441,11 @@ a:hover {
     }
 
     .weather {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .날씨 {
         flex-direction: column;
         align-items: center;
     }

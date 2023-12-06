@@ -1,8 +1,8 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
     <div style="background:white; width:95%; margin:0 auto; border-radius:15px; padding:30px;" class="my-4 text-center">
-        <div class="weather d-flex justify-content-around align-items-center my-3">
-            <div class="d-flex align-items-center">
+        <div class="날씨 d-flex justify-content-around align-items-center my-3">
+            <div class="weather d-flex align-items-center">
                 <img src="" alt="" id="skyStatus">
                 <div>
                     <h3 th:text="|${user.name}님이 계신 곳의 위치는|" sec:authorize="isAuthenticated()"></h3>
@@ -22,13 +22,13 @@
                 </div>
                 <img src="" alt="" id="tempStatus">
             </div>
-            <div id="menu" style="position:relative;">
+            <div id="menu">
                 <canvas id="roulette" width="200" height="200"></canvas>
                 <div>
                     <div id="arrow"></div>
                     <div id="result" class="animate__animated"></div>
                 </div>
-                <button onclick="rotate()">돌려돌려 돌림판</button>
+                <button class="버튼 btn btn-sm" onclick="rotate()">돌려돌려 돌림판</button>
             </div>
         </div>
         <div class="my-5">

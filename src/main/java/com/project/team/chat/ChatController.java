@@ -75,6 +75,6 @@ public class ChatController {
     public String delete(@PathVariable("room") String room) {
         this.chatService.delete(room);
         this.alarmService.deleteAll(alarmService.getAllByRoom(room));
-        return "redirect:/";
+        return "redirect:/interprocess";
     }
 }

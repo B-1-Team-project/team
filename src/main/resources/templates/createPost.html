@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form th:action="@{/user/board/createPost}" th:object="${postForm}" method="post" >
+
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <label for="title">제목:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="content">내용:</label>
+    <textarea id="content" name="content" required></textarea>
+
+    <input type="submit" value="게시글작성"></input>
+</form>
+
+</body>
+</html>
