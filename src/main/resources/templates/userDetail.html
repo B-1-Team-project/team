@@ -56,7 +56,7 @@
                     <div class="card mb-2">
                         <div class="card-header d-flex justify-content-between align-items-center"
                              style="background: linen;">
-                            <a th:text="${reservation.restaurant.name}" th:href="@{|/restaurant/detail/${reservation.restaurant.id}|}"></a>
+                            <a class="fw-bold" th:text="${reservation.restaurant.name}" th:href="@{|/restaurant/detail/${reservation.restaurant.id}|}"></a>
                             <a href="javascript:void(0)" th:data-uri="@{|/reserve/cancel/${reservation.id}|}"
                                class="btn btn-danger btn-sm" id="cancelBtn">예약 취소</a>
                         </div>

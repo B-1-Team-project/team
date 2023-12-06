@@ -34,7 +34,10 @@ a:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    background:tan;
+    background-image:url('/image/logo/logo.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     padding:30px;
     border-radius:20px;
     width:45%;
@@ -259,6 +262,15 @@ a:hover {
     margin:0 auto;
 }
 
+.clickMap {
+    cursor:pointer;
+}
+
+.clickMap:hover {
+    cursor:grabbing;
+    color:sienna;
+}
+
 .recommend {
     width:80%;
     margin:0 auto;
@@ -312,6 +324,7 @@ a:hover {
      background:white;
      padding:20px;
      border-radius:15px;
+     position:relative;
 }
 
 #userFavorite {
