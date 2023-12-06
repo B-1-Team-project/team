@@ -50,6 +50,8 @@ public class SiteUser {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
+    private String image;
+
     private String picture;
 
     private String role = "ROLE_USER";

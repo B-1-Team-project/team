@@ -45,6 +45,10 @@ a:hover {
     border:2px solid black;
 }
 
+.selectedImage {
+    border:3px solid tan;
+}
+
 #loginBtn {
     width:25%;
     height:90px;

@@ -52,7 +52,7 @@
                     <div th:each="chat : ${chatList}">
                         <div class="d-flex my-2 align-items-end"
                              th:classappend="${chat.writer.loginId == user.loginId} ? 'justify-content-end'">
-                            <img src="/image/customer.jpg" alt="" th:if="${chat.writer.loginId != user.loginId}"
+                            <img th:src="@{${target.image}}" alt="" th:if="${chat.writer.loginId != user.loginId}"
                                  style="width:50px; height:50px; border-radius:40%; border:1px solid gray;">
                             <div th:text="${#temporals.format(chat.createDate, 'a h시 m분')}"
                                  th:if="${chat.writer.loginId == user.loginId}"
@@ -63,7 +63,7 @@
                             <div th:text="${#temporals.format(chat.createDate, 'a h시 m분')}"
                                  th:if="${chat.writer.loginId != user.loginId}"
                                  style="font-size:10pt; color:gray;"></div>
-                            <img src="/image/owner.jpg" alt=""
+                            <img th:src="@{${user.image}}" alt=""
                                  style="width:50px; height:50px; border-radius:40%; border:1px solid gray;"
                                  th:if="${chat.writer.loginId == user.loginId}">
                         </div>
@@ -84,7 +84,7 @@
         </div>
     </div>
 </div>
-<script layout:fragment="script">
+<script layout:fragment="script" th:inline="javascript">
     $(function () {
         $('.confirm').each(function(index, element) {
             if ($(element).attr('data-value') == 'false') {
@@ -142,12 +142,14 @@
         const currentTime = getCurrentTime();
 
         function showMessage(message) {
+            var userImage = [[${user.image}]];
+            var targetImage = [[${target.image}]];
             if (message.writer == $("#user").val()) {
                 $("#chatMessages").append(
                     "<div style='display:flex; justify-content:end; align-items:center;' class='my-2'>" +
                         "<div style='display:flex; align-items:end;'>" + "<span style='color:gray; font-size:10pt;'>" + currentTime + "</span>" +
                             "<span class='text-dark mx-2 p-2' style='background:gold; border-radius:10px; font-size:13pt;'>" + message.content + "</span>" +
-                            "<img src='/image/owner.jpg' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
+                            "<img src='" +  userImage + "' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
                         "</div>" +
                     "</div>"
                 );
@@ -156,7 +158,7 @@
                 $("#chatMessages").append(
                     "<div style='display:flex; justify-content:start; align-items:center;' class='my-2'>" +
                         "<div style='display:flex; align-items:center;'>" +
-                            "<img src='/image/customer.jpg' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
+                            "<img src='" +  targetImage + "' style='width:50px; height:50px; float:right; border:1px solid gray; border-radius:40%;'>" +
                             "<span class='bg-light text-dark border border-dark mx-2 p-2 ' style='font-size:13pt; border-radius:10px;'>" + message.content + "</span>" +
                             "<span style='color:gray; font-size:10pt;'>" + currentTime + "</span>" +
                         "</div>" +
