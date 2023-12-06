@@ -142,7 +142,7 @@ public class RestaurantService {
 
     public List<Restaurant> getRestaurantByKeyword(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return new ArrayList<>();
+            throw new DataNotFoundException("date not found");
         }
         List<Restaurant> matchingRestaurant = new ArrayList<>();
         List<Restaurant> allRestaurant = restaurantRepository.findAll();
