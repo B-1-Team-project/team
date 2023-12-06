@@ -128,13 +128,40 @@
                             <span>실시간 채팅</span>
                         </a>
                     </div>
-                    <div class="d-flex justify-content-end align-items-center">
+                    <div class="clickMap d-flex justify-content-end align-items-center" data-bs-toggle="modal"
+                         data-bs-target="#mapModal">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-map me-1" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
                                   d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
                         </svg>
                         <span style="text-decoration:underline;">가게 위치 보기</span>
+                    </div>
+                    <!-- 지도 모달 -->
+                    <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="mapModalLabel">가게 위치</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="map" style="width:95%; height:400px; margin:0 auto;"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a type="button" class="버튼 btn btn-sm" th:href="@{|https://map.kakao.com/link/to/${restaurant.name},${restaurant.locationY},${restaurant.locationX}|}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-compass me-1" viewBox="0 0 16 16">
+                                            <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016zm6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                                            <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z"/>
+                                        </svg>
+                                        <span>길찾기</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -459,7 +486,8 @@
             <input type="hidden" id="count" name="count">
         </form>
     </div>
-
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ea7706d3cd280b86aceebdabe80d16f0&libraries=services"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.6/dist/flatpickr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.6/dist/l10n/ko.js"></script>
@@ -467,22 +495,52 @@
     <script src="/imageButton.js"></script>
     <script layout:fragment="script" type='text/javascript' th:inline="javascript">
 
+        // 지도 관련
+        $('#mapModal').on('shown.bs.modal', function () {
+            initializeKakaoMap();
+        });
+
+        function initializeKakaoMap() {
+            var container = document.getElementById('map');
+            var options = {
+                center: new kakao.maps.LatLng([[${restaurant.locationY}]], [[${restaurant.locationX}]]),
+                level: 4
+            };
+
+            var map = new kakao.maps.Map(container, options);
+                    window.addEventListener('resize', function() {
+                map.relayout();
+            });
+
+            var imageSrc = '/image/mark/marker.png',
+                imageSize = new kakao.maps.Size(40, 40),
+                imageOption = {offset: new kakao.maps.Point(20, 40)};
+
+            var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+                markerPosition = new kakao.maps.LatLng([[${restaurant.locationY}]], [[${restaurant.locationX}]]);
+
+            var marker = new kakao.maps.Marker({
+                position: markerPosition,
+                image: markerImage
+            });
+
+            marker.setMap(map);
+        }
+
+
+        // 댓글 시간 관련
         var commentCreateTimes = document.querySelectorAll('.dynamicTime');
 
         commentCreateTimes.forEach(function(commentCreateTimeElement) {
            var commentCreateTime = new Date(commentCreateTimeElement.innerText);
-
-           // 현재 시간
            var now = new Date();
 
-           // 시간 차이 계산 (밀리초 단위)
            var timeDifference = now - commentCreateTime;
-           var secondsDifference = Math.floor(timeDifference / 1000); // 밀리초를 초로 변환
-           var minutesDifference = Math.floor(secondsDifference / 60); // 초를 분으로 변환
-           var hoursDifference = Math.floor(minutesDifference / 60); // 분을 시간으로 변환
-           var daysDifference = Math.floor(hoursDifference / 24); // 시간을 일수로 변환
+           var secondsDifference = Math.floor(timeDifference / 1000);
+           var minutesDifference = Math.floor(secondsDifference / 60);
+           var hoursDifference = Math.floor(minutesDifference / 60);
+           var daysDifference = Math.floor(hoursDifference / 24);
 
-           // 상대적인 시간 표시
            if (secondsDifference < 60) {
                commentCreateTimeElement.innerText = secondsDifference + '초 전';
            } else if (minutesDifference < 60) {
@@ -492,11 +550,11 @@
            } else if (daysDifference < 7) {
                commentCreateTimeElement.innerText = daysDifference + '일 전';
            } else {
-               // 원하는 형식으로 시간을 표시
                commentCreateTimeElement.innerText = commentCreateTime.toLocaleString('ko-KR');
            }
        });
 
+       // 댓글 수정
        function saveModify(event, commentId) {
            console.log(event.target.previousElementSibling.value);
            event.target.parentNode.submit();
@@ -582,31 +640,28 @@
            alert('텍스트가 클립보드에 복사되었습니다.');
        });
 
+
+        // 예약 관련
         document.addEventListener("DOMContentLoaded", function () {
-            // 현재 날짜와 시간 설정
             var currentDate = new Date();
 
-            // 예약 날짜 선택
             flatpickr("#datepicker", {
                 enableTime: false,
                 locale: "ko",
-                minDate: "today", // 오늘 날짜부터 선택 가능
+                minDate: "today",
                 maxDate: new Date().fp_incr(30), // 30일 이내로 선택 가능
                 onChange: function (selectedDates, dateStr, instance) {
                     document.getElementById("selectedDate").value = dateStr;
 
-                    // 예약 시간의 minTime 업데이트
                     updateMinTime(dateStr);
                 }
             });
 
-            // 예약 시간 선택
             flatpickr("#timepicker", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i",
                 locale: "ko",
-                // 조건 추가: startTime과 endTime이 같은 경우에는 모든 시간 예약 가능
                 minTime: ([[${restaurant.startTime}]] === [[${restaurant.endTime}]]) ? "00:00" : [[${restaurant.startTime}]],
                 maxTime: [[${restaurant.endTime}]],
                 onChange: function (selectedDates, dateStr, instance) {
@@ -615,32 +670,25 @@
             });
 
             function updateMinTime(selectedDate) {
-                // 선택된 날짜가 오늘이면서 현재 시간 이후의 시간을 계산
                 var minTime = (selectedDate === flatpickr.formatDate(currentDate, "Y-m-d")) ?
                     (currentDate.getHours() + ":" + currentDate.getMinutes()) :
                     ([[${restaurant.startTime}]] === [[${restaurant.endTime}]]) ? "00:00" : [[${restaurant.startTime}]];
-
-                // 예약 시간의 minTime을 업데이트
                 document.getElementById("timepicker")._flatpickr.set("minTime", minTime);
             }
         });
 
-
+        // 인증번호
        function sendMessage() {
            var phoneNumber = document.getElementById("phoneNum").value;
            if (phoneNumber == "")
                alert("전화번호를 입력해주세요.");
            else {
-               // URL 매개변수를 사용하여 서버로 전화번호를 보내는 GET 요청
                var xhr = new XMLHttpRequest();
                xhr.open("GET", "/send?phoneNumber=" + encodeURIComponent(phoneNumber), true);
 
-               // 서버에서 응답을 받으면 콘솔에 출력
                xhr.onreadystatechange = function () {
                    if (xhr.readyState == 4 && xhr.status == 200) {
-                       // 응답이 완료되면 modal을 닫음
                        $('#exampleModal').modal('hide');
-                       // 새로운 인증번호를 받아오기 위해 requestVerificationKey 함수 호출
                        requestVerificationKey();
                    }
                };
@@ -649,9 +697,8 @@
            }
        }
 
-       var serverVerKey; // 전역 변수로 선언
+       var serverVerKey;
 
-       // 서버에서 인증번호를 가져오는 함수
        function requestVerificationKey() {
            $.ajax({
                url: "/sendVerKey",
@@ -668,18 +715,14 @@
        }
 
        $("#verKeyBtn").click(function () {
-           // 인증번호 입력란 초기화
            document.getElementById("verKey").value = "";
-           // 새로운 인증번호를 받아오기 위해 requestVerificationKey 함수 호출
            requestVerificationKey();
        });
 
-       // 페이지 로드 시에도 최초 한 번은 인증번호를 가져오도록 호출
        $(document).ready(function () {
            requestVerificationKey();
        });
 
-       // 인증번호를 체크하는 함수
        function checkVerificationKey() {
            var enteredKey = document.getElementById("verKey").value;
            console.log(serverVerKey);
@@ -698,6 +741,7 @@
            }
        }
 
+       // 예약 인원 수
        let count = 1;
 
        function updateCount() {
