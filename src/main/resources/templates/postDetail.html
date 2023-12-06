@@ -2,12 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1 th:text="${post.title}"></h1>
-<div th:text="${post.content}"></div>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+
+<h1 th:text="${post.title}" class="mb-4"></h1>
+
+<div th:text="${post.content}" class="mb-4"></div>
+
+<form th:action="@{|/answer/create/${post.id}|}" th:object="${answerForm}" method="post" class="mb-4">
+    <div class="form-group" >
+    <label for="content">댓글</label>
+    <textarea name="content" id="content" class="form-control" cols="30" rows="5"></textarea>
+
+    </div>
+    <button type="submit" class="btn btn-primary">댓글 등록</button>
+</form>
+
+<div>
+    <ul class="list-group">
+        <li th:each="answer : ${post.answerList}" class="list-group-item">
+            <span th:text="${answer.content}"></span>
+            <span th:text="${answer.user != null ? answer.user.name : '게스트'}"></span>
+        </li>
+    </ul>
+
+</div>
 
 </body>
 </html>

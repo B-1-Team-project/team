@@ -1,5 +1,6 @@
 package com.project.team.Board;
 
+import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
@@ -22,4 +23,7 @@ public class Answer {
 
     @ManyToOne
     private Post post;
+
+    @ManyToOne
+    private SiteUser user;
 }

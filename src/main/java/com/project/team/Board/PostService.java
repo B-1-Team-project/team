@@ -39,4 +39,14 @@ public class PostService {
             throw new DataNotFoundException("post not found");
         }
     }
+
+    public void modify(Post post,String title, String content){
+        post.setTitle(title);
+        post.setContent(content);
+        this.postRepository.save(post);
+    }
+
+    public void delete(Post post){
+        this.postRepository.delete(post);
+    }
 }

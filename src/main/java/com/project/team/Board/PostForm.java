@@ -1,5 +1,6 @@
 package com.project.team.Board;
 
+import com.project.team.User.SiteUser;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -15,5 +16,5 @@ public class PostForm {
     @NotEmpty(message = "내용을 입력해주세요")
     private String content;
 
-    private String user;
+
 }

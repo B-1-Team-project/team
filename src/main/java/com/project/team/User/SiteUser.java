@@ -1,5 +1,6 @@
 package com.project.team.User;
 
+import com.project.team.Board.Answer;
 import com.project.team.Board.Post;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Restaurant.Restaurant;
@@ -50,6 +51,9 @@ public class SiteUser {
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "user")
+    private List<Answer> answers;
 
     private String picture;
 
