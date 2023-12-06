@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -52,7 +53,7 @@ RestaurantController {
                 restaurantRegisterForm.getNumber(), restaurantRegisterForm.getFacilities(), restaurantRegisterForm.getMain(), user,
                 restaurantRegisterForm.getStartTime(), restaurantRegisterForm.getEndTime(), restaurantRegisterForm.getIntroduce());
         this.restaurantService.uploadImage(restaurant, image);
-        model.addAttribute("restaurant",restaurant);
+        model.addAttribute("restaurant", restaurant);
         return "addressParser";
     }
 
@@ -138,7 +139,4 @@ RestaurantController {
         restaurantService.setLocation(restaurant, x, y);
         return "redirect:/main";
     }
-
-
-
 }

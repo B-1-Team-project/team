@@ -1,7 +1,9 @@
 package com.project.team.User;
 
+
 import com.project.team.Board.Answer;
 import com.project.team.Board.Post;
+
 import com.project.team.Reservation.Reservation;
 import com.project.team.Restaurant.Restaurant;
 import com.project.team.Review.Review;
@@ -10,7 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -52,8 +53,10 @@ public class SiteUser {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
+
     @OneToMany(mappedBy = "user")
     private List<Answer> answers;
+
 
     private String picture;
 

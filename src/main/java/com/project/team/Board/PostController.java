@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.thymeleaf.model.IModel;
 
 import java.security.Principal;
 import java.util.List;
@@ -91,9 +92,9 @@ public class PostController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String postDelete(Principal principal, @PathVariable("id") Integer id){
+    public String postDelete(Model model,Principal principal, @PathVariable("id") Integer id,String loginId){
         Post post = this.postService.getPost(id);
-        if(!post.getUser().getName().equals(principal.getName())){
+        if(!post.getUser().getLoginId().equals(principal.getName())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         this.postService.delete(post);

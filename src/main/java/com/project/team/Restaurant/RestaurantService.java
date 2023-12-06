@@ -39,8 +39,6 @@ public class RestaurantService {
         restaurant.setFacilities(facilities);
         restaurant.setMain(main);
         restaurant.setRegDate(LocalDateTime.now());
-        restaurant.setStartTime(startTime);
-        restaurant.setEndTime(endTime);
         restaurant.setIntroduce(introduce);
         this.restaurantRepository.save(restaurant);
         return restaurant;
@@ -144,6 +142,21 @@ public class RestaurantService {
 
     public List<Restaurant> byMain(String main1, String main2, String main3) {
         return this.restaurantRepository.byMain(main1, main2, main3);
+    }
+
+    public List<Restaurant> getRestaurantByKeyword(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            throw new DataNotFoundException("date not found");
+        }
+        List<Restaurant> matchingRestaurant = new ArrayList<>();
+        List<Restaurant> allRestaurant = restaurantRepository.findAll();
+        for (Restaurant restaurant : allRestaurant) {
+            String name = restaurant.getName();
+            if (name.contains(keyword)) {
+                matchingRestaurant.add(restaurant);
+            }
+        }
+        return matchingRestaurant;
     }
 }
 
