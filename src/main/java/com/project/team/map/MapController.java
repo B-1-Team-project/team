@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/map")
@@ -45,6 +47,27 @@ public class MapController {
         model.addAttribute("starTop3", this.restaurantService.top3AverageStar(restaurantList));
         model.addAttribute("reviewTop3", this.restaurantService.top3ReviewCount(restaurantList));
         model.addAttribute("resList", restaurantList);
+        model.addAttribute("y", lat);
+        model.addAttribute("x", lon);
+
+        return "main";
+    }
+
+    @GetMapping("/findByKeyword")
+    public String findByKeyword(@RequestParam String keyword, Model model, Principal principal) {
+
+        if (principal != null) {
+            SiteUser user = this.siteUserService.getUser(principal.getName());
+            model.addAttribute("user", user);
+            model.addAttribute("alarmList", alarmService.getByUser(user));
+        }
+
+        List<Restaurant> searchResult = restaurantService.getRestaurantByKeyword(keyword);
+
+        String lat = searchResult.get(0).getLocationY();
+        String lon = searchResult.get(0).getLocationX();
+        model.addAttribute("resList", searchResult);
+        model.addAttribute("inputAddress", "searchKeyword");
         model.addAttribute("y", lat);
         model.addAttribute("x", lon);
 
