@@ -1,6 +1,9 @@
 package com.project.team.User;
 
-import com.project.team.Post.PostService;
+
+import com.project.team.Board.Post;
+import com.project.team.Board.PostService;
+
 import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
@@ -46,7 +49,7 @@ public class SiteUserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult, Model model) {
+    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult, Model model, String image) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("signupError", "에러 메시지");
             return "start";
@@ -57,7 +60,8 @@ public class SiteUserController {
             return "start";
         }
         try {
-            siteUserService.create(userCreateForm.getLoginId(), userCreateForm.getPassword1(), userCreateForm.getName(), userCreateForm.getEmail(), userCreateForm.getAuthority());
+            siteUserService.create(userCreateForm.getLoginId(), userCreateForm.getPassword1(), userCreateForm.getName(),
+                    userCreateForm.getEmail(), userCreateForm.getAuthority(), image);
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", "이미 등록된 사용자 입니다.");
@@ -104,7 +108,7 @@ public class SiteUserController {
 
     @GetMapping("/snsUserModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String snsUserModify(Model model, SnsUserModifyForm snsUserModifyForm, @PathVariable("loginId") String loginId, Principal principal){
+    public String snsUserModify(Model model, SnsUserModifyForm snsUserModifyForm, @PathVariable("loginId") String loginId, Principal principal) {
         SiteUser user = this.siteUserService.getUser(principal.getName());
         model.addAttribute("user", user);
         if (!user.getLoginId().equals(principal.getName())) {
@@ -116,19 +120,21 @@ public class SiteUserController {
 
     @PostMapping("/snsUserModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String snsUserModify(Model model, @Valid SnsUserModifyForm snsUserModifyForm, BindingResult bindingResult, @PathVariable("loginId") String loginId, Principal principal){
+    public String snsUserModify(Model model, @Valid SnsUserModifyForm snsUserModifyForm, BindingResult bindingResult,
+                                @PathVariable("loginId") String loginId, Principal principal, String image) {
         SiteUser user = siteUserService.getUser(loginId);
         model.addAttribute("user", user);
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "snsUserModify";
         }
-        siteUserService.saveAuthority(user, snsUserModifyForm.getAuthority());
+        siteUserService.saveAuthority(user, snsUserModifyForm.getAuthority(), image);
         return "userDetail";
     }
 
     @PostMapping("/userModify/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String userModify(Model model, @Valid UserModifyForm userModifyForm, BindingResult bindingResult, @PathVariable("loginId") String loginId, Principal principal) {
+    public String userModify(Model model, @Valid UserModifyForm userModifyForm, BindingResult bindingResult,
+                             @PathVariable("loginId") String loginId, Principal principal, String image) {
         SiteUser siteUser = siteUserService.getUser(loginId);
         model.addAttribute("user", siteUser);
         if (bindingResult.hasErrors()) {
@@ -141,7 +147,8 @@ public class SiteUserController {
             bindingResult.rejectValue("password2", "passwordInCorrect", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
             return "userModify";
         }
-        this.siteUserService.modifyUser(siteUser, userModifyForm.getName(), userModifyForm.getEmail(), userModifyForm.getPassword1(), userModifyForm.getAuthority());
+        this.siteUserService.modifyUser(siteUser, userModifyForm.getName(), userModifyForm.getEmail(),
+                userModifyForm.getPassword1(), userModifyForm.getAuthority(), image);
         return String.format("redirect:/user/userDetail/%s", siteUser.getLoginId());
     }
 
@@ -277,16 +284,16 @@ public class SiteUserController {
 
     @PostMapping("/selectAuthority/{loginId}")
     @PreAuthorize("isAuthenticated()")
-    public String selectAuthority(@PathVariable("loginId") String loginId, @Valid UserSelectForm userSelectForm, BindingResult bindingResult, Model model) {
+    public String selectAuthority(@PathVariable("loginId") String loginId, @Valid UserSelectForm userSelectForm,
+                                  BindingResult bindingResult, Model model, String image) {
         SiteUser user = siteUserService.getUser(loginId);
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
             return "selectAuthority";
         }
-        this.siteUserService.saveAuthority(user, userSelectForm.getAuthority());
+        this.siteUserService.saveAuthority(user, userSelectForm.getAuthority(), image);
         return "redirect:/interprocess";
     }
-
 
 
     //테스트용 코드

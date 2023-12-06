@@ -1,4 +1,4 @@
-package com.project.team.Post;
+package com.project.team.Board;
 
 import com.project.team.DataNotFoundException;
 import com.project.team.User.SiteUser;
@@ -6,6 +6,7 @@ import com.project.team.User.SiteUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final SiteUserService siteUserService;
 
-    public List<Post> getList(){
+    public List<Post> postList(){
         return this.postRepository.findAll();
     }
 
@@ -37,5 +38,15 @@ public class PostService {
         } else {
             throw new DataNotFoundException("post not found");
         }
+    }
+
+    public void modify(Post post,String title, String content){
+        post.setTitle(title);
+        post.setContent(content);
+        this.postRepository.save(post);
+    }
+
+    public void delete(Post post){
+        this.postRepository.delete(post);
     }
 }
