@@ -114,10 +114,10 @@
                     <button class="버튼 btn btn-sm me-2" onclick="aroundMe()">내 위치 주변</button>
                     <button class="버튼 btn btn-sm" onclick="searchForAddress()">주소 검색</button>
                 </div>
-                <div class="input-group" style="width:25%;">
-                    <form th:action="@{/map/findByKeyword}" method="get" id="searchForm">
+                <div style="width:25%;">
+                    <form th:action="@{/map/findByKeyword}" method="get" id="searchForm" class="input-group">
                         <input type="text" class="form-control" th:value="${keyword}" name="keyword" id="searchName">
-                        <input type="submit" value="검색" class="searchButton">
+                        <input type="submit" value="검색" class="btn searchButton">
                     </form>
                 </div>
             </div>

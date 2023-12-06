@@ -53,10 +53,10 @@ public class SiteUser {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
+    private String image;
 
     @OneToMany(mappedBy = "user")
     private List<Answer> answers;
-
 
     private String picture;
 
