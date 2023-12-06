@@ -1,6 +1,9 @@
 package com.project.team.User;
 
-import com.project.team.Post.PostService;
+
+import com.project.team.Board.Post;
+import com.project.team.Board.PostService;
+
 import com.project.team.DataNotFoundException;
 import com.project.team.Reservation.Reservation;
 import com.project.team.Reservation.ReservationService;
