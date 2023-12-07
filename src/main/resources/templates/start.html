@@ -205,16 +205,32 @@
                     <input type="email" th:field="*{email}" class="form-control" placeholder="Leave a comment here">
                     <label for="email">이메일</label>
                 </div>
-                <select th:field="*{authority}" class="form-select">
+                <select th:field="*{authority}" class="form-select mb-3">
                     <option value="" selected>권한을 선택하세요.</option>
                     <option value="손님">손님</option>
                     <option value="사장님">사장님</option>
                 </select>
+                <div>
+                    <label for="image" class="form-label">이미지 선택</label>
+                    <input type="hidden" id="image" name="image">
+                    <div style="width:90%; margin:0 auto;">
+                        <div class="d-flex justify-content-around mb-3">
+                            <img src="/image/user/wUser1.jpg" class="img" style="border-radius:50%; width:20%;" onclick="selectImage(this)">
+                            <img src="/image/user/wUser2.jpg" class="img" style="border-radius:50%; width:20%;" onclick="selectImage(this)">
+                            <img src="/image/user/wUser3.jpg" class="img" style="border-radius:50%; width:20%;" onclick="selectImage(this)">
+                        </div>
+                        <div class="col d-flex justify-content-around">
+                            <img src="/image/user/mUser1.jpg" class="img" style="border-radius:50%; width:20%;" onclick="selectImage(this)">
+                            <img src="/image/user/mUser2.jpg" class="img" style="border-radius:50%; width:20%;" onclick="selectImage(this)">
+                            <img src="/image/user/mUser3.jpg" class="img" style="border-radius:50%; width:20%;" onclick="selectImage(this)">
+                        </div>
+                    </div>
+                </div>
                 <br>
-                <button type="submit" class="btn" id="signupBtn">회원가입</button>
+                <button type="button" class="btn" id="signupBtn">회원가입</button>
             </form>
             <br>
-            <div class="d-flex justify-content-around">
+            <div class="d-flex justify-content-around mb-4">
                 <a href="#" onclick="showForm('loginForm')" id="loginLink">로그인</a>
                 <a href="#" onclick="showForm('signupForm')" id="signupLink">회원가입</a>
                 <a th:href="@{/user/findIdAndPw}">아이디 / 비밀번호 찾기</a>
@@ -229,44 +245,64 @@
 <script th:src="@{/bootstrap.bundle.min.js}"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script th:inline="javascript">
-    function searchForAddress() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                document.querySelector('#inputAddress').value = data.address;
-                document.querySelector('#searchAddress').submit();
-            }
-        }).open();
+    const signup = document.querySelector("#signupBtn");
+    signup.addEventListener('click', function() {
+        if (document.querySelector("#image").value == '')
+            alert("프로필 이미지를 선택해주세요.");
+        else
+            document.querySelector("#signupForm").submit();
+    });
+
+    function selectImage(image) {
+      var allImages = document.querySelectorAll('.img');
+      allImages.forEach(function (img) {
+        img.classList.remove('selectedImage');
+      });
+      image.classList.add('selectedImage');
+      var currentOrigin = window.location.origin;
+      var imagePath = image.src.replace(currentOrigin, '');
+      document.querySelector("#image").value = imagePath;
+      console.log(document.querySelector("#image").value);
     }
 
-    window.onload = function() {
-        const showError = document.querySelector("#signupError").value;
-        if (showError == "에러 메시지") {
-            showForm('signupForm');
-        } else {
-            showForm('loginForm');
-        }
-    };
+  function searchForAddress() {
+      new daum.Postcode({
+          oncomplete: function(data) {
+              document.querySelector('#inputAddress').value = data.address;
+              document.querySelector('#searchAddress').submit();
+          }
+      }).open();
+  }
 
-    function showForm(formId) {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('signupForm').style.display = 'none';
+  window.onload = function() {
+      const showError = document.querySelector("#signupError").value;
+      if (showError == "에러 메시지") {
+          showForm('signupForm');
+      } else {
+          showForm('loginForm');
+      }
+  };
 
-        document.getElementById(formId).style.display = 'block';
+  function showForm(formId) {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'none';
 
-        if (formId === 'signupForm') {
-            document.getElementById('loginLink').style.display = 'inline';
-            document.getElementById('signupLink').style.display = 'none';
+      document.getElementById(formId).style.display = 'block';
 
-        } else {
-            document.getElementById('loginLink').style.display = 'none';
-            document.getElementById('signupLink').style.display = 'inline';
-        }
-    }
+      if (formId === 'signupForm') {
+          document.getElementById('loginLink').style.display = 'inline';
+          document.getElementById('signupLink').style.display = 'none';
 
-    function aroundMe() {
-        document.querySelector('#inputAddress').value = 'aroundMe';
-        document.querySelector('#searchAddress').submit();
-    }
+      } else {
+          document.getElementById('loginLink').style.display = 'none';
+          document.getElementById('signupLink').style.display = 'inline';
+      }
+  }
+
+  function aroundMe() {
+      document.querySelector('#inputAddress').value = 'aroundMe';
+      document.querySelector('#searchAddress').submit();
+  }
 </script>
 </body>
 </html>

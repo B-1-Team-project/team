@@ -45,6 +45,10 @@ a:hover {
     border:2px solid black;
 }
 
+.selectedImage {
+    border:3px solid tan;
+}
+
 #loginBtn {
     width:25%;
     height:90px;
@@ -80,11 +84,24 @@ a:hover {
     color:black;
 }
 
+.searchButton {
+    background:peachpuff;
+    border:0.1px solid black;
+    color:black;
+}
+
 .버튼.active {
     background:burlywood;
     color:saddlebrown;
     font-weight:bold;
     border:0.3px solid saddlebrown;
+}
+
+.searchButton:hover {
+    color:sienna;
+    background:peachpuff;
+    border:0.1px solid;
+    font-weight:bold;
 }
 
 .버튼:hover {

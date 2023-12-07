@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.maven.model.Site;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -30,10 +31,10 @@ public class PostController {
 
     @GetMapping("/board")
     @PreAuthorize("isAuthenticated()")
-    public String board(Model model, Principal principal){
-        List<Post> postList = postService.postList();
+    public String board(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page){
+        Page<Post> paging = this.postService.getList(page);
         SiteUser user = this.siteUserService.getUser(principal.getName());
-        model.addAttribute("postList", postList);
+        model.addAttribute("paging", paging);
         model.addAttribute("user", user);
         return "board";
     }

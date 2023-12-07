@@ -23,7 +23,7 @@ public class SiteUserService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
-    public SiteUser create(String loginId, String password, String name, String email, String authority) {
+    public SiteUser create(String loginId, String password, String name, String email, String authority, String image) {
         SiteUser siteUser = new SiteUser();
         siteUser.setLoginId(loginId);
         siteUser.setName(name);
@@ -32,6 +32,7 @@ public class SiteUserService {
         siteUser.setCreateDate(LocalDateTime.now());
         siteUser.setAuthority(authority);
         siteUser.setLocal(true);
+        siteUser.setImage(image);
         siteUserRepository.save(siteUser);
         return siteUser;
     }
@@ -50,12 +51,13 @@ public class SiteUserService {
         return this.siteUserRepository.findAll();
     }
 
-    public void modifyUser(SiteUser siteUser, String name, String email, String password, String authority) {
+    public void modifyUser(SiteUser siteUser, String name, String email, String password, String authority, String image) {
 
         siteUser.setPassword(passwordEncoder.encode(password));
         siteUser.setName(name);
         siteUser.setEmail(email);
         siteUser.setAuthority(authority);
+        siteUser.setImage(image);
 
         this.siteUserRepository.save(siteUser);
     }
@@ -64,7 +66,7 @@ public class SiteUserService {
         Optional<SiteUser> user = this.siteUserRepository.findByLoginId("testUser");
         if (user.isPresent()) {
             return user.get();
-        } else return create("testUser", "temp", "익명", null, "손님");
+        } else return create("testUser", "temp", "익명", null, "손님", null);
     }
 
     public MailDto createMail(String email) {
@@ -169,8 +171,9 @@ public class SiteUserService {
         siteUserRepository.save(user);
     }
 
-    public void saveAuthority(SiteUser user, String authority) {
+    public void saveAuthority(SiteUser user, String authority, String image) {
         user.setAuthority(authority);
+        user.setImage(image);
         siteUserRepository.save(user);
     }
 
