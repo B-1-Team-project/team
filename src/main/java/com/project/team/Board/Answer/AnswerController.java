@@ -4,7 +4,6 @@ import com.project.team.Board.Post.Post;
 import com.project.team.Board.Post.PostService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
