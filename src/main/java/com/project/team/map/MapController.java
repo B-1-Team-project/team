@@ -80,6 +80,7 @@ public class MapController {
         for (Restaurant res : searchList) {
             SearchDataDto searchDataDto = new SearchDataDto();
             searchDataDto.setRestaurantName(res.getName());
+            searchDataDto.setAddress(res.getAddress());
             searchDataDtoList.add(searchDataDto);
         }
         return searchDataDtoList;
