@@ -423,46 +423,6 @@
             });
         });
     </script>
-    <script>
-        // jQuery script to handle form submission and modal display
-        $(document).ready(function () {
-            $('#searchForm').submit(function (e) {
-                e.preventDefault(); // prevent the form from submitting in the traditional way
-                var keyword = $('#searchName').val();
-
-                $.ajax({
-                    url: '/map/search', // 실제 검색을 처리하는 서버의 엔드포인트 주소
-                    method: 'GET',
-                    data: { keyword: keyword }, // 검색어를 서버에 전달
-                    success: function (searchList) {
-                        // 서버에서 받아온 데이터를 모달에 표시
-                        console.log(searchList);
-                        updateModalContent(searchList);
-
-                        $('#myModal').modal('show');
-                    },
-                    error: function (error) {
-                        console.error('검색 요청 실패:', error);
-                        $('#searchResult').text('검색에 실패했습니다.');
-                    },
-                    async: true // 비동기적 요청으로 설정
-                });
-
-                function updateModalContent(searchList) {
-                    var modalBody = $('#searchResult');
-
-                    modalBody.empty();
-
-                    for (var i = 0; i < searchList.length; i++) {
-                        var restaurant = searchList[i];
-                        var restaurantInfo = '<p>' + restaurant.restaurantName + '</p>';
-                        var restaurantInfo = '<a href="/map/findByKeyword/' + restaurant.restaurantName + '">' + restaurant.restaurantName + '</a>';
-                        modalBody.append(restaurantInfo);
-                    }
-                }
-            });
-        });
-    </script>
 </div>
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
