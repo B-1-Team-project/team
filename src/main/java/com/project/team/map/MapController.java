@@ -8,9 +8,7 @@ import com.project.team.alarm.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -53,8 +51,8 @@ public class MapController {
         return "main";
     }
 
-    @GetMapping("/findByKeyword")
-    public String findByKeyword(@RequestParam String keyword, Model model, Principal principal) {
+    @GetMapping("/findByKeyword/{keyword}")
+    public String findByKeyword(@PathVariable("keyword") String keyword, Model model, Principal principal) {
 
         if (principal != null) {
             SiteUser user = this.siteUserService.getUser(principal.getName());
@@ -72,5 +70,19 @@ public class MapController {
         model.addAttribute("x", lon);
 
         return "main";
+    }
+
+    @GetMapping("/search")
+    @ResponseBody
+    public List<SearchDataDto> search(@RequestParam String keyword){
+        List<Restaurant> searchList = restaurantService.getRestaurantByKeyword(keyword);
+        List<SearchDataDto> searchDataDtoList = new ArrayList<>();
+        for (Restaurant res : searchList) {
+            SearchDataDto searchDataDto = new SearchDataDto();
+            searchDataDto.setRestaurantName(res.getName());
+            searchDataDtoList.add(searchDataDto);
+        }
+        return searchDataDtoList;
+
     }
 }
