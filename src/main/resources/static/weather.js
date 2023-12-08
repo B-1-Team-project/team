@@ -35,6 +35,7 @@ function success(position) {
        dataType: 'json',
        success: function(data) {
            const dataList = data.response.body.items.item;
+           console.log(data);
 
            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
            var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -53,6 +54,7 @@ function success(position) {
                },
                data: JSON.stringify(weatherList),
                success: function(result) {
+               console.log(result);
                    document.querySelector("#image1").src = result[0][0].image;
                    document.querySelector("#menu1").innerText = result[0][0].menu;
                    document.querySelector("#ex1").innerText = result[0][0].explanation;
