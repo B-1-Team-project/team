@@ -8,4 +8,5 @@ import lombok.Setter;
 public class SearchDataDto {
     private String restaurantName;
     private String address;
+
 }
