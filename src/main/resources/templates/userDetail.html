@@ -10,8 +10,7 @@
                     정보수정
                 </button>
             </div>
-            <div style="border-radius:10px; border:1px solid darkgray; padding:20px; width:65%; margin:0 auto;"
-                 class="my-3">
+            <div class="my-3" id="certificate">
                 <h4 class="fw-bold border-bottom pb-2">쩝쩝박사 증명서</h4>
                 <div class="d-flex justify-content-around align-items-center">
                     <div class="d-flex" style="width:70%;">
@@ -29,16 +28,46 @@
                                  style="font-size:13pt;"></div>
                         </div>
                     </div>
-                    <div class="text-center me-4" style="font-size:13pt;">
+                    <div class="text-center me-4" style="font-size:13pt; width:30%;">
                         <div>맛찾사에서</div>
                         <div><strong th:text="${user.name}"></strong> 회원이</div>
                         <div><strong>쩝쩝박사</strong>임을 증명합니다.</div>
                         <br>
-                        <div style="font-size:11pt;" th:text="${#temporals.format(user.createDate, 'yyyy년 MM월 dd일')}"></div>
-                        <div class="d-flex align-items-center">
+                        <div style="font-size:11pt;"
+                             th:text="${#temporals.format(user.createDate, 'yyyy년 MM월 dd일')}"></div>
+                        <div class="d-flex align-items-center justify-content-center">
                             <div class="me-1 fw-bold mt-1">쩝 쩝 박 사 관 리 자</div>
                             <img src="/image/logo/도장.png" alt="" style="width:50px; height:50px;">
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-3" id="smCertificate">
+                <h4 class="fw-bold border-bottom pb-2">쩝쩝박사 증명서</h4>
+                <div style="margin:0 auto; width:70%;">
+                    <img th:src="@{${user.image}}" alt=""
+                         style="border-radius:15px; border:1px solid lightgray; width:200px; height:210px;">
+                </div>
+                <div style="width:80%; margin:0 auto;">
+                    <div class="d-flex mt-3">
+                        <div class="pe-1 me-1" style="border-right:2px solid lightgray;">이름</div>
+                        <div class="fw-bold" th:text="${user.name}"></div>
+                    </div>
+                    <div class="d-flex mt-2">
+                        <div class="pe-1 me-1" style="border-right:2px solid lightgray;">권한</div>
+                        <div class="fw-bold" th:text="${user.authority}"></div>
+                    </div>
+                    <div class="d-flex mt-2">
+                        <div class="pe-1 me-1" style="border-right:2px solid lightgray;">이메일</div>
+                        <div class="fw-bold" th:text="${user.email}"></div>
+                    </div>
+                    <div class="d-flex mt-2">
+                        <div class="pe-1 me-1" style="border-right:2px solid lightgray;">가입일</div>
+                        <div class="fw-bold" th:text="${#temporals.format(user.createDate, 'yyyy년 MM월 dd일')}"></div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="me-1 fw-bold mt-1">쩝 쩝 박 사 관 리 자</div>
+                        <img src="/image/logo/도장.png" alt="" style="width:50px; height:50px;">
                     </div>
                 </div>
             </div>
@@ -82,7 +111,8 @@
                             <div th:text="|예약일시 : ${#temporals.format(reservation.dateTime, 'yyyy년 MM월 dd일 hh시 mm분')}|"></div>
                             <div th:text="|인원 수 : ${reservation.count}|"></div>
                             <div th:if="${reservation.status == null}">예약 상태 : 예약 대기</div>
-                            <div th:if="${reservation.status != null}" th:text="|예약 상태 : ${reservation.status}|"></div>
+                            <div th:if="${reservation.status != null}"
+                                 th:text="|예약 상태 : ${reservation.status}|"></div>
                         </div>
                     </div>
                 </div>
@@ -111,7 +141,8 @@
         </div>
     </div>
     <!-- 비번 확인 모달 -->
-    <div th:if="${#authorization.expression('isAuthenticated()')}" class="modal fade" id="passwordModal" tabindex="-1"
+    <div th:if="${#authorization.expression('isAuthenticated()')}" class="modal fade" id="passwordModal"
+         tabindex="-1"
          role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

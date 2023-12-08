@@ -67,8 +67,7 @@
                     </div>
                     <!-- 가게 영업시간 -->
                     <label for="time" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">영업시간</label>
-                    <div class="d-flex align-items-center mb-2"
-                         th:if="${restaurant.startTime != null && restaurant.endTime != null}">
+                    <div class="d-flex align-items-center mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-clock me-1" viewBox="0 0 16 16">
                             <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
@@ -239,9 +238,7 @@
                     <div class="d-flex justify-content-end align-items-center">
                         <div style="font-size:10pt;" class="me-2" sec:authorize="isAnonymous()">※ 로그인 후 예약 가능합니다.</div>
                         <input id="reserveBtn" type="button" class="버튼 btn" value="예약"
-                               sec:authorize="isAuthenticated()">
-                        <input onclick="disabled()" type="button" class="버튼 btn" value="예약"
-                               sec:authorize="isAnonymous()" disabled>
+                               th:classappend="${#authentication.principal == 'anonymousUser'} ? 'disabled' : ''">
                     </div>
                 </div>
             </div>

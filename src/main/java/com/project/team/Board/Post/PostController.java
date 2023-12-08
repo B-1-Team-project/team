@@ -1,12 +1,10 @@
-package com.project.team.Board;
+package com.project.team.Board.Post;
 
-import com.project.team.DataNotFoundException;
+import com.project.team.Board.Answer.AnswerService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.maven.model.Site;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,56 +13,56 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.thymeleaf.model.IModel;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
     private final AnswerService answerService;
     private final SiteUserService siteUserService;
 
-    @GetMapping("/board")
+    @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
-    public String board(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page){
+    public String list(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page){
         Page<Post> paging = this.postService.getList(page);
+        List<Post> postList = this.postService.getRecentList();
         SiteUser user = this.siteUserService.getUser(principal.getName());
+        model.addAttribute("postList", postList);
         model.addAttribute("paging", paging);
         model.addAttribute("user", user);
         return "board";
     }
 
-    @GetMapping("/board/createPost")
-    public String createPost(){
+    @GetMapping("/create")
+    public String create(PostForm postForm){
         return "createPost";
     }
 
-    @PostMapping("/board/createPost")
-    public String createPost(@Valid PostForm postForm, BindingResult bindingResult, Principal principal){
+    @PostMapping("/create")
+    public String create(@Valid PostForm postForm, BindingResult bindingResult, Principal principal){
         if(bindingResult.hasErrors()){
             return "createPost";
         }
         this.postService.createPost(postForm.getTitle(), postForm.getContent(), principal.getName());
-        return "redirect:/user/board";
+        return "redirect:/post/list";
     }
 
-
-
-    @GetMapping("/post/detail/{id}")
-    public String postDetail(Model model, @PathVariable("id") Integer id){
+    @GetMapping("/detail/{id}")
+    public String detail(Model model, @PathVariable("id") Integer id, Principal principal){
         Post post = this.postService.getPost(id);
+        SiteUser user = this.siteUserService.getUser(principal.getName());
         model.addAttribute("post", post);
+        model.addAttribute("user", user);
         return "postDetail";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String postModify(Model model, Principal principal, PostForm postForm, @PathVariable("id") Integer id){
+    public String modify(Model model, Principal principal, PostForm postForm, @PathVariable("id") Integer id){
         Post post = this.postService.getPost(id);
         if(!post.getUser().getLoginId().equals(principal.getName())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
@@ -77,7 +75,7 @@ public class PostController {
 
     @PostMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String postModify(@Valid PostForm postForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id){
+    public String modify(@Valid PostForm postForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id){
         if(bindingResult.hasErrors()){
             return "createPost";
         }
@@ -85,8 +83,8 @@ public class PostController {
         if(!post.getUser().getLoginId().equals(principal.getName())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.postService.modify(post, postForm.getTitle(), postForm.getContent());
-        return "redirect:/user/board";
+        this.postService.modifyPost(post, postForm.getTitle(), postForm.getContent());
+        return "redirect:/post/detail/" + post.getId();
     }
 
 
@@ -98,7 +96,7 @@ public class PostController {
         if(!post.getUser().getLoginId().equals(principal.getName())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
-        this.postService.delete(post);
-        return "redirect:/user/board";
+        this.postService.deletePost(post);
+        return "redirect:/post/list";
     }
 }

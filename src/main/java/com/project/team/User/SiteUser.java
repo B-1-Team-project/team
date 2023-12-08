@@ -1,8 +1,8 @@
 package com.project.team.User;
 
 
-import com.project.team.Board.Answer;
-import com.project.team.Board.Post;
+import com.project.team.Board.Answer.Answer;
+import com.project.team.Board.Post.Post;
 
 import com.project.team.Reservation.Reservation;
 import com.project.team.Restaurant.Restaurant;
