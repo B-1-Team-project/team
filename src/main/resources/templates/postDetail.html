@@ -14,9 +14,9 @@
             </div>
             <div class="d-flex text-secondary" style="font-size:11pt;">
                 <div style="cursor:pointer;" id="copyLink" class="me-1">url 복사</div>
-                <div>
+                <div sec:authorize="isAuthenticated()" th:if="${post.user.loginId == user.loginId}">
                     <span class="mx-1">|</span>
-                    <a th:href="@{|/post/modify/${post.id}|}" th:if="${post.user.loginId == user.loginId}">수정</a>
+                    <a th:href="@{|/post/modify/${post.id}|}">수정</a>
                     <span class="mx-1">|</span>
                     <a id="delete" href="javascript:void(0)" th:data-uri="@{|/post/delete/${post.id}|}">삭제</a>
                 </div>
@@ -35,6 +35,8 @@
             <div class="collapse my-2" id="comment">
                 <form th:action="@{|/answer/create/${post.id}|}" method="post" id="answerForm">
                     <textarea rows="2" class="form-control" id="answerContent" name="content"
+                              placeholder="로그인 후 이용해주세요." sec:authorize="isAnonymous()" disabled></textarea>
+                    <textarea rows="2" class="form-control" name="content" sec:authorize="isAuthenticated()"
                               placeholder="댓글을 입력해주세요."></textarea>
                     <div class="d-flex justify-content-end">
                         <input type="button" class="버튼 btn btn-sm mt-1" value="등록" id="regBtn">
@@ -50,7 +52,7 @@
                              style="border-radius:50%; width:30px; height:30px;">
                         <div th:text="${answer.user.name}" class="fw-bold"></div>
                     </div>
-                    <div style="color:gray; font-size:10pt;" th:if="${user.loginId == answer.user.loginId}">
+                    <div style="color:gray; font-size:10pt;" sec:authorize="isAuthenticated()" th:if="${user.loginId == answer.user.loginId}">
                         <a th:href="@{|/answer/modify/${answer.id}|}" id="modifyLink">수정</a>
                         <span class="mx-1">|</span>
                         <a href="javascript:void(0)" th:data-uri="@{|/answer/delete/${answer.id}|}"
@@ -72,9 +74,9 @@
             });
         });
 
-        document.querySelector("#delete").addEventListener('click', function() {
+        $('#delete').on('click', function() {
             if (confirm('게시물을 삭제하시겠습니까?'))
-                location.href = this.dataset.uri;
+                window.location.href = this.dataset.uri;
         });
 
         const regAnswer = document.querySelector("#regBtn");

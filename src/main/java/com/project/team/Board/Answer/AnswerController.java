@@ -4,8 +4,8 @@ import com.project.team.Board.Post.Post;
 import com.project.team.Board.Post.PostService;
 import com.project.team.User.SiteUser;
 import com.project.team.User.SiteUserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +24,7 @@ public class AnswerController {
     private final SiteUserService siteUserService;
 
     @PostMapping("/create/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String create(@PathVariable("id") Integer id, Principal principal, String content){
         Post post = this.postService.getPost(id);
         SiteUser user = this.siteUserService.getUser(principal.getName());
@@ -32,6 +33,7 @@ public class AnswerController {
     }
 
     @PostMapping("/create/inList/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String createInList(@PathVariable("id") Integer id, Principal principal, String content) {
         Post post = this.postService.getPost(id);
         SiteUser user = this.siteUserService.getUser(principal.getName());
@@ -40,6 +42,7 @@ public class AnswerController {
     }
 
     @GetMapping("/modify/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String modify(@PathVariable("id") Integer id, Model model) {
         Answer answer = this.answerService.getAnswer(id);
         model.addAttribute("answer", answer);
@@ -47,6 +50,7 @@ public class AnswerController {
     }
 
     @GetMapping("/modify/inList/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String modifyInList(@PathVariable("id") Integer id, Model model) {
         Answer answer = this.answerService.getAnswer(id);
         model.addAttribute("answer", answer);
@@ -54,6 +58,7 @@ public class AnswerController {
     }
 
     @PostMapping("/modify/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String modify(@PathVariable("id") Integer id, String content) {
         Answer answer = this.answerService.getAnswer(id);
         this.answerService.modifyAnswer(answer, content);
@@ -61,6 +66,7 @@ public class AnswerController {
     }
 
     @PostMapping("/modify/inList/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String modifyInList(@PathVariable("id") Integer id, String content) {
         Answer answer = this.answerService.getAnswer(id);
         this.answerService.modifyAnswer(answer, content);
@@ -68,6 +74,7 @@ public class AnswerController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable("id") Integer id) {
         Answer answer = this.answerService.getAnswer(id);
         this.answerService.deleteAnswer(answer);
@@ -75,6 +82,7 @@ public class AnswerController {
     }
 
     @GetMapping("/delete/inList/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String deleteInList(@PathVariable("id") Integer id) {
         Answer answer = this.answerService.getAnswer(id);
         this.answerService.deleteAnswer(answer);

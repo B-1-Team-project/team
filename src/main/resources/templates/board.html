@@ -65,15 +65,22 @@
                 <div style="width:80%; margin:0 auto;" class="mt-5">
                     <a th:href="@{|/post/detail/${post.id}|}" th:text="|<${post.title}>|" style="font-size:2rem;"
                        class="mb-1"></a>
-                    <div class="d-flex justify-content-between align-items-center"
+                    <div class="d-flex justify-content-between align-items-end"
                          style="border-bottom:1px solid lightgray; padding-bottom:7px;">
                         <div class="d-flex align-items-center">
                             <img th:src="@{${post.user.image}}" alt=""
                                  style="width:40px; height:40px; border-radius:50%; border:1px solid gray;">
                             <div th:text="${post.user.name}" class="mx-2" style="font-size:13pt;"></div>
                             <div style="font-size:11pt; color:gray;"
-                                 th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"
+                                 th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm:ss')}"
                                  class="createDateContainer"></div>
+                        </div>
+                        <div class="d-flex text-secondary" style="font-size:11pt;" sec:authorize="isAuthenticated()">
+                            <div th:if="${post.user.loginId == user.loginId}">
+                                <a th:href="@{|/post/modify/${post.id}|}">수정</a>
+                                <span class="mx-1">|</span>
+                                <a class="delete" href="javascript:void(0)" th:data-uri="@{|/post/delete/${post.id}|}">삭제</a>
+                            </div>
                         </div>
                     </div>
                     <div class="card my-3">
@@ -102,7 +109,7 @@
                                          style="border-radius:50%; width:30px; height:30px;">
                                     <div th:text="${answer.user.name}" class="fw-bold"></div>
                                 </div>
-                                <div style="color:gray; font-size:10pt;" th:if="${user.loginId == answer.user.loginId}">
+                                <div style="color:gray; font-size:10pt;" th:if="${user.loginId == answer.user.loginId}" sec:authorize="isAuthenticated()">
                                     <a th:href="@{|/answer/modify/inList/${answer.id}|}" id="modifyLink">수정</a>
                                     <span class="mx-1">|</span>
                                     <a href="javascript:void(0)" th:data-uri="@{|/answer/delete/inList/${answer.id}|}"
@@ -114,7 +121,7 @@
                                  style="font-size:10pt; color:gray; margin-top:5px;"></div>
                         </div>
                         <form th:action="@{|/answer/create/inList/${post.id}|}" method="post" id="answerForm"
-                              class="my-2">
+                              class="my-2" sec:authorize="isAuthenticated()">
                             <div class="input-group">
                                 <input type="text" id="content" name="content" class="form-control">
                                 <input type="button" class="버튼 btn btn-sm" value="등록" id="regBtn">
@@ -127,6 +134,13 @@
         </div>
     </div>
     <script type="text/javascript">
+
+        $('.delete').each(function(index, element) {
+            $(element).on('click', function() {
+                if (confirm('게시물을 삭제하시겠습니까?'))
+                    window.location.href = this.dataset.uri;
+            });
+        });
 
         $('.deleteAnswer').each(function(index, element) {
             $(element).on('click', function() {
@@ -148,26 +162,30 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-        var createDateContainers = document.querySelectorAll('.createDateContainer');
+            var now = new Date(); // 한 번만 현재 시간을 가져옴
+            var createDateContainers = document.querySelectorAll('.createDateContainer');
 
-        createDateContainers.forEach(function (createDateContainer) {
-         var createDate = new Date(createDateContainer.innerText);
+            createDateContainers.forEach(function (createDateContainer) {
+                var createDate = new Date(createDateContainer.innerText);
 
-         var timeDifference = Math.floor((new Date() - createDate) / 1000);
-         var textToShow = '';
-         if (timeDifference < 60) {
-             textToShow = timeDifference + '초 전';
-         } else if (timeDifference < 3600) {
-             textToShow = Math.floor(timeDifference / 60) + '분 전';
-         } else if (timeDifference < 86400) {
-             textToShow = Math.floor(timeDifference / 3600) + '시간 전';
-         } else {
-             textToShow = Math.floor(timeDifference / 86400) + '일 전';
-         }
+                var timeDifference = Math.floor((now - createDate) / 1000);
+                var textToShow = '';
 
-         createDateContainer.innerText = textToShow;
+                if (timeDifference < 60) {
+                    textToShow = timeDifference + '초 전';
+                } else if (timeDifference < 3600) {
+                    textToShow = Math.floor(timeDifference / 60) + '분 전';
+                } else if (timeDifference < 86400) {
+                    textToShow = Math.floor(timeDifference / 3600) + '시간 전';
+                } else {
+                    var options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    textToShow = createDate.toLocaleString('ko-KR', options);
+                }
+
+                createDateContainer.innerText = textToShow;
+            });
         });
-        });
+
     </script>
 </div>
 </html>
