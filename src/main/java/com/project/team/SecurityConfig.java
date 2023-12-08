@@ -31,11 +31,11 @@ public class SecurityConfig {
 
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
-                        .defaultSuccessUrl("/interprocess"))
+                        .defaultSuccessUrl("/"))
 
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/interprocess")
                         .invalidateHttpSession(true))
 
                 .oauth2Login((oauth2Login) -> oauth2Login

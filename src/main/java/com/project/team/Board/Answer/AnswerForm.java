@@ -1,4 +1,4 @@
-package com.project.team.Board;
+package com.project.team.Board.Answer;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

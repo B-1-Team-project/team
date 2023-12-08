@@ -35,7 +35,6 @@ function success(position) {
        dataType: 'json',
        success: function(data) {
            const dataList = data.response.body.items.item;
-           console.log(data);
 
            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
            var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -54,7 +53,6 @@ function success(position) {
                },
                data: JSON.stringify(weatherList),
                success: function(result) {
-               console.log(result);
                    document.querySelector("#image1").src = result[0][0].image;
                    document.querySelector("#menu1").innerText = result[0][0].menu;
                    document.querySelector("#ex1").innerText = result[0][0].explanation;
@@ -104,7 +102,7 @@ function success(position) {
          const skyElement = document.querySelector("#sky");
          const skyImage = document.getElementById("skyStatus");
 
-         if (![1, 2, 3, 4].includes(precipitationValue)) {
+         if (![1, 2, 3].includes(precipitationValue)) {
             if (skyValue == 1) {
                 skyElement.innerText = "맑고"
                 skyImage.src = "/image/weather/쨍쨍.png"
@@ -147,21 +145,16 @@ function success(position) {
      function handlePrecipitationData(rainValue) {
          const rainElement = document.querySelector("#rain");
          const skyImage = document.getElementById("skyStatus");
-
-         switch (rainValue) {
-             case 1:
+            if (rainValue == 1) {
                  rainElement.innerText = "현재 비가 오고 있습니다.";
                  skyImage.src = "/image/weather/비.png";
-                 break;
-             case 2:
+            } else if (rainValue == 2) {
                  rainElement.innerText = "현재 비 또는 눈이 오고 있습니다.";
                  skyImage.src = "/image/weather/눈이나 비.png";
-                 break;
-             case 3:
+            } else if (rainValue == 3) {
                  rainElement.innerText = "현재 눈이 오고 있습니다.";
                  skyImage.src = "/image/weather/눈.png";
-                 break;
-         }
+            }
      }
 
    },

@@ -1,37 +1,113 @@
-<!DOCTYPE html>
-
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container mt-5">
-
-<h1 th:text="${post.title}" class="mb-4"></h1>
-
-<div th:text="${post.content}" class="mb-4"></div>
-
-<form th:action="@{|/answer/create/${post.id}|}" th:object="${answerForm}" method="post" class="mb-4">
-    <div class="form-group" >
-    <label for="content">댓글</label>
-    <textarea name="content" id="content" class="form-control" cols="30" rows="5"></textarea>
-
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container">
+    <div class="my-4" style="background:white; padding:30px; border-radius:15px;">
+        <div th:text="${post.title}" class="text-center" style="font-size:2.5rem;"></div>
+        <div class="d-flex justify-content-between align-items-end"
+             style="border-bottom:1px solid lightgray; padding-bottom:7px;">
+            <div class="d-flex align-items-center">
+                <img th:src="@{${post.user.image}}" alt=""
+                     style="width:40px; height:40px; border-radius:50%; border:1px solid gray;">
+                <div th:text="${post.user.name}" class="mx-2" style="font-size:13pt;"></div>
+                <div style="font-size:11pt; color:gray;"
+                     th:text="${post.modifyDate == null ? #temporals.format(post.createDate, 'yyyy-MM-dd HH:mm') : #temporals.format(post.modifyDate, 'yyyy-MM-dd HH:mm') + ' 수정'}"
+                     id="createDate"></div>
+            </div>
+            <div class="d-flex text-secondary" style="font-size:11pt;">
+                <div style="cursor:pointer;" id="copyLink" class="me-1">url 복사</div>
+                <div sec:authorize="isAuthenticated()" th:if="${post.user.loginId == user.loginId}">
+                    <span class="mx-1">|</span>
+                    <a th:href="@{|/post/modify/${post.id}|}">수정</a>
+                    <span class="mx-1">|</span>
+                    <a id="delete" href="javascript:void(0)" th:data-uri="@{|/post/delete/${post.id}|}">삭제</a>
+                </div>
+            </div>
+        </div>
+        <div class="card my-3">
+            <div th:text="${post.content}" class="text-center card-body fs-5"></div>
+        </div>
+        <div>
+            <div class="btn-group">
+                <button class="버튼 btn btn-sm">댓글 쓰기</button>
+                <button class="버튼 btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#comment"
+                        aria-expanded="false" aria-controls="comment" style="font-size:9pt;">▼
+                </button>
+            </div>
+            <div class="collapse my-2" id="comment">
+                <form th:action="@{|/answer/create/${post.id}|}" method="post" id="answerForm">
+                    <textarea rows="2" class="form-control" id="answerContent" name="content"
+                              placeholder="로그인 후 이용해주세요." sec:authorize="isAnonymous()" disabled></textarea>
+                    <textarea rows="2" class="form-control" name="content" sec:authorize="isAuthenticated()"
+                              placeholder="댓글을 입력해주세요."></textarea>
+                    <div class="d-flex justify-content-end">
+                        <input type="button" class="버튼 btn btn-sm mt-1" value="등록" id="regBtn">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="my-3">
+            <div th:each="answer : ${post.answerList}">
+                <div class="d-flex align-items-center justify-content-between my-2">
+                    <div class="d-flex align-items-center">
+                        <img class="me-1" th:src="@{${answer.user.image}}" alt=""
+                             style="border-radius:50%; width:30px; height:30px;">
+                        <div th:text="${answer.user.name}" class="fw-bold"></div>
+                    </div>
+                    <div style="color:gray; font-size:10pt;" sec:authorize="isAuthenticated()" th:if="${user.loginId == answer.user.loginId}">
+                        <a th:href="@{|/answer/modify/${answer.id}|}" id="modifyLink">수정</a>
+                        <span class="mx-1">|</span>
+                        <a href="javascript:void(0)" th:data-uri="@{|/answer/delete/${answer.id}|}"
+                           class="deleteAnswer">삭제</a>
+                    </div>
+                </div>
+                <div th:text="${answer.content}" id="content"></div>
+                <div th:text="${answer.modifyDate == null ? #temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm') : #temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm') + ' 수정'}"
+                     style="font-size:10pt; color:gray; margin-top:5px;"></div>
+                <hr>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">댓글 등록</button>
-</form>
+    <script type="text/javascript" th:inline="javascript">
+        $('.deleteAnswer').each(function(index, element) {
+            $(element).on('click', function() {
+                if (confirm('댓글을 삭제하시겠습니까?'))
+                    window.location.href = this.dataset.uri;
+            });
+        });
 
-<div>
-    <ul class="list-group">
-        <li th:each="answer : ${post.answerList}" class="list-group-item">
-            <span th:text="${answer.content}"></span>
-            <span th:text="${answer.user != null ? answer.user.name : '게스트'}"></span>
-        </li>
-    </ul>
+        $('#delete').on('click', function() {
+            if (confirm('게시물을 삭제하시겠습니까?'))
+                window.location.href = this.dataset.uri;
+        });
 
-</div>
+        const regAnswer = document.querySelector("#regBtn");
+        regAnswer.addEventListener('click', function() {
+            if (document.querySelector("#answerContent").value == '')
+                alert('댓글 내용을 입력해주세요');
+            else {
+                alert("댓글이 등록되었습니다.");
+                document.querySelector("#answerForm").submit();
+            }
+        });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('copyLink').addEventListener('click', function() {
+                var currentUrl = window.location.href;
 
-</body>
+                var tempInput = document.createElement('input');
+                tempInput.style.position = 'absolute';
+                tempInput.style.left = '-1000px';
+                tempInput.value = currentUrl;
+
+                document.body.appendChild(tempInput);
+
+                tempInput.select();
+                document.execCommand('copy');
+
+                document.body.removeChild(tempInput);
+
+                alert('url이 복사되었습니다.');
+            });
+        });
+    </script>
 </div>
 </html>
