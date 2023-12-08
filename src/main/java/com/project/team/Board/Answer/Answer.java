@@ -1,8 +1,8 @@
-package com.project.team.Board;
+package com.project.team.Board.Answer;
 
+import com.project.team.Board.Post.Post;
 import com.project.team.User.SiteUser;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,4 +26,6 @@ public class Answer {
 
     @ManyToOne
     private SiteUser user;
+
+    private LocalDateTime modifyDate;
 }

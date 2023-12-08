@@ -1,0 +1,22 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <div style="background:white; width:95%; border-radius:15px; padding:30px; margin:0 auto;" class="my-4">
+        <h3 class="border-bottom pb-2 mb-3">댓글 수정</h3>
+        <form method="post" id="modifyForm">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <textarea name="content" id="content" class="form-control" cols="30" rows="10" th:text="${answer.content}"></textarea>
+            <div class="d-flex justify-content-end mt-3">
+                <input type="button" value="수정" class="버튼 btn" id="modifyBtn">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        document.querySelector("#modifyBtn").addEventListener('click', function() {
+            if (document.querySelector("#content").value == '')
+                alert('댓글 내용을 입력해주세요');
+            else
+                document.querySelector("#modifyForm").submit();
+        });
+    </script>
+</div>
+</html>

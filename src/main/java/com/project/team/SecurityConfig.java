@@ -35,7 +35,7 @@ public class SecurityConfig {
 
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/interprocess")
                         .invalidateHttpSession(true))
 
                 .oauth2Login((oauth2Login) -> oauth2Login

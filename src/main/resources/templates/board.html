@@ -1,41 +1,173 @@
 <html layout:decorate="~{layout}">
-<div layout:fragment="content" class="container mt-5">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>작성일시</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="post : ${postList}">
-            <td>
-                <a th:href="@{|/user/post/detail/${post.id}|}" th:text="${post.title}"></a>
-                <span
-                        th:if="${#lists.size(post.answerList) > 0}"
-                        th:text="${#lists.size(post.answerList)}">
-                    </span>
-            </td>
-
-            <td th:text="${post.user != null ? post.user.name : '게스트'}"></td>
-            <td th:text="|${#temporals.format(post.createDate, 'yyyy-MM-dd')}|"></td>
-            <td>
-                <div>
-                    <a th:href="@{|/user/modify/${post.id}|}" sec:authorize="isAuthenticated()"
-                       th:if="${post.user.loginId != null and user.loginId == post.user.loginId}"
-                       th:text="수정"></a>
+<div layout:fragment="content">
+    <div class="my-4" style="background:white; width:95%; padding:30px; border-radius:15px; margin:0 auto;">
+        <h3 class="border-bottom pb-2">자유게시판</h3>
+        <div th:if="${postList.isEmpty()}">
+            <h3 style="color:gray; text-align:center; padding:30px;">게시물 없음</h3>
+            <div class="d-flex justify-content-center">
+                <a th:href="@{/post/create}" class="버튼 btn">게시글 작성하기 →</a>
+            </div>
+        </div>
+        <div th:if="${!postList.isEmpty()}">
+            <div style="width:70%; margin:0 auto;">
+                <div class="d-flex justify-content-between align-items-end mt-3">
+                    <div th:text="|게시물 (${paging.getTotalElements})|" style="font-size:14pt;"></div>
+                    <a th:href="@{/post/create}" class="버튼 btn">게시글 작성</a>
                 </div>
-                <div>
-                    <a th:href="@{|/user/delete/${post.id}|}" sec:authorize="isAuthenticated()"
-                       th:if="${post.user.loginId != null and user.loginId == post.user.loginId}"
-                       th:text="삭제"></a>
+                <table class="table table-hover text-center mt-3">
+                    <thead style="background:burlywood;">
+                    <tr>
+                        <th>번호</th>
+                        <th style="width:70%;">제목</th>
+                        <th>작성자</th>
+                        <th>작성일시</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post , loop: ${paging}">
+                        <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+                        <td>
+                            <a th:href="@{|/post/detail/${post.id}|}" th:text="${post.title}"></a>
+                            <span style="font-size:9pt; color:sienna; margin-left:3px;"
+                                  th:if="${#lists.size(post.answerList) > 0}"
+                                  th:text="${#lists.size(post.answerList)}"></span>
+                        </td>
+                        <td th:text="${post.user != null ? post.user.name : '게스트'}"></td>
+                        <td th:text="|${#temporals.format(post.createDate, 'yyyy-MM-dd')}|"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 페이징처리 시작 -->
+            <div th:if="${!paging.isEmpty()}" class="mb-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{|?page=${paging.number-1}|}">
+                            <span>이전</span>
+                        </a>
+                    </li>
+                    <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                        th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                        th:classappend="${page == paging.number} ? 'active'"
+                        class="page-item">
+                        <a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                        <a class="page-link" th:href="@{|?page=${paging.number+1}|}">
+                            <span>다음</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div style="font-size:14pt; width:80%; margin:0 auto;" class="mt-5">최근 게시물</div>
+            <div th:each="post : ${postList}">
+                <div style="width:80%; margin:0 auto;" class="mt-5">
+                    <a th:href="@{|/post/detail/${post.id}|}" th:text="|<${post.title}>|" style="font-size:2rem;"
+                       class="mb-1"></a>
+                    <div class="d-flex justify-content-between align-items-center"
+                         style="border-bottom:1px solid lightgray; padding-bottom:7px;">
+                        <div class="d-flex align-items-center">
+                            <img th:src="@{${post.user.image}}" alt=""
+                                 style="width:40px; height:40px; border-radius:50%; border:1px solid gray;">
+                            <div th:text="${post.user.name}" class="mx-2" style="font-size:13pt;"></div>
+                            <div style="font-size:11pt; color:gray;"
+                                 th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"
+                                 class="createDateContainer"></div>
+                        </div>
+                    </div>
+                    <div class="card my-3">
+                        <div th:text="${post.content}" class="text-center card-body fs-5"></div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="버튼 btn btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-chat-dots me-1" viewBox="0 0 16 16">
+                                <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125zm.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6c0 3.193-3.004 6-7 6a8.06 8.06 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a10.97 10.97 0 0 0 .398-2z"/>
+                            </svg>
+                            <span style="font-size:11pt;" th:text="|댓글 ${#lists.size(post.answerList)}|"></span>
+                        </button>
+                        <button class="버튼 btn btn-sm" type="button" data-bs-toggle="collapse"
+                                th:data-bs-target="|#comment_${post.id}|"
+                                aria-expanded="false" th:aria-controls="|comment_${post.id}|" style="font-size:9pt;">▼
+                        </button>
+                    </div>
+                    <div class="collapse my-2" th:id="|comment_${post.id}|">
+                        <div th:each="answer : ${post.answerList}">
+                            <hr>
+                            <div class="d-flex align-items-center justify-content-between my-2">
+                                <div class="d-flex align-items-center my-2">
+                                    <img class="me-1" th:src="@{${answer.user.image}}" alt=""
+                                         style="border-radius:50%; width:30px; height:30px;">
+                                    <div th:text="${answer.user.name}" class="fw-bold"></div>
+                                </div>
+                                <div style="color:gray; font-size:10pt;" th:if="${user.loginId == answer.user.loginId}">
+                                    <a th:href="@{|/answer/modify/inList/${answer.id}|}" id="modifyLink">수정</a>
+                                    <span class="mx-1">|</span>
+                                    <a href="javascript:void(0)" th:data-uri="@{|/answer/delete/inList/${answer.id}|}"
+                                       class="deleteAnswer">삭제</a>
+                                </div>
+                            </div>
+                            <div th:text="${answer.content}"></div>
+                            <div th:text="${answer.modifyDate == null ? #temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm') : #temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm') + ' 수정'}"
+                                 style="font-size:10pt; color:gray; margin-top:5px;"></div>
+                        </div>
+                        <form th:action="@{|/answer/create/inList/${post.id}|}" method="post" id="answerForm"
+                              class="my-2">
+                            <div class="input-group">
+                                <input type="text" id="content" name="content" class="form-control">
+                                <input type="button" class="버튼 btn btn-sm" value="등록" id="regBtn">
+                            </div>
+                        </form>
+                    </div>
+                    <hr>
                 </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
 
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <a th:href="@{/user/board/createPost}" class="btn btn-success">게시글 작성</a>
+        $('.deleteAnswer').each(function(index, element) {
+            $(element).on('click', function() {
+                if (confirm('댓글을 삭제하시겠습니까?'))
+                    window.location.href = this.dataset.uri;
+            });
+        });
+
+        const register = document.querySelectorAll("#regBtn");
+        Array.from(register).forEach(function(element) {
+            element.addEventListener('click', function() {
+                if(this.previousElementSibling.value  == '')
+                    alert("댓글 내용을 입력해주세요.")
+                else {
+                    alert("댓글이 등록되었습니다.")
+                    element.parentNode.parentNode.submit();
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+        var createDateContainers = document.querySelectorAll('.createDateContainer');
+
+        createDateContainers.forEach(function (createDateContainer) {
+         var createDate = new Date(createDateContainer.innerText);
+
+         var timeDifference = Math.floor((new Date() - createDate) / 1000);
+         var textToShow = '';
+         if (timeDifference < 60) {
+             textToShow = timeDifference + '초 전';
+         } else if (timeDifference < 3600) {
+             textToShow = Math.floor(timeDifference / 60) + '분 전';
+         } else if (timeDifference < 86400) {
+             textToShow = Math.floor(timeDifference / 3600) + '시간 전';
+         } else {
+             textToShow = Math.floor(timeDifference / 86400) + '일 전';
+         }
+
+         createDateContainer.innerText = textToShow;
+        });
+        });
+    </script>
 </div>
 </html>
