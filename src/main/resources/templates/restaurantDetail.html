@@ -108,6 +108,7 @@
                               th:text="${restaurant.introduce}"></span>
                         <span th:if="${restaurant.introduce == null || restaurant.introduce == ''}">제공 정보 없음</span>
                     </div>
+                    <!-- 가게 별점 -->
                     <label for="starScore" class="border-bottom mb-1" style="font-size:11pt; color:dimgray;">별점</label>
                     <div class="d-flex align-items-center mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
@@ -454,12 +455,12 @@
                                                     </form>
                                                     <div th:if="${review.commentContent.modifyDate == null}"
                                                          style="font-size:8pt; color:darkgray;" class="dynamicTime ms-1"
-                                                         th:text="${#temporals.format(review.commentContent.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                                                         th:text="${#temporals.format(review.commentContent.createDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
                                                     <div th:if="${review.commentContent.modifyDate != null}"
                                                          style="font-size:8pt; color:darkgray;" class="dynamicTime ms-1"
-                                                         th:text="${#temporals.format(review.commentContent.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                                                         th:text="${#temporals.format(review.commentContent.modifyDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
                                                 </div>
-                                                <div style="font-size:8pt;" class="me-2 badge bg-light text-dark">
+                                                <div style="font-size:8pt;" class="me-2 badge bg-light text-dark" th:if="${restaurant.owner.loginId == user.loginId}">
                                                     <a href="javascript:void(0)"
                                                        th:onclick="|modifyComment(event, ${review.commentContent.id})|"
                                                        id="cmModifyBtn">수정</a>
@@ -529,31 +530,38 @@
         var commentCreateTimes = document.querySelectorAll('.dynamicTime');
 
         commentCreateTimes.forEach(function(commentCreateTimeElement) {
-           var commentCreateTime = new Date(commentCreateTimeElement.innerText);
-           var now = new Date();
+            var commentCreateTime = new Date(commentCreateTimeElement.innerText);
+            var now = new Date();
 
-           var timeDifference = now - commentCreateTime;
-           var secondsDifference = Math.floor(timeDifference / 1000);
-           var minutesDifference = Math.floor(secondsDifference / 60);
-           var hoursDifference = Math.floor(minutesDifference / 60);
-           var daysDifference = Math.floor(hoursDifference / 24);
+            var timeDifference = now - commentCreateTime;
+            var secondsDifference = Math.floor(timeDifference / 1000);
+            var minutesDifference = Math.floor(secondsDifference / 60);
+            var hoursDifference = Math.floor(minutesDifference / 60);
+            var daysDifference = Math.floor(hoursDifference / 24);
 
-           if (secondsDifference < 60) {
-               commentCreateTimeElement.innerText = secondsDifference + '초 전';
-           } else if (minutesDifference < 60) {
-               commentCreateTimeElement.innerText = minutesDifference + '분 전';
-           } else if (hoursDifference < 24) {
-               commentCreateTimeElement.innerText = hoursDifference + '시간 전';
-           } else if (daysDifference < 7) {
-               commentCreateTimeElement.innerText = daysDifference + '일 전';
-           } else {
-               commentCreateTimeElement.innerText = commentCreateTime.toLocaleString('ko-KR');
-           }
-       });
+            if (secondsDifference < 60) {
+                commentCreateTimeElement.innerText = secondsDifference + '초 전';
+            } else if (minutesDifference < 60) {
+                commentCreateTimeElement.innerText = minutesDifference + '분 전';
+            } else if (hoursDifference < 24) {
+                commentCreateTimeElement.innerText = hoursDifference + '시간 전';
+            } else if (daysDifference < 7) {
+                commentCreateTimeElement.innerText = daysDifference + '일 전';
+            } else {
+                var formattedDate = commentCreateTime.toLocaleString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                commentCreateTimeElement.innerText = formattedDate;
+            }
+        });
 
        // 댓글 수정
        function saveModify(event, commentId) {
-           console.log(event.target.previousElementSibling.value);
            event.target.parentNode.submit();
        }
 
@@ -703,7 +711,6 @@
                data: { timestamp: new Date().getTime() },
                success: function (response) {
                    serverVerKey = response.verKey;
-                   console.log(serverVerKey);
                },
                error: function () {
                    console.error("인증번호를 가져오는 중에 오류가 발생했습니다.");
@@ -722,8 +729,6 @@
 
        function checkVerificationKey() {
            var enteredKey = document.getElementById("verKey").value;
-           console.log(serverVerKey);
-           console.log(enteredKey);
 
            if (enteredKey === serverVerKey) {
                document.getElementById("verKey").classList.remove("is-invalid");
