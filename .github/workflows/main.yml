@@ -51,4 +51,6 @@ jobs:
             password: ${{ secrets.SERVER_PASSWORD }}
             port: ${{ secrets.SERVER_PORT }}
             script: |
-              whoami
+              docker pull ${{ secrets.DOCKER_USERNAME }}/app
+              docker stop app
+              docker run --name app -d -p 8080:8080 --rm ${{ secrets.DOCKER_USERNAME }}/app
