@@ -320,8 +320,6 @@
             resArr.push(resObj);
         [/]
 
-        console.log(resArr);
-
         var myX = [[${x}]];
         var myY = [[${y}]];
     </script>
@@ -392,8 +390,6 @@
                             var restaurant = searchList[0];
                             window.location.href = '/map/findByKeyword/' + restaurant.restaurantName;
                         } else {
-                            // 서버에서 받아온 데이터를 모달에 표시
-                            console.log(searchList);
                             updateModalContent(searchList);
                             $('#myModal').modal('show');
                         }
