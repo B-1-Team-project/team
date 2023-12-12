@@ -71,6 +71,40 @@
             }
         }
 
+        @media (max-width: 400px) {
+            .top3 {
+                width:260px;
+            }
+        }
+
+        #검색창 {
+            width:25%
+        }
+
+        @media (max-width:300px) {
+            #위치 {
+                margin-bottom:5px;
+            }
+        }
+
+        @media (max-width:600px) {
+            #검색창 {
+                width:50%;
+            }
+
+            #위치 {
+                font-size:9pt;
+            }
+
+            #주소 {
+                font-size:9pt;
+            }
+
+            #검색 {
+                font-size:9pt;
+            }
+        }
+
         .list-group-item:hover {
             background:linen;
         }
@@ -109,13 +143,13 @@
             <div style="position:absolute; z-index:99; top:3%; left:3%; width:95%;"
                  class="d-flex justify-content-between">
                 <div>
-                    <button class="버튼 btn btn-sm me-2" onclick="aroundMe()">내 위치 주변</button>
-                    <button class="버튼 btn btn-sm" onclick="searchForAddress()">주소 검색</button>
+                    <button class="버튼 btn btn-sm me-2" onclick="aroundMe()" id="위치">내 위치 주변</button>
+                    <button class="버튼 btn btn-sm" onclick="searchForAddress()" id="주소">주소 검색</button>
                 </div>
-                <div style="width:25%;">
+                <div id="검색창">
                     <form th:action="@{/map/findByKeyword}" method="get" id="searchForm" class="input-group">
                         <input type="text" class="form-control" th:value="${keyword}" name="keyword" id="searchName">
-                        <input type="submit" value="검색" class="btn searchButton">
+                        <input type="submit" value="검색" class="btn searchButton" id="검색">
                     </form>
                 </div>
             </div>
