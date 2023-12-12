@@ -63,7 +63,7 @@ public class Restaurant {
     private double averageStar;
 
     @ManyToMany
-    private Set<SiteUser> favoriteUser;
+    private Set<SiteUser> favorite;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
     private List<Chat> chatList;
