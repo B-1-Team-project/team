@@ -57,7 +57,7 @@ jobs:
             script: |
               docker pull ${{ secrets.DOCKER_USERNAME }}/app
               docker stop app
-              while [ "$(docker inspect -f '{{.State.Status}}' app)" != "exited" ]; do
+              while docker inspect app &> /dev/null; do
                 sleep 1
               done
               docker run --name app -d -p 8080:8080 --rm ${{ secrets.DOCKER_USERNAME }}/app
