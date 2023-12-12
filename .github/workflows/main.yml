@@ -57,7 +57,8 @@ jobs:
             script: |
               docker pull ${{ secrets.DOCKER_USERNAME }}/app
               docker stop app
-              while [ "$(docker inspect -f '{{.State.Status}}' app 2>/dev/null)" == "running" ]; do
-                  sleep 1
+              while [ "$(docker inspect -f '{{.State.Status}}' app)" != "exited" ]; do
+                sleep 1
               done
               docker run --name app -d -p 8080:8080 --rm ${{ secrets.DOCKER_USERNAME }}/app
+              docker rmi $(docker images -f "dangling=true" -q)
