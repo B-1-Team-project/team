@@ -1,7 +1,7 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <div class="d-flex my-4">
-        <div style="background:white; width:25%; margin:0 auto; padding:30px; border-radius:15px;">
+    <div class="cr d-flex my-4">
+        <div id="cl">
             <h3 class="border-bottom pb-2">채팅 목록</h3>
             <div th:if="${roomList.isEmpty()}" class="p-5 text-center">
                 <h3 style="color:gray;">채팅 내역 없음</h3>
@@ -19,7 +19,7 @@
                 </li>
             </ul>
         </div>
-        <div style="background:white; width:70%; margin:0 auto; padding:30px; border-radius:15px;">
+        <div id="ct">
             <h3 class="border-bottom pb-2">실시간 채팅 문의</h3>
         </div>
     </div>
