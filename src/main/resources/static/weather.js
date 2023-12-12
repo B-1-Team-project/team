@@ -15,7 +15,7 @@ function success(position) {
    const currentDateTime = getCurrentDateTime();
 
    var grid = dfs_xy_conv("toXY", lat, lon);
-   var url = new URL("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst");
+   var url = new URL("https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst");
    var params = {
      serviceKey: apiKey,
      pageNo: 1,

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/map")
@@ -80,6 +79,7 @@ public class MapController {
         for (Restaurant res : searchList) {
             SearchDataDto searchDataDto = new SearchDataDto();
             searchDataDto.setRestaurantName(res.getName());
+            searchDataDto.setAddress(res.getAddress());
             searchDataDtoList.add(searchDataDto);
         }
         return searchDataDtoList;
