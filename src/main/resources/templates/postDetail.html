@@ -2,8 +2,7 @@
 <div layout:fragment="content" class="container">
     <div class="my-4" style="background:white; padding:30px; border-radius:15px;">
         <div th:text="${post.title}" class="text-center" style="font-size:2.5rem;"></div>
-        <div class="d-flex justify-content-between align-items-end"
-             style="border-bottom:1px solid lightgray; padding-bottom:7px;">
+        <div id="postDetail">
             <div class="d-flex align-items-center">
                 <img th:src="@{${post.user.image}}" alt=""
                      style="width:40px; height:40px; border-radius:50%; border:1px solid gray;">
@@ -12,7 +11,7 @@
                      th:text="${post.modifyDate == null ? #temporals.format(post.createDate, 'yyyy-MM-dd HH:mm') : #temporals.format(post.modifyDate, 'yyyy-MM-dd HH:mm') + ' 수정'}"
                      id="createDate"></div>
             </div>
-            <div class="d-flex text-secondary" style="font-size:11pt;">
+            <div class="d-flex text-secondary" id="md">
                 <div style="cursor:pointer;" id="copyLink" class="me-1">url 복사</div>
                 <div sec:authorize="isAuthenticated()" th:if="${post.user.loginId == user.loginId}">
                     <span class="mx-1">|</span>
