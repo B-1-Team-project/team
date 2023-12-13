@@ -13,6 +13,28 @@
         * {font-family: 'IBM Plex Sans KR', sans-serif;}
     </style>
     <style>
+        .소셜 {
+            width:100%;
+        }
+
+        @media (max-width: 600px) {
+            .소셜 {
+                font-size:15pt;
+            }
+        }
+
+        .버튼:hover {
+            color:sienna;
+            background:peachpuff;
+            border:0.1px solid;
+            font-weight:bold;
+        }
+
+        .버튼 {
+            background:peachpuff;
+            border:0.1px solid black;
+            color:black;
+        }
 
         .검색버튼 {
             background:white;
@@ -257,9 +279,9 @@
                 </div>
             </div>
             <div class="d-flex justify-content-around mb-4">
-                <a href="#" onclick="showForm('loginForm')" id="loginLink">로그인</a>
-                <a href="#" onclick="showForm('signupForm')" id="signupLink">회원가입</a>
-                <a th:href="@{/user/findIdAndPw}">아이디 / 비밀번호 찾기</a>
+                <a href="#" onclick="showForm('loginForm')" id="loginLink" class="소셜">로그인</a>
+                <a href="#" onclick="showForm('signupForm')" id="signupLink" class="소셜">회원가입</a>
+                <a th:href="@{/user/findIdAndPw}" class="소셜">아이디 / 비밀번호 찾기</a>
             </div>
         </div>
     </div>
