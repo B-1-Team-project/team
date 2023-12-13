@@ -57,7 +57,7 @@ jobs:
             script: |
               docker pull ${{ secrets.DOCKER_USERNAME }}/app
               if docker ps | grep -q app1; then
-                docker run --name app2 -d -p 8081:8080 ${{ secrets.DOCKER_USERNAME }}/app
+                docker run --name app2 -d -p 8081:8080 --rm ${{ secrets.DOCKER_USERNAME }}/app
                 while true; do
                   if docker logs app2 | grep -q "Started TeamApplication"; then
                     break
@@ -71,7 +71,7 @@ jobs:
                   sleep 1
                 done
               elif docker ps | grep -q app2; then
-                docker run --name app1 -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/app
+                docker run --name app1 -d -p 8080:8080 --rm ${{ secrets.DOCKER_USERNAME }}/app
                 while true; do
                   if docker logs app1 | grep -q "Started TeamApplication"; then
                     break
