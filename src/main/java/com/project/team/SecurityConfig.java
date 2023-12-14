@@ -58,8 +58,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource customConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://matchatsa.teampro.store:80", "https://matchatsa.teampro.store:443"));
+        configuration.setAllowedOrigins(Arrays.asList("https://matchatsa.teampro.store", "https://matchatsa.teampro.store:443"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // 허용할 헤더
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
