@@ -37,9 +37,4 @@ public class MainController {
         return "redirect:/interprocess";
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
 }
