@@ -33,6 +33,7 @@ public class WebSocketController {
         if (alarmList.isEmpty()) alarmService.create(target, writer, "chat", room);
         simpMessagingTemplate.convertAndSend("/topic/" + room, chatDto);
         simpMessagingTemplate.convertAndSend("/topic/room", chatDto);
+        System.out.println("hihhi");
     }
 
     @MessageMapping("/main")
