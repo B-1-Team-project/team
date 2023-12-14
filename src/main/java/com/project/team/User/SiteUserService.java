@@ -131,7 +131,7 @@ public class SiteUserService {
         String resetToken = createToken(loginId);
 
         // 비밀번호 재설정 링크를 이메일에 포함시켜 전송
-        String resetLink = "http://localhost:8080/user/resetPassword/" + resetToken;
+        String resetLink = "http://matchatsa.teampro.store/user/resetPassword/" + resetToken;
         String emailContent = "<p>비밀번호를 변경하려면 다음 링크를 클릭하세요: <a href='" + resetLink + "'>비밀번호 변경하기</a></p>";
         MailDto dto = new MailDto();
         dto.setAddress(user.getEmail());
