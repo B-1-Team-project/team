@@ -683,24 +683,30 @@
         });
 
         // 인증번호
-       function sendMessage() {
-           var phoneNumber = document.getElementById("phoneNum").value;
-           if (phoneNumber == "")
-               alert("전화번호를 입력해주세요.");
-           else {
-               var xhr = new XMLHttpRequest();
-               xhr.open("GET", "/send?phoneNumber=" + encodeURIComponent(phoneNumber), true);
+        function sendMessage() {
+            var phoneNumber = document.getElementById("phoneNum").value;
+            if (phoneNumber == "") {
+                alert("전화번호를 입력해주세요.");
+            } else {
+                var url = "https://matchatsa.teampro.store/send?phoneNumber=" + encodeURIComponent(phoneNumber);
 
-               xhr.onreadystatechange = function () {
-                   if (xhr.readyState == 4 && xhr.status == 200) {
-                       $('#exampleModal').modal('hide');
-                       requestVerificationKey();
-                   }
-               };
+                fetch(url)
+                    .then(response => {
+                        if (response.ok) {
+                            $('#exampleModal').modal('hide');
+                            requestVerificationKey();
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
 
-               xhr.send();
-           }
-       }
 
        var serverVerKey;
 
