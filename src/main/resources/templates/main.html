@@ -383,7 +383,7 @@
             var userId = $("#userId").val();
 
             function connect(userId) {
-                var socket = new SockJS('/ws');
+                var socket = new SockJS('https://matchatsa.teampro.site/ws');
                 stompClient = Stomp.over(socket);
                 stompClient.connect({}, function (frame) {
                     stompClient.subscribe('/topic/main/' + userId, function (data) {
