@@ -29,13 +29,15 @@ public class SMSController {
     }
 
     @GetMapping("/send")
-    public String send(@RequestParam String phoneNumber, HttpSession session) {
+    public ResponseEntity<Map<String, String>> send(@RequestParam String phoneNumber, HttpSession session) {
         String verKey = createRandomNumber();
         smsService.sendMessage(phoneNumber, verKey);
 
         session.setAttribute("verKey", verKey);
 
-        return "redirect:/";
+        Map<String, String> response = new HashMap<>();
+        response.put("verKey", verKey);
+        return ResponseEntity.ok(response);
     }
 
 
