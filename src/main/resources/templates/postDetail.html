@@ -33,10 +33,10 @@
             </div>
             <div class="collapse my-2" id="comment">
                 <form th:action="@{|/answer/create/${post.id}|}" method="post" id="answerForm">
-                    <textarea rows="2" class="form-control" id="answerContent" name="content"
+                    <textarea rows="2" class="form-control" name="content"
                               placeholder="로그인 후 이용해주세요." sec:authorize="isAnonymous()" disabled></textarea>
                     <textarea rows="2" class="form-control" name="content" sec:authorize="isAuthenticated()"
-                              placeholder="댓글을 입력해주세요."></textarea>
+                              placeholder="댓글을 입력해주세요." id="answerContent"></textarea>
                     <div class="d-flex justify-content-end">
                         <input type="button" class="버튼 btn btn-sm mt-1" value="등록" id="regBtn">
                     </div>
